@@ -2,6 +2,7 @@ package com.example.eggenda.ui.home
 
 import android.app.AlertDialog
 import android.content.Context
+import android.media.MediaPlayer
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -20,7 +21,7 @@ import com.example.eggenda.databinding.FragmentHomeBinding
 class HomeFragment : Fragment() {
 
     private var _binding: FragmentHomeBinding? = null
-
+    private var mediaPlayer: MediaPlayer? = null
     // This property is only valid between onCreateView and
     // onDestroyView.
     private val binding get() = _binding!!
@@ -45,6 +46,7 @@ class HomeFragment : Fragment() {
 //            textView.text = it
 //        }
 
+        // xp
         loadProgress()
         updateProgress()
 
@@ -55,21 +57,32 @@ class HomeFragment : Fragment() {
                 binding.eggImageView.setImageResource(R.drawable.egg_cracked_blue)
                 binding.experienceTextView.text = "Egg has hatched!"
 
-                // Pause for 3 seconds, then show popup
+                getNewPet()
+                playSound(R.raw.sound_success)
                 Handler(Looper.getMainLooper()).postDelayed({
+                    resetEggAndExperience()
                     showCongratsPopup()
-                }, 2000)
-                triggerVibration(2000)
+                }, 1500)
+                triggerVibration(1500)
+
             } else {
                 // Perform subtle haptic feedback if egg is not ready to hatch
                 binding.eggImageView.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
             }
         }
 
+        // Button to test what happens when Xp is gained
         binding.gainXp.setOnClickListener {
             gainExperience(20)
         }
         return root
+    }
+
+    private fun getNewPet() {
+        // TODO: implement
+        // User gets a pet that they do not own, the shared preference should have all pets
+        // one field in each pet should determine if user owns or not
+        // Update the shared preference ownership field for a random unowned pet.
     }
 
     private fun triggerVibration(time: Long) {
@@ -85,16 +98,33 @@ class HomeFragment : Fragment() {
         }
     }
 
+    private fun playSound(soundResId: Int) {
+        // Release any existing MediaPlayer instance
+        mediaPlayer?.release()
+
+        // Initialize and play the new sound
+        mediaPlayer = MediaPlayer.create(context, soundResId)
+        mediaPlayer?.start()
+
+        // Release the media player when the sound finishes playing
+        mediaPlayer?.setOnCompletionListener {
+            it.release()
+        }
+    }
+
     private fun loadProgress() {
         val sharedPreferences = requireContext().getSharedPreferences("eggenda_prefs", Context.MODE_PRIVATE)
         currentExperience = sharedPreferences.getInt("currentExperience", 0) // Default to 0 if not found
+        // TODO: make this shared preference the same as whatever the tasks updates
     }
+
     // Function for incrementing experience progress
     private fun updateProgress() {
         binding.progressBar.progress = currentExperience
         binding.experienceTextView.text = "Experience: $currentExperience/$maxExperience"
     }
 
+    // Eventually, we won't need this function because user experience increase based on tasks done
     private fun gainExperience(amount: Int) {
         if (currentExperience < maxExperience) {
             currentExperience += amount
@@ -106,12 +136,15 @@ class HomeFragment : Fragment() {
         }
     }
 
+    // Eventually, we won't need this either
     private fun saveExperienceProgress() {
         val sharedPreferences = requireContext().getSharedPreferences("eggenda_prefs", Context.MODE_PRIVATE)
         sharedPreferences.edit().putInt("currentExperience", currentExperience).apply()
     }
 
     // Reset the egg and experience progress
+    // TODO: properly implement xp bar with shared preference xp/levels
+    // also, maybe try to implement random egg colors/pictures
     private fun resetEggAndExperience() {
         currentExperience = 0
         saveExperienceProgress()
@@ -121,6 +154,7 @@ class HomeFragment : Fragment() {
     }
 
     // Show a popup dialog with a congratulatory message and pet picture
+    // TODO: get the randomly chosen pet, and get its image placed in the popup
     private fun showCongratsPopup() {
         // Inflate the custom dialog layout
         val dialogView = layoutInflater.inflate(R.layout.dialog_hatch, null)
@@ -131,7 +165,6 @@ class HomeFragment : Fragment() {
 
         // Set up the dialog
         dialogBuilder.setPositiveButton("OK") { dialog, _ ->
-            resetEggAndExperience()
             dialog.dismiss()
         }
 
