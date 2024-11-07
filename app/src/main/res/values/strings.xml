@@ -13,4 +13,9 @@
     <string name="gallery_choice">Choose from Gallery</string>
     <string name="photo_choice">Take a Photo</string>
     <string name="settings_title">Settings</string>
+
+    <string name="game_start">Start</string>
+    <string name="game_label">Game</string>
+
+
 </resources>
