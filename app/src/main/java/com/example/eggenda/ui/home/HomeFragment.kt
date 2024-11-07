@@ -1,9 +1,13 @@
 package com.example.eggenda.ui.home
 
 import android.app.AlertDialog
+import android.content.Context
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.os.VibrationEffect
+import android.os.Vibrator
+import android.view.HapticFeedbackConstants
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -41,6 +45,9 @@ class HomeFragment : Fragment() {
 //            textView.text = it
 //        }
 
+        loadProgress()
+        updateProgress()
+
         // Initialize egg and progress views
         binding.eggImageView.setOnClickListener {
             if (currentExperience >= maxExperience) {
@@ -52,7 +59,10 @@ class HomeFragment : Fragment() {
                 Handler(Looper.getMainLooper()).postDelayed({
                     showCongratsPopup()
                 }, 2000)
-
+                triggerVibration(2000)
+            } else {
+                // Perform subtle haptic feedback if egg is not ready to hatch
+                binding.eggImageView.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
             }
         }
 
@@ -62,6 +72,23 @@ class HomeFragment : Fragment() {
         return root
     }
 
+    private fun triggerVibration(time: Long) {
+        val vibrator = context?.getSystemService(Context.VIBRATOR_SERVICE) as? Vibrator
+        vibrator?.let {
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                // For Android O and above
+                it.vibrate(VibrationEffect.createOneShot(time, VibrationEffect.DEFAULT_AMPLITUDE))
+            } else {
+                // For older versions
+                it.vibrate(time) // Vibrate for 200 milliseconds
+            }
+        }
+    }
+
+    private fun loadProgress() {
+        val sharedPreferences = requireContext().getSharedPreferences("eggenda_prefs", Context.MODE_PRIVATE)
+        currentExperience = sharedPreferences.getInt("currentExperience", 0) // Default to 0 if not found
+    }
     // Function for incrementing experience progress
     private fun updateProgress() {
         binding.progressBar.progress = currentExperience
@@ -74,8 +101,23 @@ class HomeFragment : Fragment() {
             if (currentExperience > maxExperience) {
                 currentExperience = maxExperience
             }
+            saveExperienceProgress()
             updateProgress()
         }
+    }
+
+    private fun saveExperienceProgress() {
+        val sharedPreferences = requireContext().getSharedPreferences("eggenda_prefs", Context.MODE_PRIVATE)
+        sharedPreferences.edit().putInt("currentExperience", currentExperience).apply()
+    }
+
+    // Reset the egg and experience progress
+    private fun resetEggAndExperience() {
+        currentExperience = 0
+        saveExperienceProgress()
+        binding.progressBar.progress = currentExperience
+        binding.experienceTextView.text = "Experience: $currentExperience/$maxExperience"
+        binding.eggImageView.setImageResource(R.drawable.egg_uncracked_blue_white)
     }
 
     // Show a popup dialog with a congratulatory message and pet picture
@@ -96,14 +138,6 @@ class HomeFragment : Fragment() {
         // Show the dialog
         val alertDialog = dialogBuilder.create()
         alertDialog.show()
-    }
-
-    // Reset the egg and experience progress
-    private fun resetEggAndExperience() {
-        currentExperience = 0
-        binding.progressBar.progress = currentExperience
-        binding.experienceTextView.text = "Experience: $currentExperience/$maxExperience"
-        binding.eggImageView.setImageResource(R.drawable.egg_uncracked_blue_white)
     }
 
     override fun onDestroyView() {
