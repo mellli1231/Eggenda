@@ -35,8 +35,10 @@ class HomeFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val homeViewModel =
-            ViewModelProvider(this).get(HomeViewModel::class.java)
+
+        // Never used
+//        val homeViewModel =
+//            ViewModelProvider(this).get(HomeViewModel::class.java)
 
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         val root: View = binding.root
@@ -121,6 +123,7 @@ class HomeFragment : Fragment() {
     // Function for incrementing experience progress
     private fun updateProgress() {
         binding.progressBar.progress = currentExperience
+        binding.circularProgress.progress = currentExperience
         binding.experienceTextView.text = "Experience: $currentExperience/$maxExperience"
     }
 
@@ -149,6 +152,7 @@ class HomeFragment : Fragment() {
         currentExperience = 0
         saveExperienceProgress()
         binding.progressBar.progress = currentExperience
+        binding.circularProgress.progress = currentExperience
         binding.experienceTextView.text = "Experience: $currentExperience/$maxExperience"
         binding.eggImageView.setImageResource(R.drawable.egg_uncracked_blue_white)
     }
