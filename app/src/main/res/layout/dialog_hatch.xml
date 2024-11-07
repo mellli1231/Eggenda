@@ -22,7 +22,7 @@
         android:id="@+id/petImageView"
         android:layout_width="200dp"
         android:layout_height="200dp"
-        android:src="@drawable/pet_chubby_bunny_large"
+        android:src="@drawable/pet_shy_raccoon_large"
         android:layout_gravity="center"
         />
 
