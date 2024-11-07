@@ -36,7 +36,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="5dp"
-                android:text="Edit"
+                android:text="@string/edit_button"
                 android:textSize="18sp"
                 android:fontFamily="@font/titan_one"
                 />
@@ -52,7 +52,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Username"
+                android:text="@string/username_header"
                 android:textSize="16sp"
                 android:fontFamily="@font/titan_one"
                 />
@@ -64,7 +64,7 @@
                 android:inputType="text"
                 android:textSize="16sp"
                 android:background="@drawable/edit_text_border"
-                android:text="JohnSmith"
+                android:text="@string/username_hint"
                 android:paddingStart="16dp"
                 android:textColor="@color/dark_blue"
                 android:fontFamily="@font/dangrek_font"/>
@@ -79,7 +79,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="First Name"
+                android:text="@string/first_name_header"
                 android:textSize="16sp"
                 android:fontFamily="@font/titan_one"/>
 
@@ -90,7 +90,7 @@
                 android:inputType="text"
                 android:textSize="16sp"
                 android:background="@drawable/edit_text_border"
-                android:text="John"
+                android:text="@string/first_name_hint"
                 android:paddingStart="16dp"
                 android:textColor="@color/dark_blue"
                 android:fontFamily="@font/dangrek_font"/>
@@ -105,7 +105,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Last Name"
+                android:text="@string/last_name_header"
                 android:textSize="16sp"
                 android:fontFamily="@font/titan_one"/>
 
@@ -116,7 +116,7 @@
                 android:inputType="text"
                 android:textSize="16sp"
                 android:background="@drawable/edit_text_border"
-                android:text="Smith"
+                android:text="@string/last_name_hint"
                 android:paddingStart="16dp"
                 android:textColor="@color/dark_blue"
                 android:fontFamily="@font/dangrek_font"/>
@@ -131,7 +131,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="E-mail/Phone"
+                android:text="@string/e_mail_phone_header"
                 android:textSize="16sp"
                 android:fontFamily="@font/titan_one"/>
 
@@ -142,7 +142,7 @@
                 android:inputType="text"
                 android:textSize="16sp"
                 android:background="@drawable/edit_text_border"
-                android:text="E-mail/Phone"
+                android:text="@string/e_mail_phone_hint"
                 android:paddingStart="16dp"
                 android:textColor="@color/dark_blue"
                 android:fontFamily="@font/dangrek_font"/>
@@ -157,7 +157,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Date of Birth"
+                android:text="@string/date_of_birth_header"
                 android:textSize="16sp"
                 android:fontFamily="@font/titan_one"/>
 
@@ -168,7 +168,7 @@
                 android:inputType="text"
                 android:textSize="16sp"
                 android:background="@drawable/edit_text_border"
-                android:text="dd/mm/yy"
+                android:text="@string/birth_hint"
                 android:paddingStart="16dp"
                 android:textColor="@color/dark_blue"
                 android:fontFamily="@font/dangrek_font"/>
@@ -183,7 +183,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Country"
+                android:text="@string/country_header"
                 android:textSize="16sp"
                 android:fontFamily="@font/titan_one"/>
 
@@ -194,7 +194,7 @@
                 android:inputType="text"
                 android:textSize="16sp"
                 android:background="@drawable/edit_text_border"
-                android:text="ex. Canada"
+                android:text="@string/country_hint"
                 android:paddingStart="16dp"
                 android:textColor="@color/dark_blue"
                 android:fontFamily="@font/dangrek_font"/>
@@ -212,7 +212,7 @@
                 android:layout_weight="0.5"
                 android:layout_margin="16dp"
                 android:id="@+id/save_profile"
-                android:text="Save"
+                android:text="@string/save_button"
                 android:textSize="18sp"
                 android:fontFamily="@font/titan_one"
                 android:backgroundTint="@color/bold_yellow"/>
@@ -223,7 +223,7 @@
                 android:layout_weight="0.5"
                 android:layout_margin="16dp"
                 android:id="@+id/cancel_profile"
-                android:text="Cancel"
+                android:text="@string/cancel_button"
                 android:textSize="18sp"
                 android:fontFamily="@font/titan_one"
                 android:backgroundTint="@color/bold_yellow"/>
