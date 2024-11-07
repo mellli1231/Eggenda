@@ -22,4 +22,10 @@
         android:name="com.example.eggenda.ui.slideshow.SlideshowFragment"
         android:label="@string/menu_slideshow"
         tools:layout="@layout/fragment_slideshow" />
+
+    <fragment
+        android:id="@+id/settings"
+        android:name="com.example.eggenda.ui.settings.SettingsFragment"
+        android:label="@string/settings_title"
+        tools:layout="@xml/preference"/>
 </navigation>

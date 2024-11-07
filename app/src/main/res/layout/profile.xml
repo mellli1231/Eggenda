@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/yellow">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginHorizontal="20dp">
+
+        <!--profile photo-->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center">
+
+            <ImageView
+                android:id="@+id/profile_photo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:maxWidth="150dp"
+                android:maxHeight="175dp"
+                android:adjustViewBounds="true"
+                android:layout_margin="10dp"
+                android:src="@drawable/defaultprofile"
+                android:scaleType="centerCrop">
+            </ImageView>
+
+            <Button
+                android:id="@+id/btnChangePhoto"
+                android:backgroundTint="@color/bold_yellow"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:text="Edit"
+                android:textSize="18sp"
+                android:fontFamily="@font/titan_one"
+                />
+
+        </LinearLayout>
+
+        <!--username-->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="90dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Username"
+                android:textSize="16sp"
+                android:fontFamily="@font/titan_one"
+                />
+
+            <EditText
+                android:id="@+id/edit_username"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:inputType="text"
+                android:textSize="16sp"
+                android:background="@drawable/edit_text_border"
+                android:text="JohnSmith"
+                android:paddingStart="16dp"
+                android:textColor="@color/dark_blue"
+                android:fontFamily="@font/dangrek_font"/>
+        </LinearLayout>
+
+        <!--first name-->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="90dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="First Name"
+                android:textSize="16sp"
+                android:fontFamily="@font/titan_one"/>
+
+            <EditText
+                android:id="@+id/edit_first_name"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:inputType="text"
+                android:textSize="16sp"
+                android:background="@drawable/edit_text_border"
+                android:text="John"
+                android:paddingStart="16dp"
+                android:textColor="@color/dark_blue"
+                android:fontFamily="@font/dangrek_font"/>
+        </LinearLayout>
+
+        <!--last name-->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="90dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Last Name"
+                android:textSize="16sp"
+                android:fontFamily="@font/titan_one"/>
+
+            <EditText
+                android:id="@+id/edit_last_name"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:inputType="text"
+                android:textSize="16sp"
+                android:background="@drawable/edit_text_border"
+                android:text="Smith"
+                android:paddingStart="16dp"
+                android:textColor="@color/dark_blue"
+                android:fontFamily="@font/dangrek_font"/>
+        </LinearLayout>
+
+        <!--email/phone-->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="90dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="E-mail/Phone"
+                android:textSize="16sp"
+                android:fontFamily="@font/titan_one"/>
+
+            <EditText
+                android:id="@+id/edit_email_phone"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:inputType="text"
+                android:textSize="16sp"
+                android:background="@drawable/edit_text_border"
+                android:text="E-mail/Phone"
+                android:paddingStart="16dp"
+                android:textColor="@color/dark_blue"
+                android:fontFamily="@font/dangrek_font"/>
+        </LinearLayout>
+
+        <!--Date of Birth-->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="90dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Date of Birth"
+                android:textSize="16sp"
+                android:fontFamily="@font/titan_one"/>
+
+            <EditText
+                android:id="@+id/edit_birth"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:inputType="text"
+                android:textSize="16sp"
+                android:background="@drawable/edit_text_border"
+                android:text="dd/mm/yy"
+                android:paddingStart="16dp"
+                android:textColor="@color/dark_blue"
+                android:fontFamily="@font/dangrek_font"/>
+        </LinearLayout>
+
+        <!--country-->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="90dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Country"
+                android:textSize="16sp"
+                android:fontFamily="@font/titan_one"/>
+
+            <EditText
+                android:id="@+id/edit_country"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:inputType="text"
+                android:textSize="16sp"
+                android:background="@drawable/edit_text_border"
+                android:text="ex. Canada"
+                android:paddingStart="16dp"
+                android:textColor="@color/dark_blue"
+                android:fontFamily="@font/dangrek_font"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingBottom="16dp">
+
+            <Button
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.5"
+                android:layout_margin="16dp"
+                android:id="@+id/save_profile"
+                android:text="Save"
+                android:textSize="18sp"
+                android:fontFamily="@font/titan_one"
+                android:backgroundTint="@color/bold_yellow"/>
+
+            <Button
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.5"
+                android:layout_margin="16dp"
+                android:id="@+id/cancel_profile"
+                android:text="Cancel"
+                android:textSize="18sp"
+                android:fontFamily="@font/titan_one"
+                android:backgroundTint="@color/bold_yellow"/>
+        </LinearLayout>
+
+    </LinearLayout>
+</ScrollView>
