@@ -6,21 +6,26 @@
         <!-- user profile bar-->
     <Preference
         android:key="user_profile"
-        android:title="User Profile"
-        app:iconSpaceReserved="false">
-    </Preference>
+        android:title="@string/user_profile_header"
+        app:iconSpaceReserved="false" />
 
-    <Preference
+    <ListPreference
         android:key="language"
-        android:title="Language"
-        app:iconSpaceReserved="false">
-    </Preference>
+        android:title="@string/language_header"
+        android:entries="@array/language_options"
+        android:entryValues="@array/language_values"
+        android:defaultValue="en"
+        app:iconSpaceReserved="false"/>
 
     <Preference
         android:key="terms"
-        android:title="Terms and Conditions"
-        app:iconSpaceReserved="false">
-    </Preference>
+        android:title="@string/conditions_header"
+        app:iconSpaceReserved="false"/>
+
+    <Preference
+        android:key="logout"
+        android:title="@string/logout"
+        app:iconSpaceReserved="false"/>
 
 </PreferenceScreen>
 
