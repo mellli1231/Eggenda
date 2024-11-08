@@ -13,6 +13,8 @@
     <string name="gallery_choice">Choose from Gallery</string>
     <string name="photo_choice">Take a Photo</string>
     <string name="settings_title">Settings</string>
+    <string name="game_start">Start</string>
+    <string name="game_label">Game</string>
     <string name="display_name">John Smith</string>
     <string name="hatch_progress">Hatch Progress: ??%</string>
     <string name="new_quest">New Quest</string>
@@ -55,7 +57,6 @@
     <string name="terms_conditions_details" translatable="false">terms and conditions</string>
     <string name="game">Game</string>
 
-
     <string-array name="language_options">
         <item>English</item>
         <item>Chinese</item>
@@ -65,9 +66,5 @@
         <item>en</item>
         <item>zh</item>
     </string-array>
-
-    <string name="game_start">Start</string>
-    <string name="game_label">Game</string>
-
 
 </resources>

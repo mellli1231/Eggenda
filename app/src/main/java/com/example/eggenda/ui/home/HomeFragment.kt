@@ -10,16 +10,23 @@ import android.os.Handler
 import android.os.Looper
 import android.os.VibrationEffect
 import android.os.Vibrator
+import android.util.Log
 import android.view.HapticFeedbackConstants
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.TextView
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.example.eggenda.R
+import com.example.eggenda.databinding.DialogHatchBinding
 import com.example.eggenda.databinding.FragmentHomeBinding
 import com.example.eggenda.gamePlay.gameActivity
 import com.example.eggenda.ui.task.ConfirmTasksActivity
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
+import kotlin.random.Random
 
 class HomeFragment : Fragment() {
 
@@ -32,6 +39,9 @@ class HomeFragment : Fragment() {
     private var currentExperience = 0
     private val maxExperience = 100
 
+    private val PET_OWNERSHIP_KEY = "pet_ownership"
+    private val DEFAULT_PET_OWNERSHIP = arrayOf(0, 0, 0, 0, 0) // 5 pets, all initially unowned
+
 
     @SuppressLint("SetTextI18n")
     override fun onCreateView(
@@ -41,6 +51,7 @@ class HomeFragment : Fragment() {
     ): View {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         val root: View = binding.root
+        val petOwnership = loadPetOwnership()
 
         // xp
         loadProgress()
@@ -48,16 +59,22 @@ class HomeFragment : Fragment() {
 
         // Initialize egg and progress views
         binding.eggImageView.setOnClickListener {
-            if (currentExperience >= maxExperience) {
+            if (ownsAll()) {
+                Toast.makeText(requireContext(), "You own all pets already!", Toast.LENGTH_SHORT).show()
+                // Perform subtle haptic feedback if egg is not ready to hatch
+                binding.eggImageView.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+            } else if (currentExperience >= maxExperience) {
                 // Show cracked egg
                 binding.eggImageView.setImageResource(R.drawable.egg_cracked_blue)
                 binding.experienceTextView.text = "Egg has hatched!"
 
-                getNewPet()
+                // save the array of pets
+                savePetOwnership(petOwnership)
+
                 playSound(R.raw.sound_success)
                 Handler(Looper.getMainLooper()).postDelayed({
                     resetEggAndExperience()
-                    showCongratsPopup()
+                    hatchEgg(petOwnership)
                 }, 1500)
                 triggerVibration(1500)
 
@@ -87,12 +104,55 @@ class HomeFragment : Fragment() {
         return root
     }
 
-    private fun getNewPet() {
-        // TODO: implement
-        // User gets a pet that they do not own, the shared preference should have all pets
-        // one field in each pet should determine if user owns or not
-        // Update the shared preference ownership field for a random unowned pet.
+    private fun loadPetOwnership(): Array<Int> {
+        val sharedPreferences = requireContext().getSharedPreferences("eggenda_prefs", Context.MODE_PRIVATE)
+        val json = sharedPreferences.getString(PET_OWNERSHIP_KEY, null)
+        return if (json != null) {
+            val type = object : TypeToken<Array<Int>>() {}.type
+            Gson().fromJson(json, type)
+        } else {
+            // Initialize with all pets unowned and save it to SharedPreferences
+            savePetOwnership(DEFAULT_PET_OWNERSHIP)
+            DEFAULT_PET_OWNERSHIP.clone() // Return a clone to avoid modifying the original
+        }
+    }
 
+    private fun savePetOwnership(petOwnership: Array<Int>) {
+        val sharedPreferences = requireContext().getSharedPreferences("eggenda_prefs", Context.MODE_PRIVATE)
+        val editor = sharedPreferences.edit()
+        val json = Gson().toJson(petOwnership)
+        editor.putString(PET_OWNERSHIP_KEY, json)
+        editor.apply()
+    }
+
+    private fun hatchEgg(petOwnership: Array<Int>) {
+        val unownedPets = petOwnership.indices.filter { petOwnership[it] == 0 }
+        if (unownedPets.isNotEmpty()) {
+            // Choose a random unowned pet and mark it as owned
+            val randomPet = unownedPets.random()
+            petOwnership[randomPet] = 1
+
+            // Save pets, and also provide popup with specific pet's photo
+            savePetOwnership(petOwnership)
+            showCongratsPopup(randomPet)
+        }
+    }
+
+    // Function to check if user owns all pets
+    private fun ownsAll(): Boolean {
+        val sharedPreferences = requireContext().getSharedPreferences("eggenda_prefs", Context.MODE_PRIVATE)
+        val json = sharedPreferences.getString("pet_ownership", null)
+
+        if (json != null) {
+            val type = object : TypeToken<Array<Int>>() {}.type
+            val petOwnership: Array<Int> = Gson().fromJson(json, type)
+
+            // Check if every pet in the array is owned (i.e., every value is 1)
+            return petOwnership.all { it == 1 }
+        }
+
+        // If no ownership data exists, user does not own all pets
+        return false
     }
 
     private fun triggerVibration(time: Long) {
@@ -169,22 +229,27 @@ class HomeFragment : Fragment() {
 
     // Show a popup dialog with a congratulatory message and pet picture
     // TODO: get the randomly chosen pet, and get its image placed in the popup
-    private fun showCongratsPopup() {
-        // Inflate the custom dialog layout
-        val dialogView = layoutInflater.inflate(R.layout.dialog_hatch, null)
+    private fun showCongratsPopup(petIndex: Int) {
+        // Inflate the dialog layout
+        val dialogBinding = DialogHatchBinding.inflate(LayoutInflater.from(requireContext()))
 
-        // Create the dialog builder
-        val dialogBuilder = AlertDialog.Builder(requireContext())
-        dialogBuilder.setView(dialogView)
-
-        // Set up the dialog
-        dialogBuilder.setPositiveButton("OK") { dialog, _ ->
-            dialog.dismiss()
+        // Set the pet image based on petIndex
+        when (petIndex) {
+            0 -> dialogBinding.petImageView.setImageResource(R.drawable.pet_chubby_bunny_large)
+            1 -> dialogBinding.petImageView.setImageResource(R.drawable.pet_evil_water_large)
+            2 -> dialogBinding.petImageView.setImageResource(R.drawable.pet_flaming_skull_large)
+            3 -> dialogBinding.petImageView.setImageResource(R.drawable.pet_little_mothman_large)
+            4 -> dialogBinding.petImageView.setImageResource(R.drawable.pet_shy_raccoon_large)
         }
 
-        // Show the dialog
-        val alertDialog = dialogBuilder.create()
-        alertDialog.show()
+        // Create and display the dialog
+        val dialogBuilder = AlertDialog.Builder(requireContext())
+        dialogBuilder.setView(dialogBinding.root)
+        dialogBuilder.setPositiveButton("OK") { dialog, _ ->
+            resetEggAndExperience() // Reset egg and experience after user acknowledges the dialog
+            dialog.dismiss()
+        }
+        dialogBuilder.create().show()
     }
 
     override fun onDestroyView() {
