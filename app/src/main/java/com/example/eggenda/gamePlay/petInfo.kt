@@ -33,7 +33,7 @@ class petInfo {
 
     private val catInfo = PetInfo(
         name = "Cat",
-        imageId = R.drawable.game_cat,  // Replace with actual drawable resource ID
+        imageId = R.drawable.pet_chubby_bunny_large,  // Replace with actual drawable resource ID
         element = dict.ELEMENT_FIRE,
         type = dict.ATK_TYPE_STAY,
         damage = 30,
@@ -59,7 +59,7 @@ class petInfo {
 
     private val wormInfo = PetInfo(
         name = "Worm",
-        imageId = R.drawable.game_worm,  // Replace with actual drawable resource ID
+        imageId = R.drawable.pet_evil_water_large,  // Replace with actual drawable resource ID
         element = dict.ELEMENT_WATER,
         type = dict.ATK_TYPE_RETURN,
         damage = 5,
@@ -85,7 +85,7 @@ class petInfo {
 
     private val tigerInfo = PetInfo(
         name = "Tiger",
-        imageId = R.drawable.game_tiger,  // Replace with actual drawable resource ID
+        imageId = R.drawable.pet_flaming_skull_large,  // Replace with actual drawable resource ID
         element = dict.ELEMENT_FOREST,
         type = dict.ATK_TYPE_BOUNCE,
         damage = 20,
@@ -111,7 +111,7 @@ class petInfo {
 
     private val dragonInfo = PetInfo(
         name = "Dragon",
-        imageId = R.drawable.game_dragon,  // Replace with actual drawable resource ID
+        imageId = R.drawable.pet_little_mothman_large,  // Replace with actual drawable resource ID
         element = dict.ELEMENT_FIRE,
         type = dict.ATK_TYPE_STAY,
         damage = 25,
@@ -137,7 +137,7 @@ class petInfo {
 
     private val mewtwoInfo = PetInfo(
         name = "Mewtwo",
-        imageId = R.drawable.game_mewtwo,  // Replace with actual drawable resource ID
+        imageId = R.drawable.pet_shy_raccoon_large,  // Replace with actual drawable resource ID
         element = dict.ELEMENT_WATER,
         type = dict.ATK_TYPE_STAY,
         damage = 100,

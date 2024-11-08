@@ -97,6 +97,7 @@ class HomeFragment : Fragment() {
         // User gets a pet that they do not own, the shared preference should have all pets
         // one field in each pet should determine if user owns or not
         // Update the shared preference ownership field for a random unowned pet.
+
     }
 
     private fun triggerVibration(time: Long) {
