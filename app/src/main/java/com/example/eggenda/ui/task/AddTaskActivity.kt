@@ -7,6 +7,7 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.eggenda.R
 import java.util.Calendar
@@ -60,7 +61,15 @@ class AddTaskActivity : AppCompatActivity() {
             finish() // Go back to ConfirmTaskActivity
         }
 
-        addTaskButton.setOnClickListener { backToConfirmTask() }
-        cancelTaskButton.setOnClickListener { backToConfirmTask() }
+        addTaskButton.setOnClickListener {
+            val toast = Toast.makeText(this, "Task Added", Toast.LENGTH_SHORT)
+            toast.show()
+            backToConfirmTask()
+        }
+        cancelTaskButton.setOnClickListener {
+            val toast = Toast.makeText(this, "Cancelled", Toast.LENGTH_SHORT)
+            toast.show()
+            backToConfirmTask()
+        }
     }
 }
