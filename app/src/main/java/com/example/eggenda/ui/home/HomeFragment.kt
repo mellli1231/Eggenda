@@ -2,6 +2,7 @@ package com.example.eggenda.ui.home
 
 import android.app.AlertDialog
 import android.content.Context
+import android.content.Intent
 import android.media.MediaPlayer
 import android.os.Bundle
 import android.os.Handler
@@ -12,11 +13,10 @@ import android.view.HapticFeedbackConstants
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
 import com.example.eggenda.R
 import com.example.eggenda.databinding.FragmentHomeBinding
+import com.example.eggenda.gamePlay.gameActivity
 
 class HomeFragment : Fragment() {
 
@@ -76,6 +76,11 @@ class HomeFragment : Fragment() {
         // Button to test what happens when Xp is gained
         binding.gainXp.setOnClickListener {
             gainExperience(20)
+        }
+
+        binding.goGame.setOnClickListener{
+            val intent = Intent(requireContext(), gameActivity::class.java)
+            startActivity(intent)
         }
         return root
     }
