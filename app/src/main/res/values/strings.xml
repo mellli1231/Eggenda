@@ -13,4 +13,56 @@
     <string name="gallery_choice">Choose from Gallery</string>
     <string name="photo_choice">Take a Photo</string>
     <string name="settings_title">Settings</string>
+    <string name="display_name">John Smith</string>
+    <string name="hatch_progress">Hatch Progress: ??%</string>
+    <string name="new_quest">New Quest</string>
+    <string name="quest_board">Quest Board</string>
+    <string name="nq_title">New Quest</string>
+    <string name="nq_subtitle">Make your quest easier with our reminders</string>
+    <string name="deadline">Deadline</string>
+    <string name="date">DD/MM/YY</string>
+    <string name="accept">Accept</string>
+    <string name="decline">Decline</string>
+    <string name="experience">Experience: 0/100</string>
+    <string name="gain_xp">Gain XP</string>
+    <string name="task">Task</string>
+    <string name="create_a_task">Create a task</string>
+    <string name="time_limit">Time Limit</string>
+    <string name="time_format">HH:MM:SS</string>
+    <string name="details">Details</string>
+    <string name="write_here">Write here...</string>
+    <string name="attachments">Attachments</string>
+    <string name="max_20mb">Max 20mb</string>
+    <string name="user_profile_header">User Profile</string>
+    <string name="language_header">Language</string>
+    <string name="conditions_header">Terms and Conditions</string>
+    <string name="edit_button">Edit</string>
+    <string name="username_header">Username</string>
+    <string name="username_hint" translatable="false">JohnSmith</string>
+    <string name="first_name_header">First Name</string>
+    <string name="first_name_hint" translatable="false">John</string>
+    <string name="last_name_header">Last Name</string>
+    <string name="last_name_hint" translatable="false">Smith</string>
+    <string name="e_mail_phone_header">E-mail/Phone</string>
+    <string name="e_mail_phone_hint" translatable="false">E-mail/Phone</string>
+    <string name="date_of_birth_header">Date of Birth</string>
+    <string name="birth_hint" translatable="false">dd/mm/yy</string>
+    <string name="country_header">Country</string>
+    <string name="country_hint" translatable="false">ex. Canada</string>
+    <string name="save_button">Save</string>
+    <string name="cancel_button">Cancel</string>
+    <string name="logout">Log Out\n</string>
+    <string name="terms_conditions_details" translatable="false">terms and conditions</string>
+    <string name="game">Game</string>
+
+
+    <string-array name="language_options">
+        <item>English</item>
+        <item>Chinese</item>
+    </string-array>
+
+    <string-array name="language_values">
+        <item>en</item>
+        <item>zh</item>
+    </string-array>
 </resources>
