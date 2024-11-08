@@ -1,7 +1,7 @@
 package com.example.eggenda.ui.task
 
+import android.annotation.SuppressLint
 import android.app.TimePickerDialog
-import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
@@ -13,6 +13,7 @@ import java.util.Calendar
 
 class AddTaskActivity : AppCompatActivity() {
 
+    @SuppressLint("DefaultLocale")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_task)
