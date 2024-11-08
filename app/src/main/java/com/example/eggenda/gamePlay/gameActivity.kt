@@ -166,13 +166,6 @@ class gameActivity : AppCompatActivity() {
 
 
         viewModel.damageDealt.observe(this, Observer { newDamageDealt->
-//            for(i in 0..2){
-//                when(i){
-//                    0 -> fireCountView.text = newDamageDealt[i].toString()
-//                    1 -> waterCountView.text = newDamageDealt[i].toString()
-//                    2 ->forestCountView.text = newDamageDealt[i].toString()
-//                }
-//            }\
             val stage = stageInfo.StageInfoMap[selectedStage]!!
             val maxHp = stage.damage
             val currentHp = viewModel.getCurrentBossHp()
@@ -235,6 +228,7 @@ class gameActivity : AppCompatActivity() {
         obj += targetDamage.toString()+ " damages before "+maxTurn.toString()+"th turn!"
         return obj
     }
+
     private fun showPetOnDeck(petOrder: Int){
 //        val pet= viewModel.petStatus.value?.get(petOrder)
 //        val imageId = inventory.getViewInfoById(chosenPetId[petOrder])?.imageId
@@ -317,19 +311,21 @@ class gameActivity : AppCompatActivity() {
 
             while (allBoard == 0 && damageMatch ==0) {
                 viewModel.updateTurn()
+//                handleDamageDealt(true)
                 updateStayNum()
-                handleDamageDealt(true)
-                dismissIfDialogShowing()
                 viewModel.updateAllowPick(true)
                 setStartPos()
                 handlePutPet()
                 viewModel.updateAllowPick(false)
 
+//                val affected = handleBounceVictimV2(selectedGird)
                 handleBounceVictim(selectedGird)
 //                waitForButtonClick(resumeBtn)
 //                Log.d("gameStart", "cat damage: ${inventory.getViewInfoById(1)?.damage}")
+
+
+//                waitForRelease(false)
                 handleDamageDealt(false)
-                dismissIfDialogShowing()
 
                 allBoard = checkAllOnBoard()
                 damageMatch = checkDamage()
@@ -409,12 +405,10 @@ class gameActivity : AppCompatActivity() {
         viewModel.updatePetStatus(petStatus)
     }
 
-    private suspend fun waitForButtonClick(button: Button) {
+    private suspend fun waitForRelease(release: Boolean) {
         suspendCancellableCoroutine<Unit> { continuation ->
-            button.setOnClickListener {
-                // Resume the coroutine when the button is clicked
+            if(release){
                 continuation.resume(Unit)
-//                button.setOnClickListener(null) // Clear the listener after use
             }
         }
     }
@@ -433,12 +427,12 @@ class gameActivity : AppCompatActivity() {
         for(i in 0..deckSize-1){
             val damage = petInfo.getPetDamage(petStatus,i)
             val damageType = petInfo.getPetInfoById(petStatus[i]!!.unitId)!!.type
-            if(concernStay  && damageType != dict.ATK_TYPE_STAY ){
-                continue
-            }
-            else if(!concernStay && damageType == dict.ATK_TYPE_STAY ){
-                continue
-            }
+//            if(concernStay  && damageType != dict.ATK_TYPE_STAY ){
+//                continue
+//            }
+//            else if(!concernStay && damageType == dict.ATK_TYPE_STAY ){
+//                continue
+//            }
 
             if (damage > 0){
 //                viewModel.updateShowDamageDialog(1)
@@ -467,15 +461,20 @@ class gameActivity : AppCompatActivity() {
             }
         }
 
+
+
+
+        var dialogShowing = true
         if(damageHisChanged){
             viewModel.updateDamageDealt(damageHistory)
-            showReportDialog(reportList)
+            dialogShowing = showReportDialog(reportList)
             viewModel.refreshBoard()
         }
-
-        if(petStatusChanged){
+        if(petStatusChanged && !dialogShowing){
             viewModel.updatePetStatus(petStatus)
         }
+
+
 
     }
 
@@ -546,7 +545,6 @@ class gameActivity : AppCompatActivity() {
     }
 
     private suspend fun handleBounceVictim(petPut: Int){
-
         val victimPos = makeVictimPos(petPut)
         val victimPosBack = makeVictimBackPos(victimPos)
         val boardStatus = viewModel.getBoardStatus()
@@ -607,6 +605,79 @@ class gameActivity : AppCompatActivity() {
                 }
             }
         }
+    }
+
+    private suspend fun handleBounceVictimV2(petPut: Int): List<Any>{
+        val victimPos = makeVictimPos(petPut)
+        val victimPosBack = makeVictimBackPos(victimPos)
+        val boardStatus = viewModel.getBoardStatus()
+        val petStatus = viewModel.getPetStatus()
+        val ret: MutableList<Any> = mutableListOf()
+        Log.d("handleBounceVictim", "petPut: ${petPut}")
+        for (t in 0..7) {
+            Log.d("handleBounceVictim", "Loop: ${t}: victimPos: ${victimPos[t]}")
+            if (victimPos[t] in 0..boardSize - 1) {
+                val victimOrder = boardStatus[victimPos[t]]
+//                Log.d("handleBounceVictim", "Loop: ${t}: victimOrder: ${victimOrder}")
+                if (victimOrder >= 0) {   //it has a pet
+                    val victimPet = petStatus[victimOrder]
+//                        Log.d("handleBounceVictim", "victimID: ${victimPet?.unitId}")
+                    //the support of the victim pet is on the board
+
+                    Log.d("handleBounceVictim", "victimPos[t]: ${victimPos[t]}")
+                    Log.d("handleBounceVictim", "victimPosBack[t]: ${victimPosBack[t]}")
+
+
+                    for(k in 0..7){
+                        Log.d("handleBounceVictim", "victimPos: ${victimPos[k]}")
+                    }
+
+                    for(k in 0..7){
+                        Log.d("handleBounceVictim", "victimPosBack: ${victimPosBack[k]}")
+                    }
+                    if(victimPosBack[t]in 0..boardSize - 1){
+                        val victimBackOrder = boardStatus[victimPosBack[t]]
+
+
+                        if(victimBackOrder == dict.noPet){
+//                            Log.d("handleBounceVictim", "victimBackOrder == dict.noPet: ${victimBackOrder == dict.noPet}")
+                            //update pet status
+                            victimPet!!.endPos = victimPosBack[t]
+                            victimPet.bounceNum +=1
+                            viewModel.updatePetStatus(petStatus)
+//                            ret.add(petStatus)
+
+
+                            //update board status
+                            boardStatus[victimPos[t]] = dict.noPet
+                            boardStatus[victimPosBack[t]] = victimOrder
+//                            viewModel.updateBoardStatus(boardStatus)
+                            ret.add(boardStatus)
+                        }
+
+                    }
+                    else{   //victim return to deck
+                        victimPet!!.endPos = dict.outsideBoard
+                        victimPet.bounceNum +=1
+                        victimPet.location = dict.onDECK
+
+                        //update deckStatus
+                        val deckStatus = viewModel.getDeckStatus()
+                        deckStatus[victimOrder] = dict.hasPet
+//                        viewModel.updateDeckStatus(deckStatus)
+
+
+                        //update board status
+                        boardStatus[victimPos[t]] = dict.noPet
+//                        viewModel.updateBoardStatus(boardStatus)
+                        ret.add(deckStatus)
+                        ret.add(boardStatus)
+
+                    }
+                }
+            }
+        }
+        return ret
     }
 
     private fun makeVictimPos(petPut: Int):IntArray{
@@ -720,7 +791,7 @@ class gameActivity : AppCompatActivity() {
         }
     }
 
-    private suspend fun showReportDialog(reportList: MutableList<String>) {
+    private suspend fun showReportDialog(reportList: MutableList<String>): Boolean {
         // Inflate the custom layout
         val dialogView = layoutInflater.inflate(R.layout.game_report_dialog, null)
 
@@ -758,5 +829,6 @@ class gameActivity : AppCompatActivity() {
             viewModel.updateDamageReport("")
         }
         customDialog.dismiss()
+        return true
     }
 }

@@ -54,7 +54,8 @@ class petInfo {
         if(petStatus[petOrder]!!.location == dict.onDECK){
             return 0
         }
-        return (petStatus[petOrder]!!.stayNum % (catInfo.count) )
+//        return (petStatus[petOrder]!!.stayNum % (catInfo.count) )
+        return catInfo.count - petStatus[petOrder]!!.stayNum % 3
     }
 
     private val wormInfo = PetInfo(
@@ -62,7 +63,7 @@ class petInfo {
         imageId = R.drawable.game_worm,  // Replace with actual drawable resource ID
         element = dict.ELEMENT_WATER,
         type = dict.ATK_TYPE_RETURN,
-        damage = 5,
+        damage = 20,
         count = 1,
         description =""
     )
@@ -77,10 +78,12 @@ class petInfo {
 
     //return the count number on UI
     private fun wormCount(petStatus: Array<petStatus?>,petOrder:Int):Int{
-        if(petStatus[petOrder]!!.stayNum == 1 ){
-            return wormInfo.count
+        val stayNum = petStatus[petOrder]!!.stayNum
+        if( stayNum <= 1 ){
+            return wormInfo.count - stayNum
         }
-        return 0
+
+        return -1
     }
 
     private val tigerInfo = PetInfo(
@@ -95,7 +98,8 @@ class petInfo {
 
     //need fixed
     private fun tigerDealDamage(petStatus: Array<petStatus?>,petOrder:Int):Int{
-        if(petStatus[petOrder]!!.bounceNum !=0 && petStatus[petOrder]!!.bounceNum %  tigerInfo.count ==0) {
+        val tigerStatus = petStatus[petOrder]!!
+        if(tigerStatus.bounceNum !=0 && tigerStatus.bounceNum % tigerInfo.count == 0) {
             return tigerInfo.damage
         }
         return 0
@@ -103,11 +107,15 @@ class petInfo {
 
     //return the count number on UI
     private fun tigerCount(petStatus: Array<petStatus?>,petOrder:Int):Int{
-        if(petStatus[petOrder]!!.stayNum == 0 ){
-            return 0
-        }
-        return (petStatus[petOrder]!!.stayNum % tigerInfo.count )+ 1
+//        if(petStatus[petOrder]!!.stayNum == 0 ){
+//            return 0
+//        }
+//        return (petStatus[petOrder]!!.stayNum % tigerInfo.count )+ 1
+//
+//        return tigerInfo.count - petStatus[petOrder]!!.stayNum % tigerInfo.count
+        return tigerInfo.count-petStatus[petOrder]!!.bounceNum
     }
+
 
     private val dragonInfo = PetInfo(
         name = "Dragon",
@@ -141,13 +149,13 @@ class petInfo {
         element = dict.ELEMENT_WATER,
         type = dict.ATK_TYPE_STAY,
         damage = 100,
-        count = 5,
+        count = 2,
         description =""
     )
 
     //
     private fun mewtwoDealDamage(petStatus: Array<petStatus?>,petOrder:Int):Int{
-        if(petStatus[petOrder]!!.stayNum == 5){
+        if(petStatus[petOrder]!!.stayNum == mewtwoInfo.count){
             return 100
         }
         return 0
@@ -155,7 +163,7 @@ class petInfo {
 
     //return the count number on UI
     private fun mewtwoCount(petStatus: Array<petStatus?>,petOrder:Int):Int{
-        if(petStatus[petOrder]!!.stayNum >5 ){
+        if(petStatus[petOrder]!!.stayNum >mewtwoInfo.count ){
             return -1
         }
         return mewtwoInfo.count - petStatus[petOrder]!!.stayNum
