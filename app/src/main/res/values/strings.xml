@@ -1,18 +1,38 @@
 <resources>
-    <string name="app_name" translatable="false">Eggenda</string>
-    <string name="navigation_drawer_open" translatable="false">Open navigation drawer</string>
-    <string name="navigation_drawer_close" translatable="false">Close navigation drawer</string>
-    <string name="nav_header_title" translatable="false">Android Studio</string>
-    <string name="nav_header_subtitle" translatable="false">android.studio@android.com</string>
-    <string name="nav_header_desc" translatable="false">Navigation header</string>
+    <string name="app_name">Eggenda</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">Android Studio</string>
+    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">Settings</string>
 
     <string name="menu_home">Home</string>
-    <string name="menu_gallery" translatable="false">Gallery</string>
-    <string name="menu_slideshow" translatable="false">Slideshow</string>
+    <string name="menu_gallery">Gallery</string>
+    <string name="menu_slideshow">Slideshow</string>
     <string name="gallery_choice">Choose from Gallery</string>
     <string name="photo_choice">Take a Photo</string>
     <string name="settings_title">Settings</string>
+    <string name="display_name">John Smith</string>
+    <string name="hatch_progress">Hatch Progress: ??%</string>
+    <string name="new_quest">New Quest</string>
+    <string name="quest_board">Quest Board</string>
+    <string name="nq_title">New Quest</string>
+    <string name="nq_subtitle">Make your quest easier with our reminders</string>
+    <string name="deadline">Deadline</string>
+    <string name="date">DD/MM/YY</string>
+    <string name="accept">Accept</string>
+    <string name="decline">Decline</string>
+    <string name="experience">Experience: 0/100</string>
+    <string name="gain_xp">Gain XP</string>
+    <string name="task">Task</string>
+    <string name="create_a_task">Create a task</string>
+    <string name="time_limit">Time Limit</string>
+    <string name="time_format">HH:MM:SS</string>
+    <string name="details">Details</string>
+    <string name="write_here">Write here...</string>
+    <string name="attachments">Attachments</string>
+    <string name="max_20mb">Max 20mb</string>
     <string name="user_profile_header">User Profile</string>
     <string name="language_header">Language</string>
     <string name="conditions_header">Terms and Conditions</string>
@@ -33,6 +53,8 @@
     <string name="cancel_button">Cancel</string>
     <string name="logout">Log Out\n</string>
     <string name="terms_conditions_details" translatable="false">terms and conditions</string>
+    <string name="game">Game</string>
+
 
     <string-array name="language_options">
         <item>English</item>

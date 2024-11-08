@@ -1,22 +1,182 @@
-<?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="#FFEBCC"
+    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".ui.home.HomeFragment">
+    android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/text_home"
+    <LinearLayout
+        android:id="@+id/home_top_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:textAlignment="center"
+        android:gravity="center_vertical"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:layout_marginHorizontal="9dp"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:id="@+id/profile_pic"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:background="@mipmap/ic_launcher"
+            android:layout_marginEnd="17dp"
+            android:orientation="vertical">
+        </LinearLayout>
+        <TextView
+            android:id="@+id/display_name"
+            android:textColor="#4A3109"
+            android:textSize="20sp"
+            android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:fontFamily="@font/titan_one"
+            android:text="@string/display_name"
+            />
+    </LinearLayout>
+
+    <FrameLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        >
+        <com.google.android.material.progressindicator.CircularProgressIndicator
+            android:id="@+id/circularProgress"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            app:trackCornerRadius="10dp"
+            app:indicatorSize="210dp"
+            app:trackThickness="20dp"
+            app:indicatorTrackGapSize="0dp"
+            app:indicatorColor="#FF7474"
+            app:trackColor="#FFD3BA"
+            />
+
+        <!-- Egg ImageView -->
+        <ImageView
+            android:id="@+id/eggImageView"
+            android:layout_width="130dp"
+            android:layout_height="130dp"
+            android:layout_gravity="center"
+            android:contentDescription="@string/app_name"
+            android:src="@drawable/egg_uncracked_blue_white"
+            />
+    </FrameLayout>
+
+    <TextView
+        android:id="@+id/hatch_progress"
+        android:textColor="#4A3109"
         android:textSize="20sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-</androidx.constraintlayout.widget.ConstraintLayout>
+        android:layout_marginBottom="10dp"
+        android:layout_gravity="center"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:fontFamily="@font/titan_one"
+        android:text="@string/hatch_progress"
+        />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginBottom="10dp"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/gain_xp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/gain_xp" />
+        <LinearLayout
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <!-- Progress Bar For Experience -->
+            <ProgressBar
+                android:id="@+id/progressBar"
+                android:layout_width="100dp"
+                android:layout_height="20dp"
+                android:max="100"
+                android:progress="0"
+                style="?android:attr/progressBarStyleHorizontal"
+                />
+
+            <!-- Text to show the experience fraction -->
+            <TextView
+                android:id="@+id/experienceTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:text="@string/experience" />
+
+        </LinearLayout>
+        <Button
+            android:id="@+id/game"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/game" />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginBottom="20dp">
+        <Button
+            android:id="@+id/new_quest"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/oval_btn_background"
+            android:text="@string/new_quest"
+            android:fontFamily="@font/titan_one"
+            android:textSize="15sp" />
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:id="@+id/quest_board"
+        android:layout_width="match_parent"
+        android:background="@drawable/customborder"
+        android:layout_height="250dp"
+        android:layout_marginHorizontal="10dp"
+        android:orientation="vertical" >
+        <Button
+            android:id="@+id/goGame"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="DEL LATER: goGAME "
+            />
+        <TextView
+            android:id="@+id/qb_title"
+            android:textColor="#4A3109"
+            android:textStyle="bold"
+            android:textSize="20sp"
+            android:paddingStart="5dp"
+            android:paddingEnd="0dp"
+            android:layout_gravity="start"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:fontFamily="@font/titan_one"
+            android:text="@string/quest_board"
+            />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#000000" />
+
+        <ListView
+            android:id="@+id/quest_list"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:divider="#4A310A"
+            android:fontFamily="@font/titan_one"
+            android:dividerHeight="1dp"
+            />
+    </LinearLayout>
+
+</LinearLayout>
