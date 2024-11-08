@@ -1,0 +1,137 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="#FFEBCC"
+    android:clipChildren="false"
+    android:clipToPadding="false"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!-- Back Button -->
+    <Button
+        android:id="@+id/back_button"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:background="@drawable/back_arrow"
+        android:paddingHorizontal="9dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="20dp"
+        android:layout_marginHorizontal="32dp" />
+
+    <!-- Header and Subtitle -->
+    <TextView
+        android:id="@+id/nq_header"
+        android:textColor="#000000"
+        android:textSize="40sp"
+        android:layout_marginBottom="9dp"
+        android:layout_marginStart="33dp"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:fontFamily="@font/titan_one"
+        android:text="@string/nq_title" />
+
+    <TextView
+        android:id="@+id/nq_subtitle"
+        android:textColor="#4A3109"
+        android:textSize="13sp"
+        android:layout_marginBottom="23dp"
+        android:layout_marginStart="32dp"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:text="@string/nq_subtitle" />
+
+    <!-- Date Bar -->
+    <LinearLayout
+        android:id="@+id/nq_date_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:layout_marginBottom="20dp"
+        android:layout_marginHorizontal="32dp"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:id="@+id/nq_selected_date"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginEnd="4dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/nq_deadline"
+                android:textColor="#4A3109"
+                android:textSize="16sp"
+                android:layout_marginBottom="9dp"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:fontFamily="@font/titan_one"
+                android:text="@string/deadline" />
+
+            <TextView
+                android:id="@+id/nq_date"
+                android:textColor="#4A3109"
+                android:textSize="16sp"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:text="@string/date" />
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/nq_calendar"
+            android:layout_width="36dp"
+            android:layout_height="40dp"
+            android:src="@drawable/calendar"
+            android:scaleType="fitXY"
+            tools:ignore="ContentDescription" />
+    </LinearLayout>
+
+    <!-- ListView for Tasks -->
+    <ListView
+        android:id="@+id/task_list"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:divider="@android:color/darker_gray"
+        android:layout_marginBottom="20dp"
+        android:dividerHeight="1dp"
+        android:paddingHorizontal="20dp" />
+
+    <!-- Add Task Button -->
+    <ImageView
+        android:id="@+id/add_task"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_gravity="center"
+        android:layout_marginBottom="30dp"
+        android:src="@drawable/add_plus"
+        android:scaleType="fitXY" />
+
+    <!-- Accept and Decline Buttons -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layout_marginBottom="30dp"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/accept_quest"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="50dp"
+            android:background="@drawable/oval_btn_background"
+            android:fontFamily="@font/titan_one"
+            android:text="@string/accept"
+            android:textSize="15sp" />
+
+        <Button
+            android:id="@+id/decline_quest"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/oval_btn_background"
+            android:fontFamily="@font/titan_one"
+            android:text="@string/decline"
+            android:textSize="15sp" />
+    </LinearLayout>
+</LinearLayout>

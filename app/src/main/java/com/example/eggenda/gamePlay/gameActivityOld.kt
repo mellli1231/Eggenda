@@ -1,5 +1,4 @@
 package com.example.eggenda.gamePlay
-
 import android.os.Bundle
 import android.util.Log
 import android.view.Gravity
@@ -22,7 +21,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.resume
 
-class gameActivity : AppCompatActivity() {
+class gameActivityOld : AppCompatActivity() {
     private var customDialog: AlertDialog? = null
     private val coroutineScope = CoroutineScope(Dispatchers.Main + Job())
     private val viewModel: gameViewModel by viewModels()
@@ -39,10 +38,10 @@ class gameActivity : AppCompatActivity() {
 
     private lateinit var petInfo: petInfo
 
-    private lateinit var turnView: TextView
-    private lateinit var bossView: ImageView
-    private lateinit var hpFractionView: TextView
-    private lateinit var hpBarView: ImageView
+    private lateinit var turnView:TextView
+    private lateinit var bossView:ImageView
+    private lateinit var hpFractionView:TextView
+    private lateinit var hpBarView:ImageView
     private var hpBarLength:Int = 0
 
     private lateinit var boardRecyclerView: RecyclerView
@@ -60,22 +59,24 @@ class gameActivity : AppCompatActivity() {
     private var selectedGird: Int = -1
     private var boardClicked: Int = 0
 
-    private lateinit var resumeBtn: Button
-    private lateinit var checkBtn: Button
+    private lateinit var resumeBtn:Button
+    private lateinit var checkBtn:Button
     private lateinit var damageReportView: TextView
     private lateinit var fireCountView: TextView
     private lateinit var waterCountView: TextView
     private lateinit var forestCountView: TextView
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-//        enableEdgeToEdge()
         setContentView(R.layout.activity_game)
-//        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
-//            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-//            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-//            insets
-//        }
+//        handler = Handler(Looper.getMainLooper())
 
+//        resumeBtn = findViewById(R.id.resumeCoroutine)
+//        checkBtn = findViewById(R.id.checkInfo)
+//        damageReportView = findViewById(R.id.damageReportText)
+//        fireCountView = findViewById(R.id.fireCount)
+//        waterCountView = findViewById(R.id.waterCount)
+//        forestCountView = findViewById(R.id.forestCount)
         selectedStage = 0
 
         chosenPetId = intArrayOf(0,1,2,3,4)
@@ -97,6 +98,8 @@ class gameActivity : AppCompatActivity() {
             Log.d("hp", "len${hpBarView.layoutParams.width}")
         }
 
+
+
         boardRecyclerView = findViewById(R.id.boardRecyclerView)
         boardRecyclerView.layoutManager = GridLayoutManager(this, boardCol) // 5 columns
         boardAdapter = boardAdapter(boardSize) { boardPosition ->
@@ -114,6 +117,7 @@ class gameActivity : AppCompatActivity() {
 //                selectedGird = boardPosition
 //            }
         }
+
         boardRecyclerView.adapter = boardAdapter
 
 
@@ -218,9 +222,27 @@ class gameActivity : AppCompatActivity() {
 
         })
 
+
+//        checkBtn.setOnClickListener{
+//            val petStatus = viewModel.getPetStatus()
+//            for(i in 0..deckSize-1){
+//                Log.d("gameStart","---------------------------------")
+//                Log.d("gameStart","PetOrder: ${i}")
+//                Log.d("gameStart","PetId: ${petStatus[i]?.unitId}")
+//                Log.d("gameStart","startPos: ${petStatus[i]?.startPos}")
+//                Log.d("gameStart","endPos: ${petStatus[i]?.endPos}")
+//                Log.d("gameStart","location: ${petStatus[i]?.location}")
+//                Log.d("gameStart","stayNum: ${petStatus[i]?.stayNum}")
+//                Log.d("gameStart","bounceNum: ${petStatus[i]?.bounceNum}")
+//                Log.d("gameStart","count: ${petInfo.getPetCount(petStatus,i)}")
+//                Log.d("gameStart","damage: ${petInfo.getPetDamage(petStatus,i)}")
+//            }
+//        }
+
         viewModel.init(stageInfo.StageInfoMap[selectedStage]!!.damage, dict.ALLOW, chosenPetId, initPetStatus(chosenPetId), initBoard, gameObjBuilder())
 
         gameStart()
+//        game.start()
     }
 
     private fun gameObjBuilder():String{
@@ -275,15 +297,7 @@ class gameActivity : AppCompatActivity() {
             targetboard?.countFrame?.isInvisible = false
 
             targetboard?.imageView?.setImageResource(imageId!!)
-
-            val count = petInfo.getPetCount(petStatus,petOrder)
-            if(count >=0){
-                targetboard?.countView?.text = count.toString()
-            }
-            else{
-                targetboard?.countView?.text = "∞"
-            }
-
+            targetboard?.countView?.text = petInfo.getPetCount(petStatus,petOrder).toString()
             val element = petInfo.getPetInfoById(pet?.unitId!!)?.element
             if(element == dict.ELEMENT_FIRE){
                 targetboard?.countFrame?.setImageResource(R.drawable.game_count_frame_fire)
@@ -759,4 +773,5 @@ class gameActivity : AppCompatActivity() {
         }
         customDialog.dismiss()
     }
+
 }
