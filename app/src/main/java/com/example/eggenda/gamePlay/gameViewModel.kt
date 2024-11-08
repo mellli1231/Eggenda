@@ -12,7 +12,7 @@ class gameViewModel : ViewModel(){
     private val _allowPick = MutableLiveData<Boolean>()
     private val _forceReturn = MutableLiveData<Boolean>()
     private val _chosenPet = MutableLiveData<IntArray>()
-    private val _petStatus = MutableLiveData<Array<petStatus?>>()
+    val _petStatus = MutableLiveData<Array<petStatus?>>()
 
 
     private val _deckStatus = MutableLiveData<IntArray>()
@@ -35,7 +35,7 @@ class gameViewModel : ViewModel(){
         updateAllowPick(true)
         updateForceReturn(false)
         updateChosenPet(initChosenPet)
-        updatePetStatus(newPetStatus)
+        initPetStatus(newPetStatus)
         updateDeckStatus(IntArray(5){dict.hasPet})
         updateBoardStatus(initBoard)
         updateGameMessage(gameObj)
@@ -140,7 +140,13 @@ class gameViewModel : ViewModel(){
 
 
     fun getPetStatus():Array<petStatus?>{
-        return _petStatus.value!!
+        return _petStatus.value!!.copyOf()
+    }
+
+    fun initPetStatus(newPetStatus: Array<petStatus?>){
+        viewModelScope.launch {
+            _petStatus.value = newPetStatus.copyOf()
+        }
     }
 
     fun updatePetStatus(newPetStatus: Array<petStatus?>){

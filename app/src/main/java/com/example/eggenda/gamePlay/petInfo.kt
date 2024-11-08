@@ -55,7 +55,7 @@ class petInfo {
             return 0
         }
 //        return (petStatus[petOrder]!!.stayNum % (catInfo.count) )
-        return catInfo.count - petStatus[petOrder]!!.stayNum % 3
+        return catInfo.count - petStatus[petOrder]!!.stayNum % (catInfo.count+1)
     }
 
     private val wormInfo = PetInfo(
@@ -112,8 +112,9 @@ class petInfo {
 //        }
 //        return (petStatus[petOrder]!!.stayNum % tigerInfo.count )+ 1
 //
-//        return tigerInfo.count - petStatus[petOrder]!!.stayNum % tigerInfo.count
-        return tigerInfo.count-petStatus[petOrder]!!.bounceNum
+        return tigerInfo.count - petStatus[petOrder]!!.bounceNum
+//        return tigerInfo.count-petStatus[petOrder]!!.bounceNum % (tigerInfo.count+1)
+//        return petStatus[petOrder]!!.bounceNum
     }
 
 
@@ -137,10 +138,15 @@ class petInfo {
 
     //return the count number on UI
     private fun dragonCount(petStatus: Array<petStatus?>,petOrder:Int):Int{
-        if(petStatus[petOrder]!!.location == dict.onBoard){
-            return dragonInfo.count
+//        if(petStatus[petOrder]!!.location == dict.onBoard){
+//            return dragonInfo.count
+//        }
+//        return 0
+
+        if(petStatus[petOrder]!!.location == dict.onBoard && petStatus[petOrder]!!.stayNum >0 ){
+            return 0
         }
-        return 0
+        return 1
     }
 
     private val mewtwoInfo = PetInfo(
