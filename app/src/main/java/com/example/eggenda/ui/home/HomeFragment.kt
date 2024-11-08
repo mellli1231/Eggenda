@@ -20,6 +20,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.eggenda.R
 import com.example.eggenda.databinding.FragmentHomeBinding
+import com.example.eggenda.gamePlay.gameActivity
 import com.example.eggenda.ui.task.ConfirmTasksActivity
 
 class HomeFragment : Fragment() {
@@ -76,6 +77,12 @@ class HomeFragment : Fragment() {
         val newQuestButton: Button = root.findViewById(R.id.new_quest)
         newQuestButton.setOnClickListener {
             val intent = Intent(requireContext(), ConfirmTasksActivity::class.java)
+            startActivity(intent)
+        }
+
+        val gotoGameButton: Button = root.findViewById(R.id.game)
+        gotoGameButton.setOnClickListener {
+            val intent = Intent(requireContext(), gameActivity::class.java)
             startActivity(intent)
         }
 

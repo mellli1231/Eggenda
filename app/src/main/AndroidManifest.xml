@@ -32,6 +32,7 @@
         <activity android:name=".ui.settings.ProfileActivity"/>
         <activity android:name=".ui.task.AddTaskActivity"/>
         <activity android:name=".ui.task.ConfirmTasksActivity"/>
+        <activity android:name=".gamePlay.gameActivity"/>
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="com.example.eggenda"

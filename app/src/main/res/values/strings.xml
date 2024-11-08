@@ -52,6 +52,7 @@
     <string name="save_button">Save</string>
     <string name="cancel_button">Cancel</string>
     <string name="logout">Log Out\n</string>
+    <string name="game">Game</string>
 
     <string-array name="language_options">
         <item>English</item>
