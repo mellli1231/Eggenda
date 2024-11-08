@@ -36,6 +36,10 @@ android {
     buildFeatures {
         viewBinding = true
     }
+
+    composeOptions {
+        kotlinCompilerExtensionVersion = "1.5.1"
+    }
     bundle {
         language {
             enableSplit = false

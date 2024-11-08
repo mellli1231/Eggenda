@@ -13,6 +13,7 @@ lifecycleLivedataKtx = "2.8.7"
 lifecycleViewmodelKtx = "2.8.7"
 navigationFragmentKtx = "2.8.3"
 navigationUiKtx = "2.8.3"
+gson = "2.11.0"
 
 preferenceKtx = "1.2.1"
 activity = "1.9.2"
