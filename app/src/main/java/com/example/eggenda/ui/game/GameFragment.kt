@@ -33,10 +33,10 @@ class GameFragment : Fragment(R.layout.fragment_game) {
         _binding = FragmentGameBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
-        val textView: TextView = binding.textGame
-        gameViewModel.text.observe(viewLifecycleOwner) {
-            textView.text = it
-        }
+//        val textView: TextView = binding.textGame
+//        gameViewModel.text.observe(viewLifecycleOwner) {
+//            textView.text = it
+//        }
 
         //set the game button to the choose character acitivity
 //        val gameStartButton: Button = view?.findViewById(R.id.game_start_frag_btn) ?:
