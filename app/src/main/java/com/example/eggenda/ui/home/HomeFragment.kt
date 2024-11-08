@@ -1,7 +1,9 @@
 package com.example.eggenda.ui.home
 
+import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.Context
+import android.content.Intent
 import android.media.MediaPlayer
 import android.os.Bundle
 import android.os.Handler
@@ -12,11 +14,14 @@ import android.view.HapticFeedbackConstants
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.eggenda.R
 import com.example.eggenda.databinding.FragmentHomeBinding
+import com.example.eggenda.gamePlay.gameActivity
+import com.example.eggenda.ui.task.ConfirmTasksActivity
 
 class HomeFragment : Fragment() {
 
@@ -30,23 +35,14 @@ class HomeFragment : Fragment() {
     private val maxExperience = 100
 
 
+    @SuppressLint("SetTextI18n")
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View {
-
-        // Never used
-//        val homeViewModel =
-//            ViewModelProvider(this).get(HomeViewModel::class.java)
-
+    ): View? {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         val root: View = binding.root
-
-//        val textView: TextView = binding.textHome
-//        homeViewModel.text.observe(viewLifecycleOwner) {
-//            textView.text = it
-//        }
 
         // xp
         loadProgress()
@@ -77,6 +73,19 @@ class HomeFragment : Fragment() {
         binding.gainXp.setOnClickListener {
             gainExperience(20)
         }
+
+        val newQuestButton: Button = root.findViewById(R.id.new_quest)
+        newQuestButton.setOnClickListener {
+            val intent = Intent(requireContext(), ConfirmTasksActivity::class.java)
+            startActivity(intent)
+        }
+
+        val gotoGameButton: Button = root.findViewById(R.id.game)
+        gotoGameButton.setOnClickListener {
+            val intent = Intent(requireContext(), gameActivity::class.java)
+            startActivity(intent)
+        }
+
         return root
     }
 
@@ -121,6 +130,7 @@ class HomeFragment : Fragment() {
     }
 
     // Function for incrementing experience progress
+    @SuppressLint("SetTextI18n")
     private fun updateProgress() {
         binding.progressBar.progress = currentExperience
         binding.circularProgress.progress = currentExperience
@@ -148,6 +158,7 @@ class HomeFragment : Fragment() {
     // Reset the egg and experience progress
     // TODO: properly implement xp bar with shared preference xp/levels
     // also, maybe try to implement random egg colors/pictures
+    @SuppressLint("SetTextI18n")
     private fun resetEggAndExperience() {
         currentExperience = 0
         saveExperienceProgress()
