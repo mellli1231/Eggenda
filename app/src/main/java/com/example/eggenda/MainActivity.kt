@@ -1,5 +1,6 @@
 package com.example.eggenda
 
+import android.content.Context
 import android.os.Bundle
 import android.view.Menu
 import com.google.android.material.snackbar.Snackbar
@@ -12,6 +13,7 @@ import androidx.navigation.ui.setupWithNavController
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.appcompat.app.AppCompatActivity
 import com.example.eggenda.databinding.ActivityMainBinding
+import java.util.Locale
 
 class MainActivity : AppCompatActivity() {
 
@@ -20,6 +22,11 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        // Apply the selected language using LocaleHelper
+        println("getting persisted data in MainActivity")
+        LocaleHelper.getPersistedData(this, Locale.getDefault().language)
+            ?.let { LocaleHelper.setLocale(this, it) }
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -54,5 +61,15 @@ class MainActivity : AppCompatActivity() {
     override fun onSupportNavigateUp(): Boolean {
         val navController = findNavController(R.id.nav_host_fragment_content_main)
         return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
+    }
+
+    override fun attachBaseContext(newBase: Context) {
+        // Set the locale using LocaleHelper based on the persisted language preference
+        val currentLanguage = LocaleHelper.getLanguage(newBase)
+        if (Locale.getDefault().language != currentLanguage) {
+            println("calling localeHelper from attachBaseContext")
+            LocaleHelper.setLocale(newBase, currentLanguage)
+        }
+        super.attachBaseContext(LocaleHelper.onAttach(newBase))
     }
 }

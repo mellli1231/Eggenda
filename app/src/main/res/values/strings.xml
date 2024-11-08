@@ -1,16 +1,46 @@
 <resources>
-    <string name="app_name">Eggenda</string>
-    <string name="navigation_drawer_open">Open navigation drawer</string>
-    <string name="navigation_drawer_close">Close navigation drawer</string>
-    <string name="nav_header_title">Android Studio</string>
-    <string name="nav_header_subtitle">android.studio@android.com</string>
-    <string name="nav_header_desc">Navigation header</string>
+    <string name="app_name" translatable="false">Eggenda</string>
+    <string name="navigation_drawer_open" translatable="false">Open navigation drawer</string>
+    <string name="navigation_drawer_close" translatable="false">Close navigation drawer</string>
+    <string name="nav_header_title" translatable="false">Android Studio</string>
+    <string name="nav_header_subtitle" translatable="false">android.studio@android.com</string>
+    <string name="nav_header_desc" translatable="false">Navigation header</string>
     <string name="action_settings">Settings</string>
 
     <string name="menu_home">Home</string>
-    <string name="menu_gallery">Gallery</string>
-    <string name="menu_slideshow">Slideshow</string>
+    <string name="menu_gallery" translatable="false">Gallery</string>
+    <string name="menu_slideshow" translatable="false">Slideshow</string>
     <string name="gallery_choice">Choose from Gallery</string>
     <string name="photo_choice">Take a Photo</string>
     <string name="settings_title">Settings</string>
+    <string name="user_profile_header">User Profile</string>
+    <string name="language_header">Language</string>
+    <string name="conditions_header">Terms and Conditions</string>
+    <string name="edit_button">Edit</string>
+    <string name="username_header">Username</string>
+    <string name="username_hint" translatable="false">JohnSmith</string>
+    <string name="first_name_header">First Name</string>
+    <string name="first_name_hint" translatable="false">John</string>
+    <string name="last_name_header">Last Name</string>
+    <string name="last_name_hint" translatable="false">Smith</string>
+    <string name="e_mail_phone_header">E-mail/Phone</string>
+    <string name="e_mail_phone_hint" translatable="false">E-mail/Phone</string>
+    <string name="date_of_birth_header">Date of Birth</string>
+    <string name="birth_hint" translatable="false">dd/mm/yy</string>
+    <string name="country_header">Country</string>
+    <string name="country_hint" translatable="false">ex. Canada</string>
+    <string name="save_button">Save</string>
+    <string name="cancel_button">Cancel</string>
+    <string name="logout">Log Out\n</string>
+    <string name="terms_conditions_details" translatable="false">terms and conditions</string>
+
+    <string-array name="language_options">
+        <item>English</item>
+        <item>Chinese</item>
+    </string-array>
+
+    <string-array name="language_values">
+        <item>en</item>
+        <item>zh</item>
+    </string-array>
 </resources>

@@ -17,7 +17,6 @@ import android.view.View
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
-import android.widget.RadioGroup
 import android.widget.Toast
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
@@ -179,7 +178,7 @@ class ProfileActivity: AppCompatActivity() {
 
             if(dialogId == PHOTO_DIALOG) {
                 val view: View = requireActivity().layoutInflater.inflate(
-                    R.layout.dialogue_photo,
+                    R.layout.dialog_photo,
                     null
                 )
                 builder.setView(view)
