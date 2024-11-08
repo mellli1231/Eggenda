@@ -156,9 +156,9 @@ class petInfo {
     //return the count number on UI
     private fun mewtwoCount(petStatus: Array<petStatus?>,petOrder:Int):Int{
         if(petStatus[petOrder]!!.stayNum >5 ){
-            return 0
+            return -1
         }
-        return petStatus[petOrder]!!.stayNum
+        return mewtwoInfo.count - petStatus[petOrder]!!.stayNum
     }
 
     private val petInfoMap: Map<Int, PetInfo> = mapOf(
