@@ -65,4 +65,9 @@
         <item>en</item>
         <item>zh</item>
     </string-array>
+
+    <string name="game_start">Start</string>
+    <string name="game_label">Game</string>
+
+
 </resources>

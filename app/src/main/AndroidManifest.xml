@@ -32,6 +32,15 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".gamePetChoose.GamePetChooseMainActivity"
+            android:exported="false"/>
+
+        <activity android:name=".gamePlay.gameActivity"
+            android:exported="false"/>
+
+
         <activity android:name=".ui.settings.ProfileActivity"/>
         <activity android:name=".ui.task.AddTaskActivity"/>
         <activity android:name=".ui.task.ConfirmTasksActivity"/>

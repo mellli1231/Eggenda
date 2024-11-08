@@ -10,4 +10,6 @@
     <color name="bold_yellow">#FFB034</color>
     <color name="yellow">#FFEBCC</color>
     <color name="dark_blue">#1B1F31</color>
+    <color name="enable_color">#FFB554</color>
+    <color name="disabled_color">#A0A0A0</color>
 </resources>
