@@ -55,7 +55,7 @@
     <string name="cancel_button">Cancel</string>
     <string name="logout">Log Out\n</string>
     <string name="terms_conditions_details" translatable="false">terms and conditions</string>
-    <string name="game">Game</string>
+    <string name="game">Start Game</string>
 
     <string-array name="language_options">
         <item>English</item>
