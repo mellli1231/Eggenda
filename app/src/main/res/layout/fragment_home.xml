@@ -1,6 +1,4 @@
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="#FFEBCC"
     android:orientation="vertical"
@@ -143,12 +141,7 @@
         android:layout_height="250dp"
         android:layout_marginHorizontal="10dp"
         android:orientation="vertical" >
-        <Button
-            android:id="@+id/goGame"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="DEL LATER: goGAME "
-            />
+
         <TextView
             android:id="@+id/qb_title"
             android:textColor="#4A3109"

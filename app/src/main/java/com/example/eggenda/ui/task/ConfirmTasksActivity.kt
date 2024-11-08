@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.eggenda.R
 import java.util.Calendar
@@ -57,7 +58,15 @@ class ConfirmTasksActivity : AppCompatActivity() {
             finish() // Go back to the previous activity (HomeFragment)
         }
 
-        acceptButton.setOnClickListener { backToHome() }
-        declineButton.setOnClickListener { backToHome() }
+        acceptButton.setOnClickListener {
+            val toast = Toast.makeText(this, "Quest Accepted!", Toast.LENGTH_SHORT)
+            toast.show()
+            backToHome()
+        }
+        declineButton.setOnClickListener {
+            val toast = Toast.makeText(this, "Quest Declined!", Toast.LENGTH_SHORT)
+            toast.show()
+            backToHome()
+        }
     }
 }

@@ -18,7 +18,6 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
-
 import androidx.fragment.app.Fragment
 import com.example.eggenda.R
 import com.example.eggenda.databinding.DialogHatchBinding
@@ -49,7 +48,7 @@ class HomeFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         val root: View = binding.root
         val petOwnership = loadPetOwnership()
@@ -101,10 +100,7 @@ class HomeFragment : Fragment() {
             val intent = Intent(requireContext(), gameActivity::class.java)
             startActivity(intent)
         }
-        binding.goGame.setOnClickListener{
-            val intent = Intent(requireContext(), gameActivity::class.java)
-            startActivity(intent)
-        }
+
         return root
     }
 
