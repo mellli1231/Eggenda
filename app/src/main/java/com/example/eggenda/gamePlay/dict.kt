@@ -24,6 +24,10 @@ object dict {
     const val ELEMENT_FOREST = 2
     val ELEMENT_STRING = arrayOf("Fire", "Water", "Forest")
 
+    const val RARITY_NORMAL = 0
+    const val RARITY_RARE = 1
+    const val RARITY_LEGENDARY = 2
+
     const val ATK_TYPE_STAY = 0
     const val ATK_TYPE_RETURN = 1
     const val ATK_TYPE_BOUNCE = 2
@@ -31,5 +35,7 @@ object dict {
     //For stage
     const val STAGE_OBJECTIVE_EXACT = 0
     const val STAGE_OBJECTIVE_BEST = 1
+
+
 
 }

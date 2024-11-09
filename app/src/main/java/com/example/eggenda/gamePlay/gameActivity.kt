@@ -79,14 +79,27 @@ class gameActivity : AppCompatActivity() {
 
         selectedStage = 0
 
-        chosenPetId = intArrayOf(0,1,2,3,4)
+        chosenPetId = intArrayOf(5,1,2,3,4)
         boardRow = 3
         boardCol = 5
         boardSize = boardRow * boardCol
 
         initBoard = IntArray(boardSize) { dict.noPet }
 
+        //right here
         petInfo = petInfo()
+
+        //example to access pet
+        val pet0 = petInfo.getPetInfoById(0)
+        val imageId = pet0!!.imageId
+//        val imageList = mutableListOf(Int)
+//
+//        for(i in 0..petInfo.TOTAL -1){
+//            val pet = petInfo.getPetInfoById(i)
+//            val imageId = pet!!.imageId.toInt()
+//            imageList.add(imageId)
+//        }
+
         stageInfo = stageInfo()
 
         turnView = findViewById(R.id.turnView)
