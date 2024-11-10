@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-feature android:name="android.hardware.camera" />
+
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
@@ -19,6 +20,9 @@
         android:theme="@style/Theme.Eggenda"
         tools:targetApi="31">
         <activity
+            android:name=".gamePlay.gameActivity2"
+            android:exported="false" />
+        <activity
             android:name=".gamePlay.gameActivity"
             android:exported="false" />
         <activity
@@ -32,9 +36,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ui.settings.ProfileActivity"/>
-        <activity android:name=".ui.task.AddTaskActivity"/>
-        <activity android:name=".ui.task.ConfirmTasksActivity"/>
+        <activity android:name=".ui.settings.ProfileActivity" />
+        <activity android:name=".ui.task.AddTaskActivity" />
+        <activity android:name=".ui.task.ConfirmTasksActivity" />
+
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="com.example.eggenda"

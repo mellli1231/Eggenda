@@ -29,32 +29,28 @@ class gameViewModel : ViewModel(){
 
 
     fun init(newCurrentBossHp: Int, initAllowPick:Int, initChosenPet: IntArray, newPetStatus: Array<petStatus?>, initBoard:IntArray, gameObj:String){
-        initTurn()
         initDamageDealt()
         updateCurrentBossHp(newCurrentBossHp)
         updateAllowPick(true)
         updateForceReturn(false)
-        updateChosenPet(initChosenPet)
         initPetStatus(newPetStatus)
         updateDeckStatus(IntArray(5){dict.hasPet})
         updateBoardStatus(initBoard)
         updateGameMessage(gameObj)
     }
 
-    val turn: LiveData<Int> get() = _turn
-    fun initTurn(){
+    private val turn: LiveData<Int> get() = _turn
+    fun updateTurn(newTurn: Int) {
         viewModelScope.launch {
-            _turn.value = 0
+            _turn.value = newTurn
         }
     }
-    fun updateTurn() {
-        viewModelScope.launch {
-            _turn.value = _turn.value?.plus(1)
-        }
+
+    fun getTurn():Int{
+        return _turn.value!!
     }
 
     val gameMessage: LiveData<String> get() = _gameMessage
-
     fun updateGameMessage(newGameMessage:String) {
         viewModelScope.launch {
             _gameMessage.value = newGameMessage
@@ -123,17 +119,6 @@ class gameViewModel : ViewModel(){
         viewModelScope.launch {
             _currentBossHp.value = newCurrentBossHp
         }
-    }
-
-
-    val chosenPet: LiveData<IntArray> get() = _chosenPet
-    fun updateChosenPet(newChosenPet: IntArray) {
-        viewModelScope.launch {
-            _chosenPet.value = newChosenPet
-        }
-    }
-    fun getChosenPet():IntArray{
-        return _chosenPet.value!!
     }
 
     private val petStatus: LiveData<Array<petStatus?>> get() = _petStatus

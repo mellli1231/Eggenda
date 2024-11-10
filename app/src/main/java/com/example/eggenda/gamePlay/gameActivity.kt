@@ -6,9 +6,12 @@ import android.view.Gravity
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isInvisible
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.GridLayoutManager
@@ -19,27 +22,30 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.suspendCancellableCoroutine
-import kotlin.coroutines.resume
 
 class gameActivity : AppCompatActivity() {
-    private var customDialog: AlertDialog? = null
-    private val coroutineScope = CoroutineScope(Dispatchers.Main + Job())
-    private val viewModel: gameViewModel by viewModels()
+
+    //load the info from hardcoded dataset
+    private lateinit var stageInfo:stageInfo
+//    private lateinit var petInfo: petInfo
+
+    private lateinit var petInfo: petInfo2
+
+    private val viewModel: gameViewModel2 by viewModels()
+
+    //load info from other activities
     private  var selectedStage:Int = 0
-    private lateinit var initBoard: IntArray
+    private lateinit var chosenPetId:IntArray
     private var boardRow = -1
     private var boardCol = -1
     private var boardSize = -1
-    private var deckSize = 5
-    private lateinit var stageInfo:stageInfo
+    private var deckSize = -1
 
-    private var dialogIsShowing: Boolean = true
 
-    private lateinit var chosenPetId:IntArray
+    private lateinit var initBoard: IntArray
+    private lateinit var initDeck :IntArray
 
-    private lateinit var petInfo: petInfo
-
+    //UI component
     private lateinit var turnView: TextView
     private lateinit var bossView: ImageView
     private lateinit var hpFractionView: TextView
@@ -52,7 +58,7 @@ class gameActivity : AppCompatActivity() {
     private lateinit var unitRecyclerView: RecyclerView
     private lateinit var deckAdapter: deckAdapter
 
-
+    //variables for UI
     private var selectedPetOrder: Int = -1
     private var newSelectedPetOrder: Int = -1
 
@@ -61,12 +67,23 @@ class gameActivity : AppCompatActivity() {
     private var selectedGird: Int = -1
     private var boardClicked: Int = 0
 
-    private lateinit var resumeBtn: Button
-    private lateinit var checkBtn: Button
-    private lateinit var damageReportView: TextView
-    private lateinit var fireCountView: TextView
-    private lateinit var waterCountView: TextView
-    private lateinit var forestCountView: TextView
+    //buffer for game status
+    private var turnBuffer: Int = 0
+    private var currentBossHpBuffer: Int = 0
+    private lateinit var petStatusBuffer:Array<petStatus?>
+    private lateinit var boardStatusBuffer: IntArray
+    private lateinit var deckStatusBuffer: IntArray
+    private var allowPick:Boolean = false
+    private lateinit var damageDealtBuffer: IntArray
+
+
+    //game visual purpose
+    private var hitNum = 0
+    private lateinit var bounceNumResetQueue: ArrayDeque<Int>
+
+    private val coroutineScope = CoroutineScope(Dispatchers.Main + Job())
+//    private val handler
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 //        enableEdgeToEdge()
@@ -77,40 +94,39 @@ class gameActivity : AppCompatActivity() {
 //            insets
 //        }
 
-        selectedStage = 0
+        //load the info from hardcoded dataset
+        stageInfo = stageInfo()
+        petInfo = petInfo2()
 
-        chosenPetId = intArrayOf(5,1,2,3,4)
+
+        selectedStage = 0
+        chosenPetId = intArrayOf(0,1,2,3,4)
         boardRow = 3
         boardCol = 5
         boardSize = boardRow * boardCol
+        deckSize = 5
 
+        //initialize the board and deck
         initBoard = IntArray(boardSize) { dict.noPet }
+        initDeck = IntArray(deckSize) {dict.hasPet}
 
-        //right here
-        petInfo = petInfo()
-
-        //example to access pet
-        val pet0 = petInfo.getPetInfoById(0)
-        val imageId = pet0!!.imageId
-//        val imageList = mutableListOf(Int)
-//
-//        for(i in 0..petInfo.TOTAL -1){
-//            val pet = petInfo.getPetInfoById(i)
-//            val imageId = pet!!.imageId.toInt()
-//            imageList.add(imageId)
-//        }
-
-        stageInfo = stageInfo()
-
+        //boss info
         turnView = findViewById(R.id.turnView)
+        turnFractionVisualization(stageInfo.StageInfoMap[selectedStage]!!.turn)
+
         bossView = findViewById(R.id.bossView)
+        bossView.setImageResource(stageInfo.StageInfoMap[selectedStage]!!.bossImageId)
+
         hpFractionView = findViewById(R.id.hp_fraction)
+        hpFractionVisualization(stageInfo.StageInfoMap[selectedStage]!!.damage)
+
         hpBarView = findViewById(R.id.hp_bar)
         hpBarView.post{
             hpBarLength = hpBarView.layoutParams.width
             Log.d("hp", "len${hpBarView.layoutParams.width}")
         }
 
+        //board UI
         boardRecyclerView = findViewById(R.id.boardRecyclerView)
         boardRecyclerView.layoutManager = GridLayoutManager(this, boardCol) // 5 columns
         boardAdapter = boardAdapter(boardSize) { boardPosition ->
@@ -119,313 +135,128 @@ class gameActivity : AppCompatActivity() {
 
             Log.d("forceReturn", "boardClicked")
             Log.d("forceReturn", "viewModel.forceReturn.value: ${viewModel.forceReturn.value} ")
-            if(selectedPetOrder != -1 && viewModel.allowPick.value == true){
+
+            if(selectedPetOrder != -1 && allowPick){
+//            if(selectedPetOrder != -1 && viewModel.allowPick.value == true){
                 boardClicked = 1
                 selectedGird = boardPosition
             }
-//            else if (viewModel.forceReturn.value == true){
-//                boardClicked = 1
-//                selectedGird = boardPosition
-//            }
         }
         boardRecyclerView.adapter = boardAdapter
 
-
+        //deck UI
         unitRecyclerView = findViewById(R.id.unitRecyclerView)
         unitRecyclerView.layoutManager = GridLayoutManager(this, 5) // 5 columns
         deckAdapter = deckAdapter(5) { position ->
             Log.d("deckUI","deck clicked: ${position}")
-//            Log.d("deckUI","viewModel.allowPick.value == dict.ALLOW: ${viewModel.allowPick.value == dict.ALLOW}")
-//            Log.d("deckUI","viewModel.deckStatus.value?.get(position)!!>= 0: ${viewModel.deckStatus.value?.get(position)!! >= 0}")
-            if(viewModel.allowPick.value == true && viewModel.deckStatus.value?.get(position)!! >= dict.hasPet){
+            if(allowPick == true && deckStatusBuffer[position] >= dict.hasPet){
+//            if(viewModel.allowPick.value == true && deckStatusBuffer[position] >= dict.hasPet){
                 newSelectedPetOrder = position
                 petClicked = 1
                 Log.d("deckUI","inside IF")
             }
 
         }
-
         unitRecyclerView.adapter = deckAdapter
 
+//        viewModel.init(stageInfo.StageInfoMap[selectedStage]!!.damage, dict.ALLOW, chosenPetId, initPetStatus(chosenPetId), initBoard, gameObjBuilder())
 
-        viewModel.deckStatus.observe(this, Observer{newDeckStatus->
-            for (i in 0..deckSize-1){
-                Log.d("deckStatus", "value: ${viewModel.deckStatus.value?.get(i)!! == dict.hasPet}")
-                if(viewModel.deckStatus.value?.get(i)!! == dict.hasPet){
-                    Log.d("deckStatus", "in if")
-                    showPetOnDeck(i)
-//                    returnPet(i,0,0)
-                }
-                else{
-                    invisPetOnDeck(i)
-                }
+        //buffers initialization
+        turnBuffer = 1
+        currentBossHpBuffer = stageInfo.StageInfoMap[selectedStage]!!.damage
+        petStatusBuffer = initPetStatus(chosenPetId).copyOf()
+        boardStatusBuffer = initBoard.copyOf()
+        deckStatusBuffer = initDeck.copyOf()
+        damageDealtBuffer = IntArray(3){0}
 
-            }
-        })
-
-        viewModel.boardStatus.observe(this, Observer{newboardStatus->
-            for (i in 0..boardSize-1){
-                Log.d("boardStatus", "value: ${viewModel.boardStatus.value?.get(i)!! == dict.noPet}")
-                if(viewModel.boardStatus.value?.get(i)!! >= 0){
-                    Log.d("deckStatus", "in if")
-                    showPetOnBoard(i)
-//                    returnPet(i,0,0)
-                }
-                else if (viewModel.boardStatus.value?.get(i)!! == dict.noPet){
-                    invisPetOnBoard(i)
-                }
-
-            }
-        })
+        //Plug init value to viewModel
+        if(viewModel.getGameRunState() != dict.GAME_START){
+            viewModel.updateTurn(turnBuffer)
+            viewModel.updateCurrentBossHp(currentBossHpBuffer)
+            viewModel.updatePetStatus(petStatusBuffer)
+            viewModel.updateBoardStatus(boardStatusBuffer)
+            viewModel.updateDeckStatus(deckStatusBuffer)
+            viewModel.updateDamageDealt(damageDealtBuffer)
+        }
 
 
-        viewModel.damageDealt.observe(this, Observer { newDamageDealt->
-            val stage = stageInfo.StageInfoMap[selectedStage]!!
-            val maxHp = stage.damage
-            val currentHp = viewModel.getCurrentBossHp()
-            Log.d("hp", "max hp: ${maxHp}")
-            Log.d("hp", "currentHp: ${currentHp}")
-
-            if(stage.objectiveType  == dict.STAGE_OBJECTIVE_BEST){
-
-                var newCurrentHp = maxHp
-
-                for(i in 0..2){
-                    newCurrentHp -= viewModel.getDamageDealt()[i]
-                }
-                Log.d("hp", "newCurrentHp: ${newCurrentHp}")
-                if( newCurrentHp <0){
-                    newCurrentHp = 0
-                }
-                val diff = currentHp - newCurrentHp
-                val time = 500
-
-                if(diff >0){
-                    val layoutParams = hpBarView.layoutParams
-                    Log.d("hp", "hpBarLength: $hpBarLength")
-
-                    for (i in 0..diff){
-                        val newHpBarLen = (((currentHp.toDouble()-i.toDouble())/maxHp.toDouble()) * hpBarLength.toDouble()).toInt()
-                        Log.d("hp", "new hpBarLength: ${newHpBarLen}")
-                        hpBarView.layoutParams.width = newHpBarLen
-                        hpBarView.layoutParams = layoutParams
-//                    delay(100)
-                    }
-                    viewModel.updateCurrentBossHp(newCurrentHp)
-
-                }
-                val display = newCurrentHp.toString()+"/"+maxHp.toString()
-                hpFractionView.text = display
-
-            }
-            viewModel.turn.observe(this,Observer{newTurn->
-                val display = "Turn "+newTurn.toString()
-                turnView.text = display
-            })
-
-        })
-
-
-
-        viewModel.init(stageInfo.StageInfoMap[selectedStage]!!.damage, dict.ALLOW, chosenPetId, initPetStatus(chosenPetId), initBoard, gameObjBuilder())
         gameStart()
-    }
 
-    private fun gameObjBuilder():String{
-        val stage = stageInfo.StageInfoMap[selectedStage]!!
-        val stageType = stage.objectiveType
-        val maxTurn = stage.turn
-        val targetDamage = stage.damage
-        var obj = "Deal "
-        if(stageType == dict.STAGE_OBJECTIVE_EXACT){
-            obj +="exact "
-        }
-        obj += targetDamage.toString()+ " damages before "+maxTurn.toString()+"th turn!"
-        return obj
-    }
-
-    private fun showPetOnDeck(petOrder: Int){
-//        val pet= viewModel.petStatus.value?.get(petOrder)
-//        val imageId = inventory.getViewInfoById(chosenPetId[petOrder])?.imageId
-        val imageId = petInfo.getPetInfoById(chosenPetId[petOrder])?.imageId
-
-//        Log.d("returnPet","returnPet triggered")
-        unitRecyclerView.post {
-            val targetDeck= unitRecyclerView.findViewHolderForAdapterPosition(petOrder) as? deckAdapter.ViewHolder
-            targetDeck?.imageView?.isInvisible = false
-            targetDeck?.imageView?.setImageResource(imageId!!)
-        }
-    }
-
-    private fun invisPetOnDeck(petOrder:Int){
-//        Log.d("returnPet","returnPet triggered")
-        unitRecyclerView.post {
-            val targetDeck= unitRecyclerView.findViewHolderForAdapterPosition(petOrder) as? deckAdapter.ViewHolder
-            targetDeck?.imageView?.isInvisible = true
-//            targetDeck?.imageView?.setImageResource(imageId!!)
-        }
-    }
-
-    private fun showPetOnBoard(boardIndex: Int){
-        val board = viewModel.getBoardStatus()
-//        val pet= viewModel.petStatus.value?.get(board[boardIndex])
-
-        val petStatus = viewModel.getPetStatus()
-        val petOrder = board[boardIndex]
-        val pet = viewModel.getPetStatus()[petOrder]
-//        val imageId = inventory.getViewInfoById(pet?.unitId!!)?.imageId
-        val imageId = petInfo.getPetInfoById(pet?.unitId!!)?.imageId
-//        Log.d("returnPet","returnPet triggered")
-        boardRecyclerView.post {
-            val targetboard= boardRecyclerView.findViewHolderForAdapterPosition(boardIndex) as? boardAdapter.ViewHolder
-            targetboard?.imageView?.isInvisible = false
-            targetboard?.countView?.isInvisible = false
-            targetboard?.elementFrame?.isInvisible = false
-            targetboard?.countFrame?.isInvisible = false
-
-            targetboard?.imageView?.setImageResource(imageId!!)
-
-            val count = petInfo.getPetCount(petStatus,petOrder)
-            if(count >=0){
-                targetboard?.countView?.text = count.toString()
-            }
-            else{
-                targetboard?.countView?.text = "∞"
-            }
-
-            val element = petInfo.getPetInfoById(pet?.unitId!!)?.element
-            if(element == dict.ELEMENT_FIRE){
-                targetboard?.countFrame?.setImageResource(R.drawable.game_count_frame_fire)
-                targetboard?.elementFrame?.setImageResource(R.drawable.game_element_frame_fire)
-            }
-            else if(element == dict.ELEMENT_WATER){
-                targetboard?.countFrame?.setImageResource(R.drawable.game_count_frame_water)
-                targetboard?.elementFrame?.setImageResource(R.drawable.game_element_frame_water)
-            }
-            else if(element == dict.ELEMENT_FOREST){
-                targetboard?.countFrame?.setImageResource(R.drawable.game_count_frame_forest)
-                targetboard?.elementFrame?.setImageResource(R.drawable.game_element_frame_forest)
-            }
-        }
-    }
-
-    private fun invisPetOnBoard(boardIndex: Int){
-        boardRecyclerView.post {
-            val targetboard= boardRecyclerView.findViewHolderForAdapterPosition(boardIndex) as? boardAdapter.ViewHolder
-            targetboard?.imageView?.isInvisible = true
-            targetboard?.countView?.isInvisible = true
-            targetboard?.elementFrame?.isInvisible = true
-            targetboard?.countFrame?.isInvisible = true
-        }
     }
 
     private fun gameStart() {
+
         coroutineScope.launch {
-            var allBoard = 0
-            var damageMatch = 0
+            var allPetOnBoard = 0
+            var damageMatchRequired = 0
 
-            val deckStatusBuffer = viewModel.getDeckStatus()
-            val boardStatusBuffer = viewModel.getBoardStatus()
-//            val petStatusBuffer = viewModel.getPetStatus()
-            val petStatusBuffer = initPetStatus(chosenPetId)
-            while (allBoard == 0 && damageMatch ==0) {
+            bounceNumResetQueue= ArrayDeque()
+            deckVisualize()
+            boardVisualize()
+            viewModel.updateGameRunState(dict.GAME_START)
+            while (allPetOnBoard == 0 && damageMatchRequired ==0) {
+                turnBuffer = viewModel.getTurn()
+                currentBossHpBuffer = viewModel.getCurrentBossHp()
+                deckStatusBuffer = viewModel.getDeckStatus()
+                boardStatusBuffer = viewModel.getBoardStatus()
+                petStatusBuffer = viewModel.getPetStatus()
+                damageDealtBuffer = viewModel.getDamageDealt()
 
-                Log.d("test", "${viewModel.getPetStatus() == viewModel._petStatus.value}")
-                viewModel.updateTurn()
-//                handleDamageDealt(true)
-                updateStayNum(petStatusBuffer)
-                viewModel.updateAllowPick(true)
+                turnFractionVisualization(turnBuffer)
+                updateStayNum()
+                allowPick = true
 //                setStartPos()
                 handlePutPet(deckStatusBuffer, boardStatusBuffer, petStatusBuffer)
-                viewModel.updateAllowPick(false)
-
-//                val affected = handleBounceVictimV2(selectedGird)
+                allowPick = false
                 handleBounceVictim(selectedGird, deckStatusBuffer, boardStatusBuffer, petStatusBuffer)
-//                waitForButtonClick(resumeBtn)
-//                Log.d("gameStart", "cat damage: ${inventory.getViewInfoById(1)?.damage}")
 
-//                Log.d("test", "petStatusBuffer")
+                deckVisualize()
+                boardVisualize()
 
+                val reportList = handleDamageDealt()
+
+                if(reportList.size >0){
+                    showReportDialog(reportList)
+                }
+
+
+                while(bounceNumResetQueue.size > 0){
+                    val petOrder = bounceNumResetQueue.removeFirst()
+                    petStatusBuffer[petOrder]!!.bounceNum = 0
+                }
+                bossImageFlash(hitNum)
+                hpBarVisualization(currentBossHpBuffer)
+                turnBuffer ++
+
+                deckVisualize()
+                boardVisualize()
+
+                allPetOnBoard = checkAllOnBoard()
+                damageMatchRequired = checkDamage()
+
+                Log.d("end info", "allPetOnBoard ${allPetOnBoard}")
+                Log.d("end info", "damageMatchRequired ${damageMatchRequired}")
+                viewModel.updateTurn(turnBuffer)
+                viewModel.updateCurrentBossHp(currentBossHpBuffer)
                 viewModel.updatePetStatus(petStatusBuffer)
                 viewModel.updateBoardStatus(boardStatusBuffer)
                 viewModel.updateDeckStatus(deckStatusBuffer)
-
-//
-                val reportList = handleDamageDealt(false, deckStatusBuffer, boardStatusBuffer, petStatusBuffer)
-                val dialogShowing = showReportDialog(reportList)
-
-                while(dialogIsShowing){
-                    delay(10)
-                }
-                viewModel.updatePetStatus(petStatusBuffer)
-                viewModel.updateBoardStatus(boardStatusBuffer)
-
-                allBoard = checkAllOnBoard()
-                damageMatch = checkDamage()
-
-
-
-
-//                forceReturn()
-
+                viewModel.updateDamageDealt(damageDealtBuffer)
             }
-            when(damageMatch){
-                0 -> viewModel.updateGameMessage("Objective failed: no pet to fight!")
-                1 -> viewModel.updateGameMessage("Objective done!")
-                2 -> viewModel.updateGameMessage("Objective failed: Turn exceed!")
-                3 -> viewModel.updateGameMessage("Objective failed: Dealt too much damage!")
-            }
+//            when(damageMatchRequired){
+//                0 -> viewModel.updateGameMessage("Objective failed: no pet to fight!")
+//                1 -> viewModel.updateGameMessage("Objective done!")
+//                2 -> viewModel.updateGameMessage("Objective failed: Turn exceed!")
+//                3 -> viewModel.updateGameMessage("Objective failed: Dealt too much damage!")
+//            }
 
+            Log.d("end info", "outside While")
+            viewModel.updateGameRunState(damageMatchRequired)
+            showResultDialog(damageMatchRequired)
         }
     }
 
-    private fun checkAllOnBoard():Int{
-        val petStatus = viewModel.getPetStatus()
-        for(i in 0..deckSize-1){
-            if(petStatus[i]!!.location == dict.onDECK){
-                return 0
-            }
-        }
-        return -1
-    }
-
-    private fun checkDamage():Int{
-        val stage = stageInfo.StageInfoMap[selectedStage]!!
-        val objType = stageInfo.StageInfoMap[selectedStage]!!.objectiveType
-        val currentTurn = viewModel.turn.value!!
-        val requiredTurn = stage.turn
-        val currentBossHp = viewModel.getCurrentBossHp()
-
-        if(currentTurn <= requiredTurn){
-            if(currentBossHp == 0){
-                if(objType == dict.STAGE_OBJECTIVE_BEST){ //win
-                    return 1
-                }
-                else{
-                    var allDamage = 0
-                    val damageHistory = viewModel.getDamageDealt()
-                    for(i in 0..2){
-                        allDamage += damageHistory[i]
-                    }
-
-                    if(allDamage == stage.damage){ //win
-                        return 1
-                    }
-                    else if(allDamage > stage.damage){ //too much
-                        return 3
-                    }
-                }
-            }
-
-        }
-        else{   //turn exceed
-            return 2
-        }
-        return 0
-    }
-
-
-    private suspend fun updateStayNum(petStatusBuffer: Array<petStatus?>){
+    private suspend fun updateStayNum(){
 //        val petStatus = viewModel.getPetStatus()
         val petStatus = petStatusBuffer
         for (i in 0..deckSize-1){
@@ -438,90 +269,13 @@ class gameActivity : AppCompatActivity() {
                 pet.bounceNum = 0
             }
         }
-//        viewModel.updatePetStatus(petStatus)
     }
 
-    private suspend fun handleDamageDealt(concernStay: Boolean ,deckStatusBuffer:IntArray, boardStatusBuffer:IntArray, petStatusBuffer: Array<petStatus?>):MutableList<String>{
-        val damageHistory = viewModel.getDamageDealt()
-//        val petStatus = viewModel.getPetStatus()
-        val petStatus = petStatusBuffer
-        val chosenPet = viewModel.getChosenPet()
-        val reportList = mutableListOf<String>()
-
-        var damageHisChanged = false
-        var petStatusChanged = false
-        //hi
-
-        for(i in 0..deckSize-1){
-            val damage = petInfo.getPetDamage(petStatus,i)
-            val damageType = petInfo.getPetInfoById(petStatus[i]!!.unitId)!!.type
-//            if(concernStay  && damageType != dict.ATK_TYPE_STAY ){
-//                continue
-//            }
-//            else if(!concernStay && damageType == dict.ATK_TYPE_STAY ){
-//                continue
-//            }
-
-            if (damage > 0){
-//                viewModel.updateShowDamageDialog(1)
-                damageHisChanged= true
-                val petID = petStatus[i]?.unitId!!
-                val pet = petInfo.getPetInfoById(petID)!!
-                val atkElement = pet.element
-                val atkType = pet.type
-                damageHistory[atkElement] +=damage
-
-                if (atkType == dict.ATK_TYPE_BOUNCE && petStatus[i]?.location == dict.onBoard){
-                    petStatus[i]?.bounceNum = 0
-                    petStatusChanged = true
-                }
-
-                val damageReport = pet.name+" dealt "+damage+" "+dict.ELEMENT_STRING[atkElement]+ " damage!!"
-//                for(j in 0..damageReport.length){
-//                    viewModel.updateDamageReport(damageReport.take(j))
-//                    delay(100)
-//                }
-//                delay(500)
-//                viewModel.updateDamageReport("")
-                reportList.add(damageReport)
-
-
-            }
-        }
-
-        var dialogShowing = true
-        if(damageHisChanged){
-            viewModel.updateDamageDealt(damageHistory)
-//            dialogShowing = showReportDialog(reportList)
-//            viewModel.refreshBoard()
-        }
-        if(petStatusChanged && !dialogShowing){
-//            viewModel.updatePetStatus(petStatus)
-        }
-
-        return reportList
-
-    }
-
-    private suspend fun setStartPos(){
-        val petStatus = viewModel.getPetStatus()
-        for(order in 0..deckSize-1){
-//            val pet = viewModel.petStatus.value?.get(order)
-            val pet = petStatus[order]
-            if (pet != null) {
-                pet.startPos = pet.endPos
-            }
-        }
-//        viewModel.updatePetStatus(petStatus)
-    }
-
-    private suspend fun handlePutPet(deckStatusBuffer: IntArray, boardStatusBuffer: IntArray, petStatusBuffer: Array<petStatus?>){
-
+    private suspend fun handlePutPet(deckStatusBuffer:IntArray, boardStatusBuffer:IntArray, petStatusBuffer: Array<petStatus?>){
         var putSuccess = 0
         selectedPetOrder = -1
         selectedGird = -1
         while (putSuccess == 0) {
-
             if (petClicked == 1 && newSelectedPetOrder != -1) {
                 selectedPetOrder = toggleFrame(newSelectedPetOrder)
                 newSelectedPetOrder = -1
@@ -529,20 +283,14 @@ class gameActivity : AppCompatActivity() {
             }
 
             if (boardClicked == 1 && selectedPetOrder != -1 && viewModel.boardStatus.value?.get(selectedGird) == dict.noPet) {
-                // Update board status
-//                viewModel.updateBoardStatus(selectedGird, selectedPetOrder)
-//                val boardStatus = viewModel.getBoardStatus()
+                //update board status
                 val boardStatus = boardStatusBuffer
                 boardStatus[selectedGird] = selectedPetOrder
-//                viewModel.updateBoardStatus(boardStatus)
 
-
+                Log.d("check", "selectedGird: ${selectedGird}")
                 //update deck status
-//                val deckStatus = viewModel.getDeckStatus()
                 val deckStatus = deckStatusBuffer
                 deckStatus[selectedPetOrder] = dict.noPet
-
-//                viewModel.updateDeckStatus(deckStatus)
 
                 val petStatus = petStatusBuffer
 //                val petStatus = viewModel.getPetStatus()
@@ -566,11 +314,10 @@ class gameActivity : AppCompatActivity() {
         Log.d("Coroutine", "Coroutine end")
     }
 
+    //dirty: affecting global buffer
     private suspend fun handleBounceVictim(petPut: Int,deckStatusBuffer:IntArray, boardStatusBuffer:IntArray, petStatusBuffer: Array<petStatus?>){
         val victimPos = makeVictimPos(petPut)
         val victimPosBack = makeVictimBackPos(victimPos)
-//        val boardStatus = viewModel.getBoardStatus()
-//        val petStatus = viewModel.getPetStatus()
         val boardStatus = boardStatusBuffer
         val petStatus = petStatusBuffer
         Log.d("handleBounceVictim", "petPut: ${petPut}")
@@ -632,9 +379,6 @@ class gameActivity : AppCompatActivity() {
     }
 
     private fun makeVictimPos(petPut: Int):IntArray{
-//        val victimPos = IntArray(8){petPut}
-//        val dir = intArrayOf(-6, -5, -4, -1, +1, +4, +5, +6)
-
         val ret = intArrayOf(petPut-6, petPut-5, petPut-4,
             petPut-1, petPut+1,
             petPut+4, petPut+5, petPut+6)
@@ -694,41 +438,34 @@ class gameActivity : AppCompatActivity() {
         return victimBackPos
     }
 
-    private fun initPetStatus(chosenPetId: IntArray): Array<petStatus?>{
-        val unitsOnBoard: Array<petStatus?> = arrayOfNulls<petStatus?>(deckSize)
-        for (i in 0..deckSize-1) {
-            unitsOnBoard[i] = petStatus().apply {
-                unitId = chosenPetId[i]
-                location = dict.onDECK
-                startPos = dict.outsideBoard
-                endPos = dict.outsideBoard
+    //Clean: not affecting any global buffer
+    private suspend fun handleDamageDealt():MutableList<String>{
+        val damageHistory = damageDealtBuffer
+        val petStatus = petStatusBuffer
+        val reportList = mutableListOf<String>()
+        hitNum = 0
+        for(i in 0..deckSize-1){
+            val damage = petInfo.getPetInfoById(chosenPetId[i])!!.dealDamage(petStatus,i)
+            if (damage > 0){
+                val petID = petStatus[i]?.unitId!!
+                val pet = petInfo.getPetInfoById(petID)!!
+                val atkElement = pet.element
+                val atkType = pet.attackType
+                damageHistory[atkElement] +=damage
+
+                if (atkType == dict.ATK_TYPE_BOUNCE && petStatus[i]?.location == dict.onBoard){
+                    bounceNumResetQueue.add(i)
+                }
+
+                val damageReport = pet.name+" dealt "+damage+" "+dict.ELEMENT_STRING[atkElement]+ " damage!!"
+                reportList.add(damageReport)
+                hitNum ++
+
             }
         }
-        return unitsOnBoard.copyOf()
-    }
 
-    private fun toggleFrame(position: Int): Int {
-        Log.d("toggle","")
-        val targetFrame= unitRecyclerView.findViewHolderForAdapterPosition(position) as? deckAdapter.ViewHolder
-        val selectedFrame = unitRecyclerView.findViewHolderForAdapterPosition(selectedPetOrder) as? deckAdapter.ViewHolder
+        return reportList
 
-        if(selectedPetOrder == position){
-            targetFrame?.frameView?.setBackgroundResource(R.drawable.game_stroke_background)
-//            selectedPetOrder = -1
-            return -1
-        }
-
-        else if(selectedPetOrder == -1){
-            targetFrame?.frameView?.setBackgroundResource(R.drawable.game_stroke_background_click)
-//            selectedPetOrder = position
-            return position
-        }
-        else{
-            selectedFrame?.frameView?.setBackgroundResource(R.drawable.game_stroke_background)
-            targetFrame?.frameView?.setBackgroundResource(R.drawable.game_stroke_background_click)
-//            selectedPetOrder = position
-            return position
-        }
     }
 
     private suspend fun showReportDialog(reportList: MutableList<String>): Boolean {
@@ -768,8 +505,327 @@ class gameActivity : AppCompatActivity() {
             delay(500)
             viewModel.updateDamageReport("")
         }
-        dialogIsShowing = false
+//        dialogIsShowing = false
         customDialog.dismiss()
         return true
+    }
+
+    //clean
+    private suspend fun bossImageFlash(hitNum: Int){
+        for(i in 0..< hitNum){
+            bossView.isInvisible = true
+            delay(50)
+            bossView.isInvisible = false
+            delay(50)
+        }
+    }
+
+    //dirty: affecting global buffer: currentBossHpBuffer
+    private suspend fun hpBarVisualization(currentBossHpBuffer: Int){
+        val stage = stageInfo.StageInfoMap[selectedStage]!!
+        val maxHp = stage.damage
+        val currentHp = currentBossHpBuffer
+        Log.d("hp", "max hp: ${maxHp}")
+        Log.d("hp", "currentHp: ${currentHp}")
+
+        if(stage.objectiveType  == dict.STAGE_OBJECTIVE_BEST) {
+
+            var newCurrentHp = maxHp
+
+            for (i in 0..2) {
+                newCurrentHp -= damageDealtBuffer[i]
+            }
+            Log.d("hp", "newCurrentHp: ${newCurrentHp}")
+            if( newCurrentHp <0){
+                newCurrentHp = 0
+            }
+            val diff = currentHp - newCurrentHp
+            val totalTime = 500
+            val interval = (totalTime.toDouble()/diff.toDouble()).toInt().toLong()
+
+            if(diff >0){
+                val layoutParams = hpBarView.layoutParams
+                Log.d("hp", "hpBarLength: $hpBarLength")
+
+                for (i in 0..diff){
+                    val newHpBarLen = (((currentHp.toDouble()-i.toDouble())/maxHp.toDouble()) * hpBarLength.toDouble()).toInt()
+                    Log.d("hp", "new hpBarLength: ${newHpBarLen}")
+                    hpBarView.layoutParams.width = newHpBarLen
+                    hpBarView.layoutParams = layoutParams
+                    delay(interval)
+                }
+                this@gameActivity.currentBossHpBuffer = newCurrentHp
+//                viewModel.updateCurrentBossHp(newCurrentHp)
+
+            }
+//            val display = newCurrentHp.toString() + "/" + maxHp.toString()
+//            hpFractionView.text = display
+            hpFractionVisualization(newCurrentHp)
+
+        }
+    }
+
+    private fun turnFractionVisualization(currentTurn: Int){
+        val display = "Turn "+currentTurn.toString() + "/" + stageInfo.StageInfoMap[selectedStage]!!.turn
+        turnView.text =display
+    }
+
+    private fun hpFractionVisualization(currentHp: Int){
+        val display = currentHp.toString() + "/" + stageInfo.StageInfoMap[selectedStage]!!.damage.toString()
+        hpFractionView.text = display
+    }
+
+    private fun checkAllOnBoard():Int{
+//        val petStatus = viewModel.getPetStatus()
+        val petStatus = petStatusBuffer
+        for(i in 0..< deckSize){
+            if(petStatus[i]!!.location == dict.onDECK){
+                return 0
+            }
+        }
+        return -1
+    }
+
+    private fun checkDamage():Int{
+        val stage = stageInfo.StageInfoMap[selectedStage]!!
+        val objType = stageInfo.StageInfoMap[selectedStage]!!.objectiveType
+//        val currentTurn = viewModel.turn.value!!
+        val currentTurn = turnBuffer
+        val requiredTurn = stage.turn
+//        val currentBossHp = viewModel.getCurrentBossHp()
+        val currentBossHp = currentBossHpBuffer
+
+        if(currentTurn <= requiredTurn){
+            if(currentBossHp == 0){
+                if(objType == dict.STAGE_OBJECTIVE_BEST){ //win
+                    return 1
+                }
+                else{
+                    var allDamage = 0
+                    val damageHistory = viewModel.getDamageDealt()
+                    for(i in 0..2){
+                        allDamage += damageHistory[i]
+                    }
+
+                    if(allDamage == stage.damage){ //win
+                        return 1
+                    }
+                    else if(allDamage > stage.damage){ //too much
+                        return 3
+                    }
+                }
+            }
+
+        }
+        else{   //turn exceed
+            return 2
+        }
+        return 0
+    }
+
+    private fun showResultDialog(gameResult: Int){
+        val dialogView = layoutInflater.inflate(R.layout.game_reusult_dialog, null)
+
+        // Create the dialog
+        val customDialog = AlertDialog.Builder(this)
+            .setView(dialogView)
+            .setCancelable(false) // Prevent dismissing if needed
+            .create()
+
+//        val window = customDialog.window
+//        if (window != null) {
+//            val layoutParams = window.attributes
+//            layoutParams.gravity = Gravity.BOTTOM or Gravity.CENTER_HORIZONTAL // Position at bottom center
+//            layoutParams.y = 200 // Adjust vertical offset
+//            window.attributes = layoutParams
+//        }
+
+
+        // Show the dialog
+        customDialog.show()
+        val textView = dialogView.findViewById<TextView>(R.id.gameResult)
+        when(gameResult){
+                dict.GAME_NO_PET -> textView.text = "Objective failed:\nNo pet to fight!"
+                dict.GAME_WON -> textView.text = "Objective done:\nYou Win!!"
+                dict.GAME_TURN_EXCEED -> textView.text = "Objective failed:\nTurn exceed!"
+                dict.GAME_DAMAGE_EXCEED -> textView.text = "Objective failed:\nDealt too much damage!"
+        }
+
+        val restartBtn = dialogView.findViewById<Button>(R.id.game_restart)
+        restartBtn.setOnClickListener{
+            viewModel.updateGameRunState(dict.GAME_NOT_START)
+            customDialog.dismiss()
+            recreate()
+        }
+
+        val goHomeBtn = dialogView.findViewById<Button>(R.id.game_toBossChoose)
+        goHomeBtn.setOnClickListener {
+            viewModel.updateGameRunState(dict.GAME_NOT_START)
+            customDialog.dismiss()
+            finish()
+        }
+
+//        dialogIsShowing = false
+//        customDialog.dismiss()
+//        return true
+    }
+
+
+    //Small helper functions
+    private fun initPetStatus(chosenPetId: IntArray): Array<petStatus?>{
+        val unitsOnBoard: Array<petStatus?> = arrayOfNulls<petStatus?>(deckSize)
+        for (i in 0..deckSize-1) {
+            unitsOnBoard[i] = petStatus().apply {
+                unitId = chosenPetId[i]
+                location = dict.onDECK
+                startPos = dict.outsideBoard
+                endPos = dict.outsideBoard
+            }
+        }
+        return unitsOnBoard.copyOf()
+    }
+
+    private fun gameObjBuilder():String{
+        val stage = stageInfo.StageInfoMap[selectedStage]!!
+        val stageType = stage.objectiveType
+        val maxTurn = stage.turn
+        val targetDamage = stage.damage
+        var obj = "Deal "
+        if(stageType == dict.STAGE_OBJECTIVE_EXACT){
+            obj +="exact "
+        }
+        obj += targetDamage.toString()+ " damages before "+maxTurn.toString()+"th turn!"
+        return obj
+    }
+
+    private fun toggleFrame(position: Int): Int {
+        Log.d("toggle","")
+        val targetFrame= unitRecyclerView.findViewHolderForAdapterPosition(position) as? deckAdapter.ViewHolder
+        val selectedFrame = unitRecyclerView.findViewHolderForAdapterPosition(selectedPetOrder) as? deckAdapter.ViewHolder
+
+        if(selectedPetOrder == position){
+            targetFrame?.frameView?.setBackgroundResource(R.drawable.game_stroke_background)
+//            selectedPetOrder = -1
+            return -1
+        }
+
+        else if(selectedPetOrder == -1){
+            targetFrame?.frameView?.setBackgroundResource(R.drawable.game_stroke_background_click)
+//            selectedPetOrder = position
+            return position
+        }
+        else{
+            selectedFrame?.frameView?.setBackgroundResource(R.drawable.game_stroke_background)
+            targetFrame?.frameView?.setBackgroundResource(R.drawable.game_stroke_background_click)
+//            selectedPetOrder = position
+            return position
+        }
+    }
+
+    private suspend fun deckVisualize(){
+        for (i in 0..deckSize-1){
+            Log.d("deckStatus", "value: ${viewModel.deckStatus.value?.get(i)!! == dict.hasPet}")
+            if(deckStatusBuffer[i]== dict.hasPet){
+                Log.d("deckStatus", "in if")
+                showPetOnDeck(i)
+            }
+            else{
+                invisPetOnDeck(i)
+            }
+
+        }
+    }
+
+    private suspend fun boardVisualize(){
+        for (i in 0..boardSize-1){
+//            Log.d("boardStatus", "value: ${viewModel.boardStatus.value?.get(i)!! == dict.noPet}")
+            if(boardStatusBuffer[i] >= 0){
+                showPetOnBoard(i)
+//                    returnPet(i,0,0)
+            }
+            else if (boardStatusBuffer[i] == dict.noPet){
+                invisPetOnBoard(i)
+            }
+        }
+    }
+
+    private fun showPetOnDeck(petOrder: Int){
+//        val pet= viewModel.petStatus.value?.get(petOrder)
+//        val imageId = inventory.getViewInfoById(chosenPetId[petOrder])?.imageId
+        val imageId = petInfo.getPetInfoById(chosenPetId[petOrder])?.imageId
+
+//        Log.d("returnPet","returnPet triggered")
+        unitRecyclerView.post {
+            val targetDeck= unitRecyclerView.findViewHolderForAdapterPosition(petOrder) as? deckAdapter.ViewHolder
+            targetDeck?.imageView?.isInvisible = false
+            targetDeck?.imageView?.setImageResource(imageId!!)
+        }
+    }
+
+    private fun invisPetOnDeck(petOrder:Int){
+//        Log.d("returnPet","returnPet triggered")
+        unitRecyclerView.post {
+            val targetDeck= unitRecyclerView.findViewHolderForAdapterPosition(petOrder) as? deckAdapter.ViewHolder
+            targetDeck?.imageView?.isInvisible = true
+//            targetDeck?.imageView?.setImageResource(imageId!!)
+        }
+    }
+
+    private fun showPetOnBoard(boardIndex: Int){
+//        val board = viewModel.getBoardStatus()
+        val board = boardStatusBuffer
+//        val pet= viewModel.petStatus.value?.get(board[boardIndex])
+
+//        val petStatus = viewModel.getPetStatus()
+        val petStatus = petStatusBuffer
+        val petOrder = board[boardIndex]
+//        val pet = viewModel.getPetStatus()[petOrder]
+        val pet = petStatus[petOrder]
+//        val imageId = inventory.getViewInfoById(pet?.unitId!!)?.imageId
+        val imageId = petInfo.getPetInfoById(pet?.unitId!!)?.imageId
+//        Log.d("returnPet","returnPet triggered")
+        boardRecyclerView.post {
+            val targetboard= boardRecyclerView.findViewHolderForAdapterPosition(boardIndex) as? boardAdapter.ViewHolder
+            targetboard?.imageView?.isInvisible = false
+            targetboard?.countView?.isInvisible = false
+            targetboard?.elementFrame?.isInvisible = false
+            targetboard?.countFrame?.isInvisible = false
+
+            targetboard?.imageView?.setImageResource(imageId!!)
+
+//            val count = petInfo.getPetCount(petStatus,petOrder)
+
+            val count = petInfo.getPetInfoById(chosenPetId[petOrder])!!.attackCountdown(petStatus,petOrder)
+            if(count >=0){
+                targetboard?.countView?.text = count.toString()
+            }
+            else{
+                targetboard?.countView?.text = "∞"
+            }
+
+            val element = petInfo.getPetInfoById(pet?.unitId!!)?.element
+            if(element == dict.ELEMENT_FIRE){
+                targetboard?.countFrame?.setImageResource(R.drawable.game_count_frame_fire)
+                targetboard?.elementFrame?.setImageResource(R.drawable.game_element_frame_fire)
+            }
+            else if(element == dict.ELEMENT_WATER){
+                targetboard?.countFrame?.setImageResource(R.drawable.game_count_frame_water)
+                targetboard?.elementFrame?.setImageResource(R.drawable.game_element_frame_water)
+            }
+            else if(element == dict.ELEMENT_FOREST){
+                targetboard?.countFrame?.setImageResource(R.drawable.game_count_frame_forest)
+                targetboard?.elementFrame?.setImageResource(R.drawable.game_element_frame_forest)
+            }
+        }
+    }
+
+    private fun invisPetOnBoard(boardIndex: Int){
+        boardRecyclerView.post {
+            val targetboard= boardRecyclerView.findViewHolderForAdapterPosition(boardIndex) as? boardAdapter.ViewHolder
+            targetboard?.imageView?.isInvisible = true
+            targetboard?.countView?.isInvisible = true
+            targetboard?.elementFrame?.isInvisible = true
+            targetboard?.countFrame?.isInvisible = true
+        }
     }
 }

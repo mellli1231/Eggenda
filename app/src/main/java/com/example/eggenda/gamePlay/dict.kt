@@ -36,6 +36,14 @@ object dict {
     const val STAGE_OBJECTIVE_EXACT = 0
     const val STAGE_OBJECTIVE_BEST = 1
 
+    //For run stage
+    const val GAME_NOT_START = -2
+    const val GAME_START = -1
+    const val GAME_NO_PET = 0
+    const val GAME_WON = 1
+    const val GAME_TURN_EXCEED = 2
+    const val GAME_DAMAGE_EXCEED = 3
+
 
 
 }
