@@ -6,7 +6,7 @@ import kotlin.math.abs
 
 class petInfo {
 
-    private val TOTAL = 5
+    val TOTAL = 6
     //Elements
     private val FIRE = "Fire"
     private val WATER = "Water"
@@ -18,8 +18,10 @@ class petInfo {
     private val TIGER = 2
     private val DRAGON = 3
     private val MEWTWO = 4
+    private val MEWONE = 5
 
 
+    private val allId = intArrayOf(0,1,2,3,4,5)
 
     data class PetInfo(
         val name: String,
@@ -28,7 +30,8 @@ class petInfo {
         val type: Int,
         val damage: Int,
         val count: Int,
-        val description: String
+        val description: String,
+//        val rarity:Int
     )
 
     private val catInfo = PetInfo(
@@ -39,6 +42,7 @@ class petInfo {
         damage = 30,
         count = 3,
         description =""
+//        rarity = dict.RARITY_LEGENDARY
     )
 
 //    // Function to get the pet info by ID
@@ -59,7 +63,8 @@ class petInfo {
         if(petStatus[petOrder]!!.location == dict.onDECK){
             return 0
         }
-        return (petStatus[petOrder]!!.stayNum % (catInfo.count) )
+//        return (petStatus[petOrder]!!.stayNum % (catInfo.count) )
+        return catInfo.count - petStatus[petOrder]!!.stayNum % (catInfo.count+1)
     }
 
     private val wormInfo = PetInfo(
@@ -67,7 +72,7 @@ class petInfo {
         imageId = R.drawable.pet_evil_water_large,  // Replace with actual drawable resource ID
         element = dict.ELEMENT_WATER,
         type = dict.ATK_TYPE_RETURN,
-        damage = 5,
+        damage = 20,
         count = 1,
         description =""
     )
@@ -82,10 +87,12 @@ class petInfo {
 
     //return the count number on UI
     private fun wormCount(petStatus: Array<petStatus?>,petOrder:Int):Int{
-        if(petStatus[petOrder]!!.stayNum == 1 ){
-            return wormInfo.count
+        val stayNum = petStatus[petOrder]!!.stayNum
+        if( stayNum <= 1 ){
+            return wormInfo.count - stayNum
         }
-        return 0
+
+        return -1
     }
 
     private val tigerInfo = PetInfo(
@@ -100,7 +107,8 @@ class petInfo {
 
     //need fixed
     private fun tigerDealDamage(petStatus: Array<petStatus?>,petOrder:Int):Int{
-        if(petStatus[petOrder]!!.bounceNum !=0 && petStatus[petOrder]!!.bounceNum %  tigerInfo.count ==0) {
+        val tigerStatus = petStatus[petOrder]!!
+        if(tigerStatus.bounceNum !=0 && tigerStatus.bounceNum % tigerInfo.count == 0) {
             return tigerInfo.damage
         }
         return 0
@@ -108,11 +116,16 @@ class petInfo {
 
     //return the count number on UI
     private fun tigerCount(petStatus: Array<petStatus?>,petOrder:Int):Int{
-        if(petStatus[petOrder]!!.stayNum == 0 ){
-            return 0
-        }
-        return (petStatus[petOrder]!!.stayNum % tigerInfo.count )+ 1
+//        if(petStatus[petOrder]!!.stayNum == 0 ){
+//            return 0
+//        }
+//        return (petStatus[petOrder]!!.stayNum % tigerInfo.count )+ 1
+//
+        return tigerInfo.count - petStatus[petOrder]!!.bounceNum
+//        return tigerInfo.count-petStatus[petOrder]!!.bounceNum % (tigerInfo.count+1)
+//        return petStatus[petOrder]!!.bounceNum
     }
+
 
     private val dragonInfo = PetInfo(
         name = "Dragon",
@@ -134,10 +147,15 @@ class petInfo {
 
     //return the count number on UI
     private fun dragonCount(petStatus: Array<petStatus?>,petOrder:Int):Int{
-        if(petStatus[petOrder]!!.location == dict.onBoard){
-            return dragonInfo.count
+//        if(petStatus[petOrder]!!.location == dict.onBoard){
+//            return dragonInfo.count
+//        }
+//        return 0
+
+        if(petStatus[petOrder]!!.location == dict.onBoard && petStatus[petOrder]!!.stayNum >0 ){
+            return 0
         }
-        return 0
+        return 1
     }
 
     private val mewtwoInfo = PetInfo(
@@ -146,21 +164,47 @@ class petInfo {
         element = dict.ELEMENT_WATER,
         type = dict.ATK_TYPE_STAY,
         damage = 100,
-        count = 5,
+        count = 2,
         description =""
     )
 
     //
     private fun mewtwoDealDamage(petStatus: Array<petStatus?>,petOrder:Int):Int{
-        if(petStatus[petOrder]!!.stayNum == 5){
-            return 100
+        if(petStatus[petOrder]!!.stayNum == mewtwoInfo.count){
+            return mewtwoInfo.damage
         }
         return 0
     }
 
     //return the count number on UI
     private fun mewtwoCount(petStatus: Array<petStatus?>,petOrder:Int):Int{
-        if(petStatus[petOrder]!!.stayNum >5 ){
+        if(petStatus[petOrder]!!.stayNum >mewtwoInfo.count ){
+            return -1
+        }
+        return mewtwoInfo.count - petStatus[petOrder]!!.stayNum
+    }
+
+    private val mewOneInfo = PetInfo(
+        name = "Mewone",
+        imageId = R.drawable.pet_shy_raccoon_large,  // Replace with actual drawable resource ID
+        element = dict.ELEMENT_WATER,
+        type = dict.ATK_TYPE_STAY,
+        damage = 50,
+        count = 2,
+        description =""
+    )
+
+    //
+    private fun mewoneDealDamage(petStatus: Array<petStatus?>,petOrder:Int):Int{
+        if(petStatus[petOrder]!!.stayNum == mewtwoInfo.count){
+            return mewOneInfo.damage
+        }
+        return 0
+    }
+
+    //return the count number on UI
+    private fun mewoneCount(petStatus: Array<petStatus?>,petOrder:Int):Int{
+        if(petStatus[petOrder]!!.stayNum >mewtwoInfo.count ){
             return -1
         }
         return mewtwoInfo.count - petStatus[petOrder]!!.stayNum
@@ -171,7 +215,8 @@ class petInfo {
         WORM to wormInfo,
         TIGER to tigerInfo,
         DRAGON to dragonInfo,
-        MEWTWO to mewtwoInfo
+        MEWTWO to mewtwoInfo,
+        MEWONE to mewOneInfo
     )
 
     fun getPetInfoById(id: Int): PetInfo? {
@@ -183,7 +228,8 @@ class petInfo {
         WORM to :: wormDealDamage,
         TIGER to :: tigerDealDamage,
         DRAGON to :: dragonDealDamage,
-        MEWTWO to :: mewtwoDealDamage
+        MEWTWO to :: mewtwoDealDamage,
+        MEWONE to :: mewoneDealDamage
     )
 
     fun getPetDamage(petStatus: Array<petStatus?>,petOrder:Int): Int {
@@ -195,7 +241,8 @@ class petInfo {
         WORM to :: wormCount,
         TIGER to :: tigerCount,
         DRAGON to :: dragonCount,
-        MEWTWO to :: mewtwoCount
+        MEWTWO to :: mewtwoCount,
+        MEWONE to :: mewoneCount
 
     )
 

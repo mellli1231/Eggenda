@@ -3,16 +3,17 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
 
-    android:layout_width="70dp"
-    android:layout_height="70dp"
+    android:layout_width="75dp"
+    android:layout_height="75dp"
     android:background="@drawable/game_stroke_background">
 
     <ImageView
         android:id="@+id/imageView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:scaleType="centerCrop"
-        app:srcCompat="@drawable/game_cat"
+        android:scaleType="centerInside"
+        app:srcCompat="@drawable/pet_shy_raccoon_large"
+        android:padding="10dp"
         />
 
     <ImageView
@@ -33,8 +34,9 @@
             android:id="@+id/countFrame"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+
             android:scaleType="centerCrop"
-            app:srcCompat="@drawable/game_element_frame_fire"
+            app:srcCompat="@drawable/game_count_frame_fire"
             />
 
 
