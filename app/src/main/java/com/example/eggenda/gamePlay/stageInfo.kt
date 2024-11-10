@@ -18,12 +18,25 @@ class stageInfo {
         name = "Goblin",
         bossImageId = R.drawable.game_stage1,
         bossHurtImageId = R.drawable.game_stage1,
-        element = 4,
+        element = dict.STAGE_ACCEPT_ALL_ELEMENT,
         objectiveType = dict.STAGE_OBJECTIVE_BEST,
-        turn = 12,
+        turn = 13,
         damage = 230
     )
-    val StageInfoMap: Map<Int, StageInfo> = mapOf(
-        0 to Stage_1_Info
+
+    private val Stage_2_Info = StageInfo(
+        name = "Icy ice",
+        bossImageId = R.drawable.game_stage2,
+        bossHurtImageId = R.drawable.game_stage2,
+        element = dict.ELEMENT_FIRE,
+        objectiveType = dict.STAGE_OBJECTIVE_EXACT,
+        turn = 9,
+        damage = 134
     )
+    val StageInfoMap: Map<Int, StageInfo> = mapOf(
+        0 to Stage_1_Info,
+        1 to Stage_2_Info
+    )
+
+
 }

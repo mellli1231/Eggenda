@@ -10,7 +10,8 @@ import com.example.eggenda.R
 
 class boardAdapter(
     private val itemCount: Int,
-    private val onItemClick: (position: Int) -> Unit
+    private val onItemClick: (position: Int) -> Unit,
+    private val onItemLongClick: (position: Int) -> Unit
 ) : RecyclerView.Adapter<boardAdapter.ViewHolder>() {
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -22,6 +23,10 @@ class boardAdapter(
         init {
             itemView.setOnClickListener {
                 onItemClick(adapterPosition)
+            }
+            itemView.setOnLongClickListener {
+                onItemLongClick(adapterPosition)
+                true
             }
 
         }

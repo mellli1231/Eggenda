@@ -22,6 +22,7 @@ object dict {
     const val ELEMENT_FIRE = 0
     const val ELEMENT_WATER = 1
     const val ELEMENT_FOREST = 2
+
     val ELEMENT_STRING = arrayOf("Fire", "Water", "Forest")
 
     const val RARITY_NORMAL = 0
@@ -35,7 +36,7 @@ object dict {
     //For stage
     const val STAGE_OBJECTIVE_EXACT = 0
     const val STAGE_OBJECTIVE_BEST = 1
-
+    const val STAGE_ACCEPT_ALL_ELEMENT = 3
     //For run stage
     const val GAME_NOT_START = -2
     const val GAME_START = -1
@@ -43,6 +44,7 @@ object dict {
     const val GAME_WON = 1
     const val GAME_TURN_EXCEED = 2
     const val GAME_DAMAGE_EXCEED = 3
+
 
 
 

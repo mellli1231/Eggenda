@@ -34,7 +34,7 @@ class gameActivity : AppCompatActivity() {
     private val viewModel: gameViewModel2 by viewModels()
 
     //load info from other activities
-    private  var selectedStage:Int = 0
+    private  var selectedStage:Int = -1
     private lateinit var chosenPetId:IntArray
     private var boardRow = -1
     private var boardCol = -1
@@ -99,7 +99,7 @@ class gameActivity : AppCompatActivity() {
         petInfo = petInfo2()
 
 
-        selectedStage = 0
+        selectedStage = 1
         chosenPetId = intArrayOf(0,1,2,3,4)
         boardRow = 3
         boardCol = 5
@@ -129,8 +129,23 @@ class gameActivity : AppCompatActivity() {
         //board UI
         boardRecyclerView = findViewById(R.id.boardRecyclerView)
         boardRecyclerView.layoutManager = GridLayoutManager(this, boardCol) // 5 columns
-        boardAdapter = boardAdapter(boardSize) { boardPosition ->
-            Log.d("boardUI","deck clicked: ${boardPosition}")
+//        boardAdapter = boardAdapter(boardSize) { boardPosition ->
+//            Log.d("boardUI","deck clicked: ${boardPosition}")
+//            Log.d("boardUI","petClicked: ${petClicked}")
+//
+//            Log.d("forceReturn", "boardClicked")
+//            Log.d("forceReturn", "viewModel.forceReturn.value: ${viewModel.forceReturn.value} ")
+//
+//            if(selectedPetOrder != -1 && allowPick){
+////            if(selectedPetOrder != -1 && viewModel.allowPick.value == true){
+//                boardClicked = 1
+//                selectedGird = boardPosition
+//            }
+//        }
+
+        boardAdapter = boardAdapter(boardSize,
+            onItemClick = {boardPosition ->
+            Log.d("boardUI","short clicked clicked: ${boardPosition}")
             Log.d("boardUI","petClicked: ${petClicked}")
 
             Log.d("forceReturn", "boardClicked")
@@ -141,22 +156,38 @@ class gameActivity : AppCompatActivity() {
                 boardClicked = 1
                 selectedGird = boardPosition
             }
-        }
+
+        },
+            onItemLongClick = {boardPosition ->
+                Log.d("boardUI","Long clicked: ${boardPosition}")
+                Log.d("boardUI","petClicked: ${petClicked}")
+                if(boardStatusBuffer[boardPosition]>=0 && allowPick){
+                    showPetCard(chosenPetId[boardStatusBuffer[boardPosition]])
+                }
+            })
+
+
         boardRecyclerView.adapter = boardAdapter
 
         //deck UI
         unitRecyclerView = findViewById(R.id.unitRecyclerView)
         unitRecyclerView.layoutManager = GridLayoutManager(this, 5) // 5 columns
-        deckAdapter = deckAdapter(5) { position ->
-            Log.d("deckUI","deck clicked: ${position}")
-            if(allowPick == true && deckStatusBuffer[position] >= dict.hasPet){
+        deckAdapter = deckAdapter(5,
+            onItemClick = {position ->
+                Log.d("deckUI","deck clicked: ${position}")
+                if(allowPick == true && deckStatusBuffer[position] >= dict.hasPet){
 //            if(viewModel.allowPick.value == true && deckStatusBuffer[position] >= dict.hasPet){
-                newSelectedPetOrder = position
-                petClicked = 1
-                Log.d("deckUI","inside IF")
-            }
+                    newSelectedPetOrder = position
+                    petClicked = 1
+                    Log.d("deckUI","inside IF")
+                }
 
-        }
+            },
+            onItemLongClick = {position ->
+                if(allowPick && deckStatusBuffer[position] >= dict.hasPet){
+                    showPetCard(chosenPetId[position])
+                }
+            })
         unitRecyclerView.adapter = deckAdapter
 
 //        viewModel.init(stageInfo.StageInfoMap[selectedStage]!!.damage, dict.ALLOW, chosenPetId, initPetStatus(chosenPetId), initBoard, gameObjBuilder())
@@ -226,16 +257,18 @@ class gameActivity : AppCompatActivity() {
                 }
                 bossImageFlash(hitNum)
                 hpBarVisualization(currentBossHpBuffer)
-                turnBuffer ++
 
                 deckVisualize()
                 boardVisualize()
 
                 allPetOnBoard = checkAllOnBoard()
                 damageMatchRequired = checkDamage()
-
+                Log.d("end info", "current turn ${turnBuffer}")
                 Log.d("end info", "allPetOnBoard ${allPetOnBoard}")
                 Log.d("end info", "damageMatchRequired ${damageMatchRequired}")
+                turnBuffer ++
+
+
                 viewModel.updateTurn(turnBuffer)
                 viewModel.updateCurrentBossHp(currentBossHpBuffer)
                 viewModel.updatePetStatus(petStatusBuffer)
@@ -243,19 +276,13 @@ class gameActivity : AppCompatActivity() {
                 viewModel.updateDeckStatus(deckStatusBuffer)
                 viewModel.updateDamageDealt(damageDealtBuffer)
             }
-//            when(damageMatchRequired){
-//                0 -> viewModel.updateGameMessage("Objective failed: no pet to fight!")
-//                1 -> viewModel.updateGameMessage("Objective done!")
-//                2 -> viewModel.updateGameMessage("Objective failed: Turn exceed!")
-//                3 -> viewModel.updateGameMessage("Objective failed: Dealt too much damage!")
-//            }
-
             Log.d("end info", "outside While")
             viewModel.updateGameRunState(damageMatchRequired)
             showResultDialog(damageMatchRequired)
         }
     }
 
+    //Dirty: modify petStatusBuffer
     private suspend fun updateStayNum(){
 //        val petStatus = viewModel.getPetStatus()
         val petStatus = petStatusBuffer
@@ -271,6 +298,7 @@ class gameActivity : AppCompatActivity() {
         }
     }
 
+    //Dirty: modify deckStatusBuffer, boardStatusBuffer, petStatusBuffer
     private suspend fun handlePutPet(deckStatusBuffer:IntArray, boardStatusBuffer:IntArray, petStatusBuffer: Array<petStatus?>){
         var putSuccess = 0
         selectedPetOrder = -1
@@ -293,15 +321,10 @@ class gameActivity : AppCompatActivity() {
                 deckStatus[selectedPetOrder] = dict.noPet
 
                 val petStatus = petStatusBuffer
-//                val petStatus = viewModel.getPetStatus()
                 val petGo = petStatus[selectedPetOrder]!!
                 petGo.endPos = selectedGird
                 petGo.stayNum = 0
                 petGo.location = dict.onBoard
-//                viewModel.updatePetStatus(petStatus)
-
-//                val testPet = viewModel.getPetStatus()[selectedPetOrder]!!
-//                Log.d("handlePetPut", "testPet location: ${testPet.endPos}")
 
                 // Exit the loop after updating
                 putSuccess = 1
@@ -314,7 +337,7 @@ class gameActivity : AppCompatActivity() {
         Log.d("Coroutine", "Coroutine end")
     }
 
-    //dirty: affecting global buffer
+    //dirty: modify global buffer
     private suspend fun handleBounceVictim(petPut: Int,deckStatusBuffer:IntArray, boardStatusBuffer:IntArray, petStatusBuffer: Array<petStatus?>){
         val victimPos = makeVictimPos(petPut)
         val victimPosBack = makeVictimBackPos(victimPos)
@@ -378,6 +401,7 @@ class gameActivity : AppCompatActivity() {
         }
     }
 
+    //Clean: helper function of handleBounceVictim
     private fun makeVictimPos(petPut: Int):IntArray{
         val ret = intArrayOf(petPut-6, petPut-5, petPut-4,
             petPut-1, petPut+1,
@@ -414,6 +438,7 @@ class gameActivity : AppCompatActivity() {
 
     }
 
+    //Clean: helper function of handleBounceVictim
     private fun makeVictimBackPos(victimPos: IntArray):IntArray{
         val dir = intArrayOf(-6, -5, -4, -1, +1, +4, +5, +6)
         val victimBackPos = victimPos.copyOf()
@@ -438,20 +463,24 @@ class gameActivity : AppCompatActivity() {
         return victimBackPos
     }
 
-    //Clean: not affecting any global buffer
+    //Clean
     private suspend fun handleDamageDealt():MutableList<String>{
         val damageHistory = damageDealtBuffer
         val petStatus = petStatusBuffer
         val reportList = mutableListOf<String>()
+        val acceptElement = stageInfo.StageInfoMap[selectedStage]!!.element
         hitNum = 0
         for(i in 0..deckSize-1){
             val damage = petInfo.getPetInfoById(chosenPetId[i])!!.dealDamage(petStatus,i)
-            if (damage > 0){
+            val petElement = petInfo.getPetInfoById(chosenPetId[i])!!.element
+            Log.d("damage dealt", "pet element : ${petElement}")
+            Log.d("damage dealt", "accept element: ${acceptElement}")
+            if (damage > 0 &&  (acceptElement == dict.STAGE_ACCEPT_ALL_ELEMENT || acceptElement == petElement)){
                 val petID = petStatus[i]?.unitId!!
                 val pet = petInfo.getPetInfoById(petID)!!
                 val atkElement = pet.element
                 val atkType = pet.attackType
-                damageHistory[atkElement] +=damage
+                damageHistory[atkElement] += damage
 
                 if (atkType == dict.ATK_TYPE_BOUNCE && petStatus[i]?.location == dict.onBoard){
                     bounceNumResetQueue.add(i)
@@ -468,6 +497,7 @@ class gameActivity : AppCompatActivity() {
 
     }
 
+    //clean
     private suspend fun showReportDialog(reportList: MutableList<String>): Boolean {
         // Inflate the custom layout
         val dialogView = layoutInflater.inflate(R.layout.game_report_dialog, null)
@@ -528,41 +558,37 @@ class gameActivity : AppCompatActivity() {
         Log.d("hp", "max hp: ${maxHp}")
         Log.d("hp", "currentHp: ${currentHp}")
 
-        if(stage.objectiveType  == dict.STAGE_OBJECTIVE_BEST) {
+        var newCurrentHp = maxHp
 
-            var newCurrentHp = maxHp
+        for (i in 0..2) {
+            newCurrentHp -= damageDealtBuffer[i]
+        }
+        Log.d("hp", "newCurrentHp: ${newCurrentHp}")
+        if( newCurrentHp <0){
+            newCurrentHp = 0
+        }
+        val diff = currentHp - newCurrentHp
+        val totalTime = 500
+        val interval = (totalTime.toDouble()/diff.toDouble()).toInt().toLong()
 
-            for (i in 0..2) {
-                newCurrentHp -= damageDealtBuffer[i]
+        if(diff >0){
+            val layoutParams = hpBarView.layoutParams
+            Log.d("hp", "hpBarLength: $hpBarLength")
+
+            for (i in 0..diff){
+                val newHpBarLen = (((currentHp.toDouble()-i.toDouble())/maxHp.toDouble()) * hpBarLength.toDouble()).toInt()
+                Log.d("hp", "new hpBarLength: ${newHpBarLen}")
+                hpBarView.layoutParams.width = newHpBarLen
+                hpBarView.layoutParams = layoutParams
+                delay(interval)
             }
-            Log.d("hp", "newCurrentHp: ${newCurrentHp}")
-            if( newCurrentHp <0){
-                newCurrentHp = 0
-            }
-            val diff = currentHp - newCurrentHp
-            val totalTime = 500
-            val interval = (totalTime.toDouble()/diff.toDouble()).toInt().toLong()
-
-            if(diff >0){
-                val layoutParams = hpBarView.layoutParams
-                Log.d("hp", "hpBarLength: $hpBarLength")
-
-                for (i in 0..diff){
-                    val newHpBarLen = (((currentHp.toDouble()-i.toDouble())/maxHp.toDouble()) * hpBarLength.toDouble()).toInt()
-                    Log.d("hp", "new hpBarLength: ${newHpBarLen}")
-                    hpBarView.layoutParams.width = newHpBarLen
-                    hpBarView.layoutParams = layoutParams
-                    delay(interval)
-                }
-                this@gameActivity.currentBossHpBuffer = newCurrentHp
+            this@gameActivity.currentBossHpBuffer = newCurrentHp
 //                viewModel.updateCurrentBossHp(newCurrentHp)
 
-            }
+        }
 //            val display = newCurrentHp.toString() + "/" + maxHp.toString()
 //            hpFractionView.text = display
-            hpFractionVisualization(newCurrentHp)
-
-        }
+        hpFractionVisualization(newCurrentHp)
     }
 
     private fun turnFractionVisualization(currentTurn: Int){
@@ -589,36 +615,49 @@ class gameActivity : AppCompatActivity() {
     private fun checkDamage():Int{
         val stage = stageInfo.StageInfoMap[selectedStage]!!
         val objType = stageInfo.StageInfoMap[selectedStage]!!.objectiveType
-//        val currentTurn = viewModel.turn.value!!
         val currentTurn = turnBuffer
         val requiredTurn = stage.turn
-//        val currentBossHp = viewModel.getCurrentBossHp()
         val currentBossHp = currentBossHpBuffer
 
-        if(currentTurn <= requiredTurn){
-            if(currentBossHp == 0){
-                if(objType == dict.STAGE_OBJECTIVE_BEST){ //win
-                    return 1
-                }
-                else{
-                    var allDamage = 0
-                    val damageHistory = viewModel.getDamageDealt()
+        val below = -1
+        val just = 0
+        val over = 1
+
+        var damageMatch = below    //-1 below, 0 just, 1 over
+        var turnExceed = if (currentTurn >= requiredTurn) true else false
+
+        if(objType == dict.STAGE_OBJECTIVE_BEST && currentBossHp == 0){
+            damageMatch = 0
+        }
+        else if(objType == dict.STAGE_OBJECTIVE_EXACT && currentBossHp <= 0 ){
+            var allDamage = 0
+                    val damageHistory = damageDealtBuffer
                     for(i in 0..2){
                         allDamage += damageHistory[i]
                     }
-
                     if(allDamage == stage.damage){ //win
-                        return 1
+                        damageMatch = just
                     }
                     else if(allDamage > stage.damage){ //too much
-                        return 3
+                        damageMatch = over
                     }
-                }
-            }
-
         }
-        else{   //turn exceed
-            return 2
+
+        if(turnExceed){
+            when(damageMatch){
+                below -> return dict.GAME_TURN_EXCEED
+                just -> return dict.GAME_WON
+                over -> return dict.GAME_DAMAGE_EXCEED
+
+            }
+        }
+        else if(!turnExceed){
+            when(damageMatch){
+                below -> return 0
+                just -> return dict.GAME_WON
+                over -> return dict.GAME_DAMAGE_EXCEED
+
+            }
         }
         return 0
     }
@@ -670,8 +709,23 @@ class gameActivity : AppCompatActivity() {
 //        return true
     }
 
-
     //Small helper functions
+
+    private fun showPetCard(petId:Int ){
+        val dialogView = layoutInflater.inflate(R.layout.game_pet_card_dialog, null)
+
+        // Create the dialog
+        val customDialog = AlertDialog.Builder(this)
+            .setView(dialogView)
+            .setCancelable(true) // Prevent dismissing if needed
+            .create()
+
+
+        customDialog.show()
+        val textView = dialogView.findViewById<TextView>(R.id.card_pet_name)
+
+
+    }
     private fun initPetStatus(chosenPetId: IntArray): Array<petStatus?>{
         val unitsOnBoard: Array<petStatus?> = arrayOfNulls<petStatus?>(deckSize)
         for (i in 0..deckSize-1) {
