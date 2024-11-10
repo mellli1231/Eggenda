@@ -9,13 +9,16 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.eggenda.R
+import com.example.eggenda.gamePlay.petInfo
+import com.example.eggenda.gamePlay.petInfo2
 
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 
 
-class GamePetChooseAdapter(private var characterList:List<Int>,
+class GamePetChooseAdapter(private var characterList: IntArray,
                            private val selectedImages: MutableList<Int?>,
+                           private val sharedPreferenceManager: SharedPreferenceManager,
                            private val context: Context,
                            private val onImageSelected: (Int) -> Unit,
                            private val onImageDeselected: (Int) -> Unit
@@ -25,12 +28,12 @@ class GamePetChooseAdapter(private var characterList:List<Int>,
     private val ownedPetsListSp = context.getSharedPreferences("Pets_status", Context.MODE_PRIVATE)
     private val ownedPetsJson = ownedPetsListSp.getString("owned_pets_key", "[]") ?: "[]"
     private val ownedPets: List<Boolean> = Gson().fromJson(ownedPetsJson, object : TypeToken<List<Boolean>>() {}.type) ?: listOf()
+//    private val ownedPets : IntArray = sharedPreferenceManager.getPetsOwned()
 
-    //filter oyt the unlocked character list
+    //filter out the unlocked character list
     private var filteredPetsList = characterList.filterIndexed { index, _->
         index < ownedPets.size && ownedPets[index]
-    }
-
+    } .also { Log.d("FilteredPets", "filteredPetsList size: ${it.size}") }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context)
@@ -39,25 +42,25 @@ class GamePetChooseAdapter(private var characterList:List<Int>,
         return ViewHolder(view)
     }
 
-//    override fun getItemCount(): Int = filteredPetsList.size
-override fun getItemCount(): Int = 5
+    //    override fun getItemCount(): Int = filteredPetsList.size
+    override fun getItemCount(): Int {return filteredPetsList.size}
 
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         Log.d("GamePetChooseAdapter", "Binding position: $position")
-        holder.bind(filteredPetsList[position])
+        val petInfo = petInfo2()
+        val petImageId = petInfo.getPetInfoById(filteredPetsList[position])?.imageId
+        petImageId?.let { holder.bind(it) }
 
-//        val temp = characterList[position]
+////        update the selection state and display the label index into the selected image
+//        holder.imageView.isSelected = selectedImages.contains(filteredPetsList[position])
+//
+//        Log.d("Choosing Adpater", "position: $position")
 
-//        update the selection state and display the label index into the selected image
-        holder.imageView.isSelected = selectedImages.contains(filteredPetsList[position])
-
-        Log.d("Choosing Adpater", "position: $position")
-
-        //setting the number pads label
-        val labelIndex = selectedImages.indexOf(position)
-
-        Log.d("Choosing Adpater", "label: index: $labelIndex")
+//        //setting the number pads label
+//        val labelIndex = selectedImages.indexOf(position)
+//
+//        Log.d("Choosing Adpater", "label: index: $labelIndex")
 
 
 //        //do not let the pets be choosable if the pets are not unlocked
@@ -86,7 +89,7 @@ override fun getItemCount(): Int = 5
             itemView.setOnClickListener {
 
 //               if(imageView.isEnabled){     //check if the photo is enabled
-                if(selectedImages.contains(photoResId)){
+                if (selectedImages.contains(photoResId)) {
                     onImageDeselected(photoResId)
 
                 } else {
@@ -96,11 +99,15 @@ override fun getItemCount(): Int = 5
 //               }
             }
         }
-
     }
 
-    fun updateImages(newImages: List<Int>) {
+
+
+    fun updateImages(newImages: IntArray) {
         characterList = newImages
+        filteredPetsList = characterList.filterIndexed { index, _ ->
+            index < ownedPets.size && ownedPets[index]
+        }
         notifyDataSetChanged()
     }
 

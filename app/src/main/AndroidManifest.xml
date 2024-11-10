@@ -26,6 +26,13 @@
             android:name=".gamePlay.gameActivity"
             android:exported="false" />
         <activity
+            android:name=".gamePetChoose.GamePetChooseMainActivity"
+            android:exported="false"/>
+        <activity
+            android:name=".gameMonsterChoose.GameMonsterChooseMainActivity"
+            android:exported="false"/>
+
+        <activity
             android:name=".MainActivity"
             android:exported="true"
             android:label="@string/app_name"

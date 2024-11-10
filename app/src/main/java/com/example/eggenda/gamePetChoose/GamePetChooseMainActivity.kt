@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Button
 import androidx.activity.ComponentActivity
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
@@ -14,10 +15,11 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.eggenda.R
 import com.example.eggenda.gamePlay.gameActivity
+import com.example.eggenda.gamePlay.petInfo2
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 
-class GamePetChooseMainActivity : ComponentActivity(){
+class GamePetChooseMainActivity : AppCompatActivity(){
     private lateinit var petsViewModel : GamePetChooseViewModel
     private lateinit var petsAdapter: GamePetChooseAdapter
     private lateinit var selectPetsAdapter: SelectAdapter
@@ -25,72 +27,63 @@ class GamePetChooseMainActivity : ComponentActivity(){
     private lateinit var characterRecyclerView : RecyclerView
     private lateinit var startButton: Button
     private lateinit var sharedPreferenceManager: SharedPreferenceManager
-
-    //to set the game should have maximum how many characters
-    //use shared preference
-    private var maxSelectableImage = 5
-
-
-    //the mutuable list that can save the list of the photots,that can send to the game part
-    private val selectedPetPhoto =  MutableList<Int?>(maxSelectableImage){ null }
+    private lateinit var allPetsArrayID : IntArray
+    private lateinit var petInfo : petInfo2
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.game_character_choose)
 
+        //initalize classes
+        sharedPreferenceManager = SharedPreferenceManager(this)
+        petInfo = petInfo2()
+
+        //to set the game should have maximum how many characters
+//        var maxSelectableImage = sharedPreferenceManager.getPetsAmountInt()
+
+        var maxSelectableImage = sharedPreferenceManager. getPetsAmount()
+
+
+        //get the pets ID with int array
+        val petsTotalAmount : Int = petInfo.getTotalPetAmount()
+
+        //the mutuable list that can save the list of the photots,that can send to the game part
+        val selectedPetPhoto =  MutableList<Int?>(maxSelectableImage){ null }
+
+
         //set and save the shared preference of max amount of pets can play
-        // should be at previous page to do
+        // should be at monster choose page
         val maxAmountPetsSP = getSharedPreferences("Max_pets_allow", MODE_PRIVATE)
+
         // max Selectable Image = maxAmountPetsSp
-        val editor = maxAmountPetsSP.edit()
-        editor.putInt("max_key", maxSelectableImage)
-        editor.apply()
 
-        //it should be set on main page not here
-        val ownedPetsStatus = listOf(true, true, true, true, true)
-        val ownedPetsStatusSp = getSharedPreferences("Pets_status", MODE_PRIVATE)
-        val editor1 = ownedPetsStatusSp.edit()
-        editor1.putString("owned_pets_key", Gson().toJson(ownedPetsStatus))
-        editor1.apply()
-
-        val sharedPreferences = getSharedPreferences("Pets_status", Context.MODE_PRIVATE)
-        val ownedPetsJson = sharedPreferences.getString("owned_pets_key", "[]")
-        Log.d("OwnedPetsJson", ownedPetsJson ?: "null")
-
-        // confirm JSON can be used correctly
-        try {
-            val ownedPets: List<Boolean> = Gson().fromJson(ownedPetsJson, object : TypeToken<List<Boolean>>() {}.type) ?: listOf()
-            Log.d("OwnedPets", ownedPets.toString())
-        } catch (e: Exception) {
-            Log.e("GsonError", "Failed to parse owned pets", e)
-        }
-
-        //initalize view model
+        //initialize view model
         val factory = GamePetChooseViewModel.GamePetChooseViewModelFactory(maxAmountPetsSP)
         petsViewModel = ViewModelProvider(this, factory).get(GamePetChooseViewModel::class.java)
-//        petsViewModel = ViewModelProvider(this).get(GamePetChooseViewModel::class.java)
 
+        //initialize pets array that has in the code in int array
+        allPetsArrayID = IntArray(petsTotalAmount) {it + 1}
 
         //initialize start button
         startButton = findViewById(R.id.fight_start)
-        //update the start button to gray
-        updateStartButtonState(false)
-
+        updateStartButtonState(false, selectedPetPhoto)   //update the start button to gray
 
         //set the character 3 in a row
         characterRecyclerView = findViewById(R.id.game_characterchoose_recyclerView)
-        characterRecyclerView.layoutManager = GridLayoutManager(this, 5)
+        characterRecyclerView.layoutManager = GridLayoutManager(this, 3)
 
         //set adapter for showing pets
-        petsAdapter = GamePetChooseAdapter(petsViewModel.allPets.value ?: emptyList(), selectedPetPhoto,this, { imageId ->
-            onImageSelected(imageId) }, {imageId ->  onImageDeselected(imageId) })
+        petsAdapter = GamePetChooseAdapter(allPetsArrayID, selectedPetPhoto, sharedPreferenceManager
+            ,this, { imageId -> onImageSelected(imageId, selectedPetPhoto) }
+            , {imageId ->  onImageDeselected(imageId, selectedPetPhoto) })
         petsAdapter.notifyDataSetChanged()
         characterRecyclerView.adapter = petsAdapter
 
 
         //set the selected image view with customized amount
         characterSelectedList = findViewById(R.id.game_character_selectedList)
+        val spanCount = if(maxSelectableImage > 0) maxSelectableImage else 3
         characterSelectedList.layoutManager = GridLayoutManager(this, maxSelectableImage)
 
         //set the adapter for selecting pets
@@ -107,7 +100,7 @@ class GamePetChooseMainActivity : ComponentActivity(){
         petsViewModel.selectedPets.observe(this, Observer { photos ->
             selectPetsAdapter.updateImages(photos)
             Log.d("Main Activity", "updated")
-            updateStartButtonState(petsViewModel.isSelectionComplete())
+            updateStartButtonState(petsViewModel.isSelectionComplete(), selectedPetPhoto)
         })
 
         petsViewModel.updateList(selectedPetPhoto)
@@ -115,9 +108,8 @@ class GamePetChooseMainActivity : ComponentActivity(){
     }
 
     //make updates of selected photos with selectedAdapter
-    private fun onImageSelected(imageId: Int) {
+    private fun onImageSelected(imageId: Int, selectedPetPhoto :MutableList <Int?> ) {
         val emptyIndex = selectedPetPhoto.indexOfFirst { it == null}
-
         //if there is space
         if(emptyIndex != -1){
             selectedPetPhoto[emptyIndex] = imageId //renew the photo
@@ -127,13 +119,13 @@ class GamePetChooseMainActivity : ComponentActivity(){
             petsViewModel.updateList(selectedPetPhoto)
 
         }
-        updateStartButtonState(petsViewModel.isSelectionComplete())
+        updateStartButtonState(petsViewModel.isSelectionComplete(), selectedPetPhoto)
         petsAdapter.notifyDataSetChanged() // 更新所有圖片的 RecyclerView
         selectPetsAdapter.notifyDataSetChanged() // 更新已選擇圖片的 RecyclerView
     }
 
     //make deletetion and change of list with selected Adapter
-    private fun onImageDeselected(imageId: Int) {
+    private fun onImageDeselected(imageId: Int, selectedPetPhoto: MutableList<Int?>) {
         // find the chosen place of the photo
         val index = selectedPetPhoto.indexOf(imageId)
         if (index != -1) { // if photo found
@@ -157,7 +149,7 @@ class GamePetChooseMainActivity : ComponentActivity(){
 //
         }
 
-        updateStartButtonState(petsViewModel.isSelectionComplete())
+        updateStartButtonState(petsViewModel.isSelectionComplete(), selectedPetPhoto)
 
         Log.d("MainActivity", "Image removed: $imageId, New list: ${selectedPetPhoto.joinToString()}")
 
@@ -166,7 +158,7 @@ class GamePetChooseMainActivity : ComponentActivity(){
     }
 
     //update the color state of the start button
-    private fun updateStartButtonState(isEnable:Boolean){
+    private fun updateStartButtonState(isEnable:Boolean, selectedPetPhoto: MutableList<Int?>){
         if(isEnable){
             //validate start button and let it go to the next page
             startButton.isEnabled = true
@@ -176,16 +168,17 @@ class GamePetChooseMainActivity : ComponentActivity(){
             startButton.setOnClickListener{
                 //save the list to shared preference
                 sharedPreferenceManager = SharedPreferenceManager(this)     //initalize mananger
-                sharedPreferenceManager.savePetsList(selectedPetPhoto)
+                val petIntArray : IntArray = selectedPetPhoto.filterNotNull().toIntArray()
+                sharedPreferenceManager.savePetsList(petIntArray)
 
                 //go to game start activity
                 val intent = Intent(this,gameActivity::class.java )
                 startActivity(intent)
             }
 
-
         }
         else {
+            // change it into non-selectable status
             startButton.isEnabled = false
             startButton.setBackgroundColor(ContextCompat.getColor(this, R.color.disabled_color))
             startButton.invalidate()

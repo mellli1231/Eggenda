@@ -10,28 +10,48 @@ import com.example.eggenda.gamePlay.petInfo
 
 class GamePetChooseViewModel(private val maxAmountPets: SharedPreferences) : ViewModel(){
 
-    private val _allPets  = MutableLiveData<List<Int>>()
-    val allPets:LiveData<List<Int>> get() = _allPets
+    //getting Int array from pets Info
+    private val _allPets  = MutableLiveData<IntArray>()
+    val allPets : LiveData<IntArray> get() = _allPets
+
+    //IntArray that to track the character appearance
+    private val _isOwned = MutableLiveData<IntArray>()
+    val isOwned : LiveData<IntArray> get() = _isOwned
 
     private val _selectedPets = MutableLiveData<MutableList<Int?>>(mutableListOf())
     val selectedPets: LiveData<MutableList<Int?>> get() = _selectedPets
 
+    //
+
     private val inventory = petInfo()
 
-    init{
-        loadPetsImages()
-    }
+//    init{
+//        loadPetsImages()
+//    }
 
-    private fun loadPetsImages(){
-        val ids = inventory.getAllPetImageIds()
-        _allPets.value = ids
-    }
+    //function to UPDATE the character appearance
+//    fun updateAppearance (id: Int, hasOwned : Int){
+//        _isOwned.value?.let { array ->
+//            val updatedArray = array.copyOf()
+//            updatedArray[id] = if(hasOwned == 1) 1 else 0
+//            _isOwned.value = updatedArray
+//        }
+//    }
 
+//    //function that to get the owned pets only
+//    fun getAppearedPets() : List<Int>{
+//        val pets = _allPets.value?: return emptyList()
+//        val isOwned = _isOwned.value?: return emptyList()
+//        return pets.filterIndexed { index, _-> isOwned.getOrNull(index) == 1 }
+//    }
+
+    //    private fun loadPetsImages(){
+//        val ids = petInfo.getAllPetImageIds()
+//        _allPets.value = ids
+//    }
+//
     fun updateList(newList: MutableList<Int?>){
         // Update the existing MutableList and notify observers
-//        _selectedPets.value?.clear() // Clear existing values
-//        _selectedPets.value?.addAll(newList) // Add the new list
-//        _selectedPets.value = _selectedPets.value // This is to notify observers
         _selectedPets.value = newList.toMutableList() // Create a new list to notify observers
     }
 
