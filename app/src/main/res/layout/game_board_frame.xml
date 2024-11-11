@@ -24,6 +24,7 @@
         app:srcCompat="@drawable/game_element_frame_fire"
         />
 
+
     <FrameLayout
 
         android:layout_width="25dp"
@@ -52,6 +53,8 @@
             android:textSize="12sp" />
 
     </FrameLayout>
+
+
 
 
 </FrameLayout>
