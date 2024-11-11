@@ -32,11 +32,14 @@ class petInfo2 {
         val attackType: Int
         val damage: Int
         val count: Int
+        val skillName: String
         val description: String
         val rarity: Int
 
         fun dealDamage(petStatus: Array<petStatus?>,petOrder:Int):Int
         fun attackCountdown(petStatus: Array<petStatus?>,petOrder:Int):Int
+        fun condition(petStatus: Array<petStatus?>,petOrder:Int):String
+        fun nextDamage(petStatus: Array<petStatus?>,petOrder:Int):String
     }
 
     private class chubbyBunny :Pet {
@@ -47,7 +50,10 @@ class petInfo2 {
         override val attackType: Int = dict.ATK_TYPE_STAY
         override val damage: Int = 30
         override val count: Int = 3
-        override val description: String = ""
+        override val skillName :String ="Sleepy..."
+        override val description: String = "Deal"+damage+" "+dict.ELEMENT_STRING[element]+" damage\n" +
+                "on every 3 turn\n" +
+                "it stay on the board."
         override val rarity: Int = dict.RARITY_NORMAL
 
         override fun dealDamage(petStatus: Array<petStatus?>, petOrder: Int): Int {
@@ -64,9 +70,24 @@ class petInfo2 {
 //        return (petStatus[petOrder]!!.stayNum % (catInfo.count) )
             return count - petStatus[petOrder]!!.stayNum % (count+1)
         }
+
+        override fun condition(petStatus: Array<petStatus?>, petOrder: Int): String {
+           if(petStatus[petOrder]!!.location == dict.onDECK){
+               return count.toString()+" more turn(s) to stay on the board "
+           }
+           else{
+                return attackCountdown(petStatus, petOrder).toString()+" more turn(s) to stay on the board"
+           }
+
+        }
+
+        override fun nextDamage(petStatus: Array<petStatus?>,petOrder:Int): String {
+            return damage.toString()+" "+dict.ELEMENT_STRING[element]+" damages"
+        }
+
     }
 
-    private class evilWater :Pet {
+    private class evilWater() :Pet {
         override val id: Int = 1
         override val name: String = "Evil Water"
         override val imageId: Int = R.drawable.pet_evil_water_large
@@ -74,7 +95,10 @@ class petInfo2 {
         override val attackType: Int = dict.ATK_TYPE_RETURN
         override val damage: Int = 20
         override val count: Int = 1
-        override val description: String = ""
+        override val skillName :String ="Fragile!"
+        override val description: String = "Deal "+damage.toString()+" "+dict.ELEMENT_STRING[element]+" damages\n" +
+                "when it is knocked out from the board\n" +
+                "on the 1st turn after it is placed on the board."
         override val rarity: Int = dict.RARITY_NORMAL
 
         override fun dealDamage(petStatus: Array<petStatus?>, petOrder: Int): Int {
@@ -91,6 +115,30 @@ class petInfo2 {
             }
             return -1
         }
+
+        override fun condition(petStatus: Array<petStatus?>, petOrder: Int): String {
+            if(petStatus[petOrder]!!.location == dict.onDECK){
+                return "Knocked out from the board after\n" +
+                        "1 more turn it stays on the board "
+            }
+            else{
+                val count = attackCountdown(petStatus, petOrder)
+                var countStr = "∞"
+                if(count >= 0){
+                    countStr = count.toString()
+                }
+                return "Knocked out from the board after\n" +
+                        countStr+" more turn it stays on the board "
+            }
+        }
+
+        override fun nextDamage(petStatus: Array<petStatus?>,petOrder:Int): String {
+            val count = attackCountdown(petStatus, petOrder)
+            if(count >= 0){
+                return damage.toString()+" " +dict.ELEMENT_STRING[element]+" damages"
+            }
+            return "0 " +dict.ELEMENT_STRING[element]+" damages"
+        }
     }
 
     private class flamingSkull :Pet {
@@ -101,7 +149,10 @@ class petInfo2 {
         override val attackType: Int = dict.ATK_TYPE_BOUNCE
         override val damage: Int = 40
         override val count: Int = 2
-        override val description: String = ""
+        override val skillName:String = "You can't catch me!"
+        override val description: String = "Deal "+damage+" "+dict.ELEMENT_STRING[element]+" damage\n" +
+                "after every "+count+ " bounces\n" +
+                "when it stay on the board."
         override val rarity: Int = dict.RARITY_RARE
 
         override fun dealDamage(petStatus: Array<petStatus?>, petOrder: Int): Int {
@@ -115,6 +166,20 @@ class petInfo2 {
         override fun attackCountdown(petStatus: Array<petStatus?>, petOrder: Int): Int {
             return count - petStatus[petOrder]!!.bounceNum
         }
+
+        override fun condition(petStatus: Array<petStatus?>, petOrder: Int): String {
+            if(petStatus[petOrder]!!.location == dict.onDECK){
+                return count.toString()+" more bounce when it stay on the board\n"
+            }
+            else{
+                val count = attackCountdown(petStatus, petOrder)
+                return count.toString()+" more bounce when it stay on the board\n"
+            }
+        }
+
+        override fun nextDamage(petStatus: Array<petStatus?>, petOrder: Int): String {
+            return damage.toString()+" "+dict.ELEMENT_STRING[element]+" damages"
+        }
     }
 
     private class littleMothman :Pet {
@@ -125,7 +190,9 @@ class petInfo2 {
         override val attackType: Int = dict.ATK_TYPE_STAY
         override val damage: Int = 25
         override val count: Int = 1
-        override val description: String = ""
+        override val skillName: String = "Weird fireworks"
+        override val description: String = "dealing 9, 16, 21, 24, 25, 24, 21, 16, 9\n"+dict.ELEMENT_STRING[element]+" damages sequentially \n" +
+                "after it placed on the board"
         override val rarity: Int = dict.RARITY_LEGENDARY
 
         override fun dealDamage(petStatus: Array<petStatus?>, petOrder: Int): Int {
@@ -141,6 +208,25 @@ class petInfo2 {
             }
             return 1
         }
+
+        override fun condition(petStatus: Array<petStatus?>, petOrder: Int): String {
+            if(petStatus[petOrder]!!.location == dict.onDECK){
+                return count.toString()+" more turns to stay on the board\n"
+            }
+            else{
+                val count = attackCountdown(petStatus, petOrder)
+                return count.toString()+" more turns to stay on the board\n"
+            }
+        }
+
+        override fun nextDamage(petStatus: Array<petStatus?>, petOrder: Int): String {
+            if(petStatus[petOrder]!!.location == dict.onDECK){
+                return " 9 fire damages"
+            }
+            else{
+                return dealDamage(petStatus, petOrder).toString()+" "+dict.ELEMENT_STRING[element]+" damages"
+            }
+        }
     }
 
     private class shyRaccoon :Pet {
@@ -151,7 +237,10 @@ class petInfo2 {
         override val attackType: Int = dict.ATK_TYPE_STAY
         override val damage: Int = 100
         override val count: Int = 5
-        override val description: String = ""
+        override val skillName: String = "Hello..."
+        override val description: String = "Deal "+damage+" "+dict.ELEMENT_STRING[element]+"\n" +
+                "on the 5 th turn\n" +
+                "when it is placed on the board"
         override val rarity: Int = dict.RARITY_LEGENDARY
 
         override fun dealDamage(petStatus: Array<petStatus?>, petOrder: Int): Int {
@@ -166,6 +255,28 @@ class petInfo2 {
                 return -1
             }
             return count - petStatus[petOrder]!!.stayNum
+        }
+
+        override fun condition(petStatus: Array<petStatus?>, petOrder: Int): String {
+            if(petStatus[petOrder]!!.location == dict.onDECK){
+                return count.toString()+" more turns to stay on the board\n"
+            }
+            else{
+                val count = attackCountdown(petStatus, petOrder)
+                var countStr = "∞"
+                if(count >= 0){
+                    countStr = count.toString()
+                }
+                return  countStr+" more turns to stay on the board\n"
+            }
+        }
+
+        override fun nextDamage(petStatus: Array<petStatus?>, petOrder: Int): String {
+            val count = attackCountdown(petStatus, petOrder)
+            if(count >= 0){
+                return damage.toString()+" " +dict.ELEMENT_STRING[element]+" damages"
+            }
+            return "0 " +dict.ELEMENT_STRING[element]+" damages"
         }
     }
 
