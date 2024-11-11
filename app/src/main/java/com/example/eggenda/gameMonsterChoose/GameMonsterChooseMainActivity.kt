@@ -2,6 +2,7 @@ package com.example.eggenda.gameMonsterChoose
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import com.example.eggenda.R
@@ -21,6 +22,10 @@ class GameMonsterChooseMainActivity : AppCompatActivity () {
 
         val amount = 3
         sharedPreferenceManager.savePetsAmount(amount)
+
+        val retrievedList = sharedPreferenceManager.getPetOwnership()
+        val intArrayhihi : IntArray = retrievedList.toIntArray()
+        Log.d("Retrieved List", "IntArray: ${intArrayhihi.joinToString(",")}")
 
         button = findViewById(R.id.game_monster_go)
 

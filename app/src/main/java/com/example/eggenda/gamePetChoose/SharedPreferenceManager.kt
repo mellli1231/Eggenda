@@ -8,23 +8,43 @@ import com.google.gson.reflect.TypeToken
 
 class SharedPreferenceManager (context: Context) {
 
-    //the amount of pets that can use
+    //the amount that the pets are owned now : hatching -> choose (not done)
+    val sharedPreferences : SharedPreferences= context.getSharedPreferences("eggenda_prefs", Context.MODE_PRIVATE)
+
+    //the amount of pets that can use :  monster -> choose  (done)
     val maxAmountPetsSP:SharedPreferences = context.getSharedPreferences("Max_pets_allow", Context.MODE_PRIVATE)
 
-    //the fighting pets list
+    //the fighting pets list : choose -> gameplay  (not done)
     private val fightingPetsSP : SharedPreferences = context.getSharedPreferences("PetsToFight", Context.MODE_PRIVATE)
 
     //gson that to make the arrays into string ans saved into shared preference
     private val gson = Gson()
 
+    fun savePetOwnership(petOwnership: Array<Int>) {
+//        val editor = sharedPreferences.edit()
+        val json = gson.toJson(petOwnership)
+        sharedPreferences.edit().putString("pet_ownership", json).apply()
+    }
+
+    fun getPetOwnership() : ArrayList<Int>{
+        val json = sharedPreferences.getString("pet_ownership", null)
+        val type = object : TypeToken<ArrayList<Int>>() {}.type
+        return if (json != null){
+            gson.fromJson(json,type)
+        } else {
+            ArrayList()
+        }
+
+    }
+
 
     //to save the amount of the max pets can choose
     fun savePetsAmount (petAmount: Int){
-        maxAmountPetsSP.edit().putInt("max_key", petAmount)
+        maxAmountPetsSP.edit().putInt("max_key", petAmount).apply()
     }
 
     fun getPetsAmount() : Int{
-        return maxAmountPetsSP.getInt("max_key", 3)
+        return maxAmountPetsSP.getInt("max_key", 1)
     }
 
     //to save the list

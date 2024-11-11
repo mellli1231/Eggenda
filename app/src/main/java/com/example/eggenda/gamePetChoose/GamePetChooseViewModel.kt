@@ -8,7 +8,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.example.eggenda.gamePlay.petInfo
 
-class GamePetChooseViewModel(private val maxAmountPets: SharedPreferences) : ViewModel(){
+class GamePetChooseViewModel(private val maxAmountPets: SharedPreferenceManager) : ViewModel(){
 
     //getting Int array from pets Info
     private val _allPets  = MutableLiveData<IntArray>()
@@ -55,16 +55,17 @@ class GamePetChooseViewModel(private val maxAmountPets: SharedPreferences) : Vie
         _selectedPets.value = newList.toMutableList() // Create a new list to notify observers
     }
 
-    private fun getAmount(): Int {
-        return maxAmountPets.getInt("max_key", 0)
-    }
+//    private fun getAmount(): Int {
+//        return maxAmountPets.getInt("max_key", 0)
+//    }
 
     fun isSelectionComplete(): Boolean {
-        Log.d("View Model", "${getAmount()}")
-        return _selectedPets.value?.count { it != null } == getAmount()
+        val getAmount = maxAmountPets.getPetsAmount()
+        Log.d("View Model", "${getAmount}")
+        return _selectedPets.value?.count { it != null } == getAmount
     }
 
-    class GamePetChooseViewModelFactory(private val maxAmountPets: SharedPreferences) : ViewModelProvider.Factory {
+    class GamePetChooseViewModelFactory(private val maxAmountPets: SharedPreferenceManager) : ViewModelProvider.Factory {
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
             if (modelClass.isAssignableFrom(GamePetChooseViewModel::class.java)) {
                 @Suppress("UNCHECKED_CAST")

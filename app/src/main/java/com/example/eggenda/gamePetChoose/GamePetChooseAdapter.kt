@@ -25,14 +25,17 @@ class GamePetChooseAdapter(private var characterList: IntArray,
 ) : RecyclerView.Adapter<GamePetChooseAdapter.ViewHolder>(){
 
     //gson list about the status of the pets
-    private val ownedPetsListSp = context.getSharedPreferences("Pets_status", Context.MODE_PRIVATE)
-    private val ownedPetsJson = ownedPetsListSp.getString("owned_pets_key", "[]") ?: "[]"
-    private val ownedPets: List<Boolean> = Gson().fromJson(ownedPetsJson, object : TypeToken<List<Boolean>>() {}.type) ?: listOf()
+//    private val ownedPetsListSp = context.getSharedPreferences("Pets_status", Context.MODE_PRIVATE)
+//    private val ownedPetsJson = ownedPetsListSp.getString("owned_pets_key", "[]") ?: "[]"
+//    private val ownedPets: List<Boolean> = Gson().fromJson(ownedPetsJson, object : TypeToken<List<Boolean>>() {}.type) ?: listOf()
 //    private val ownedPets : IntArray = sharedPreferenceManager.getPetsOwned()
+
+    private val ownedPetsTemp = sharedPreferenceManager.getPetOwnership()   //ArrayList <Int>
+    private val ownedPets : IntArray = ownedPetsTemp.toIntArray()           //change it to Int Array
 
     //filter out the unlocked character list
     private var filteredPetsList = characterList.filterIndexed { index, _->
-        index < ownedPets.size && ownedPets[index]
+        index < ownedPets.size && ownedPets[index] == 1
     } .also { Log.d("FilteredPets", "filteredPetsList size: ${it.size}") }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -106,7 +109,7 @@ class GamePetChooseAdapter(private var characterList: IntArray,
     fun updateImages(newImages: IntArray) {
         characterList = newImages
         filteredPetsList = characterList.filterIndexed { index, _ ->
-            index < ownedPets.size && ownedPets[index]
+            index < ownedPets.size && ownedPets[index] == 1
         }
         notifyDataSetChanged()
     }

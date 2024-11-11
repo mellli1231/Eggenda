@@ -54,12 +54,12 @@ class GamePetChooseMainActivity : AppCompatActivity(){
 
         //set and save the shared preference of max amount of pets can play
         // should be at monster choose page
-        val maxAmountPetsSP = getSharedPreferences("Max_pets_allow", MODE_PRIVATE)
+//        val maxAmountPetsSP = getSharedPreferences("Max_pets_allow", MODE_PRIVATE)
 
         // max Selectable Image = maxAmountPetsSp
 
         //initialize view model
-        val factory = GamePetChooseViewModel.GamePetChooseViewModelFactory(maxAmountPetsSP)
+        val factory = GamePetChooseViewModel.GamePetChooseViewModelFactory(sharedPreferenceManager)
         petsViewModel = ViewModelProvider(this, factory).get(GamePetChooseViewModel::class.java)
 
         //initialize pets array that has in the code in int array

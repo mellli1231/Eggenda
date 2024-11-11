@@ -22,6 +22,7 @@ import androidx.fragment.app.Fragment
 import com.example.eggenda.R
 import com.example.eggenda.databinding.DialogHatchBinding
 import com.example.eggenda.databinding.FragmentHomeBinding
+import com.example.eggenda.gamePetChoose.SharedPreferenceManager
 import com.example.eggenda.gamePlay.gameActivity
 import com.example.eggenda.ui.task.ConfirmTasksActivity
 import com.google.gson.Gson
@@ -32,6 +33,8 @@ class HomeFragment : Fragment() {
 
     private var _binding: FragmentHomeBinding? = null
     private var mediaPlayer: MediaPlayer? = null
+
+    private lateinit var sharedPreferenceManager: SharedPreferenceManager
     // This property is only valid between onCreateView and
     // onDestroyView.
     private val binding get() = _binding!!
@@ -53,6 +56,8 @@ class HomeFragment : Fragment() {
         val root: View = binding.root
         val petOwnership = loadPetOwnership()
 
+        sharedPreferenceManager = SharedPreferenceManager(requireContext())
+
         // xp
         loadProgress()
         updateProgress()
@@ -69,7 +74,7 @@ class HomeFragment : Fragment() {
                 binding.experienceTextView.text = "Egg has hatched!"
 
                 // save the array of pets
-                savePetOwnership(petOwnership)
+                sharedPreferenceManager.savePetOwnership(petOwnership)
 
                 playSound(R.raw.sound_success)
                 Handler(Looper.getMainLooper()).postDelayed({
@@ -112,18 +117,18 @@ class HomeFragment : Fragment() {
             Gson().fromJson(json, type)
         } else {
             // Initialize with all pets unowned and save it to SharedPreferences
-            savePetOwnership(DEFAULT_PET_OWNERSHIP)
+            sharedPreferenceManager.savePetOwnership(DEFAULT_PET_OWNERSHIP)
             DEFAULT_PET_OWNERSHIP.clone() // Return a clone to avoid modifying the original
         }
     }
 
-    private fun savePetOwnership(petOwnership: Array<Int>) {
-        val sharedPreferences = requireContext().getSharedPreferences("eggenda_prefs", Context.MODE_PRIVATE)
-        val editor = sharedPreferences.edit()
-        val json = Gson().toJson(petOwnership)
-        editor.putString(PET_OWNERSHIP_KEY, json)
-        editor.apply()
-    }
+//    private fun savePetOwnership(petOwnership: Array<Int>) {
+//        val sharedPreferences = requireContext().getSharedPreferences("eggenda_prefs", Context.MODE_PRIVATE)
+//        val editor = sharedPreferences.edit()
+//        val json = Gson().toJson(petOwnership)
+//        editor.putString(PET_OWNERSHIP_KEY, json)
+//        editor.apply()
+//    }
 
     private fun hatchEgg(petOwnership: Array<Int>) {
         val unownedPets = petOwnership.indices.filter { petOwnership[it] == 0 }
@@ -133,7 +138,7 @@ class HomeFragment : Fragment() {
             petOwnership[randomPet] = 1
 
             // Save pets, and also provide popup with specific pet's photo
-            savePetOwnership(petOwnership)
+            sharedPreferenceManager.savePetOwnership(petOwnership)
             showCongratsPopup(randomPet)
         }
     }
