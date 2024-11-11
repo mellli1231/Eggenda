@@ -7,6 +7,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.eggenda.R
+import org.w3c.dom.Text
 
 class boardAdapter(
     private val itemCount: Int,
@@ -16,9 +17,16 @@ class boardAdapter(
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val imageView: ImageView = itemView.findViewById(R.id.imageView)
-        val countView: TextView = itemView.findViewById(R.id.attackCount)
+
         val elementFrame: ImageView = itemView.findViewById(R.id.elementFrame)
+
+//        val nextDmgFrame: ImageView = itemView.findViewById(R.id.nextDmgFrame)
+//        val nextDmgView: TextView = itemView.findViewById(R.id.nextDmg)
+
         val countFrame: ImageView = itemView.findViewById(R.id.countFrame)
+        val countView: TextView = itemView.findViewById(R.id.attackCount)
+
+
 
         init {
             itemView.setOnClickListener {
