@@ -5,7 +5,8 @@
 
     android:layout_width="75dp"
     android:layout_height="75dp"
-    android:background="@drawable/game_stroke_background">
+    android:background="@drawable/game_stroke_background"
+    >
 
     <ImageView
         android:id="@+id/imageView"
@@ -14,6 +15,7 @@
         android:scaleType="centerInside"
         app:srcCompat="@drawable/pet_shy_raccoon_large"
         android:padding="10dp"
+        android:visibility="invisible"
         />
 
     <ImageView
@@ -22,6 +24,8 @@
         android:layout_height="match_parent"
         android:scaleType="centerCrop"
         app:srcCompat="@drawable/game_element_frame_fire"
+        android:visibility="invisible"
+
         />
 
 
@@ -38,6 +42,7 @@
 
             android:scaleType="centerCrop"
             app:srcCompat="@drawable/game_count_frame_fire"
+            android:visibility="invisible"
             />
 
 
@@ -50,7 +55,8 @@
             android:fontFamily="@font/titan_one"
             android:text="3"
             android:textColor="#FFFFFF"
-            android:textSize="12sp" />
+            android:textSize="12sp"
+            android:visibility="invisible"/>
 
     </FrameLayout>
 
