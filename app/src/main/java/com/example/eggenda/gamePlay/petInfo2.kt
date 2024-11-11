@@ -5,6 +5,8 @@ import kotlin.math.abs
 
 class petInfo2 {
 
+    private val TOTAL = 5
+
     private val CHUBBY_BUNNY = 0
     private val EVIL_WATER = 1
     private val FLAMING_SKULL = 2
@@ -23,6 +25,8 @@ class petInfo2 {
         )
         return petMap[id]?.invoke()
     }
+
+    fun getTotalPetAmount():Int{return TOTAL}
 
     interface Pet{
         val id: Int

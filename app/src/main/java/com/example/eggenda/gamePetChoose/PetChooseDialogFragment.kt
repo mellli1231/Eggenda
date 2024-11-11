@@ -34,6 +34,17 @@ class PetChooseDialogFragment  : DialogFragment (){
         val getId = arguments?.getInt(ARG_PET_ID)
         val getpet = getId?.let { petInfo.getPetInfoById(it) }
 
+        val element_background = dict.ELEMENT_STRING[getpet?.element!!]
+        val rootLayout : View = view.findViewById(R.id.dialog_root_layout)
+
+        when(element_background){
+            "Fire" -> dialog?.window?.setBackgroundDrawableResource(R.drawable.game_dialog_fire)
+            "Water" -> dialog?.window?.setBackgroundDrawableResource(R.drawable.game_dialog_water)
+            "Forest" -> dialog?.window?.setBackgroundDrawableResource(R.drawable.game_dialog_forest)
+//            "Water" -> rootLayout.setBackgroundResource(R.drawable.game_element_frame_water)
+//            "Forest" -> rootLayout.setBackgroundResource(R.drawable.game_element_frame_forest)
+        }
+
         //set the data on views
         if (getpet != null) {
             view.findViewById<ImageView>(R.id.choose_petImage).setImageResource(getpet.imageId)
@@ -73,8 +84,10 @@ class PetChooseDialogFragment  : DialogFragment (){
         //set the size of the dialog
         dialog?.window?.setLayout(
             resources.getDimensionPixelSize(R.dimen.card_width),
-            resources.getDimensionPixelSize(R.dimen.card_hight)
+            resources.getDimensionPixelSize(R.dimen.card_hight),
 
         )
     }
+
+
 }

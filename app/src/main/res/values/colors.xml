@@ -11,5 +11,6 @@
     <color name="yellow">#FFEBCC</color>
     <color name="dark_blue">#1B1F31</color>
     <color name="enable_color">#FFB554</color>
-    <color name="disabled_color">#A0A0A0</color>
+    <color name="disabled_color">#DFD7D7</color>
+    <color name="fire">#EEFF5959</color>
 </resources>
