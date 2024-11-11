@@ -1,17 +1,15 @@
 package com.example.eggenda.gamePlay
 
+import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.view.Gravity
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isInvisible
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.GridLayoutManager
@@ -22,6 +20,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import org.w3c.dom.Text
 
 class gameActivity : AppCompatActivity() {
 
@@ -130,20 +129,6 @@ class gameActivity : AppCompatActivity() {
         //board UI
         boardRecyclerView = findViewById(R.id.boardRecyclerView)
         boardRecyclerView.layoutManager = GridLayoutManager(this, boardCol) // 5 columns
-//        boardAdapter = boardAdapter(boardSize) { boardPosition ->
-//            Log.d("boardUI","deck clicked: ${boardPosition}")
-//            Log.d("boardUI","petClicked: ${petClicked}")
-//
-//            Log.d("forceReturn", "boardClicked")
-//            Log.d("forceReturn", "viewModel.forceReturn.value: ${viewModel.forceReturn.value} ")
-//
-//            if(selectedPetOrder != -1 && allowPick){
-////            if(selectedPetOrder != -1 && viewModel.allowPick.value == true){
-//                boardClicked = 1
-//                selectedGird = boardPosition
-//            }
-//        }
-
         boardAdapter = boardAdapter(boardSize,
             onItemClick = {boardPosition ->
             Log.d("boardUI","short clicked clicked: ${boardPosition}")
@@ -163,7 +148,7 @@ class gameActivity : AppCompatActivity() {
                 Log.d("boardUI","Long clicked: ${boardPosition}")
                 Log.d("boardUI","petClicked: ${petClicked}")
                 if(boardStatusBuffer[boardPosition]>=0 && allowPick){
-                    showPetCard(chosenPetId[boardStatusBuffer[boardPosition]])
+                    showPetCard(chosenPetId[boardStatusBuffer[boardPosition]], boardStatusBuffer[boardPosition])
                 }
             })
 
@@ -186,7 +171,7 @@ class gameActivity : AppCompatActivity() {
             },
             onItemLongClick = {position ->
                 if(allowPick && deckStatusBuffer[position] >= dict.hasPet){
-                    showPetCard(chosenPetId[position])
+                    showPetCard(chosenPetId[position], position)
                 }
             })
         unitRecyclerView.adapter = deckAdapter
@@ -264,10 +249,10 @@ class gameActivity : AppCompatActivity() {
                     petStatusBuffer[petOrder]!!.bounceNum = 0
                 }
 
-                while(stayNumPlusQueue.size > 0){
-                    val petOrder = stayNumPlusQueue.removeFirst()
-                    petStatusBuffer[petOrder]!!.stayNum += 1
-                }
+//                while(stayNumPlusQueue.size > 0){
+//                    val petOrder = stayNumPlusQueue.removeFirst()
+//                    petStatusBuffer[petOrder]!!.stayNum += 1
+//                }
 
                 bossImageFlash(hitNum)
                 hpBarVisualization(currentBossHpBuffer)
@@ -750,7 +735,7 @@ class gameActivity : AppCompatActivity() {
     }
 
     //Small helper functions
-    private fun showPetCard(petId:Int ){
+    private fun showPetCard(petId:Int, petOrder: Int){
         val dialogView = layoutInflater.inflate(R.layout.game_pet_detail_dialog, null)
 
         // Create the dialog
@@ -760,7 +745,43 @@ class gameActivity : AppCompatActivity() {
             .create()
 
 
+        val pet = petInfo.getPetInfoById(petId)!!
         customDialog.show()
+        val petImage = dialogView.findViewById<ImageView>(R.id.detail_petImage)
+        petImage.setImageResource(pet.imageId)
+
+        val petName = dialogView.findViewById<TextView>(R.id.detail_petName)
+        petName.text = pet.name
+
+        val petIdView = dialogView.findViewById<TextView>(R.id.detail_petId)
+        petIdView.text = String.format("%03d", pet.id)
+        when(pet.element){
+            dict.ELEMENT_FIRE ->  petIdView.setTextColor(Color.RED)
+            dict.ELEMENT_WATER -> petIdView.setTextColor(Color.BLUE)
+            dict.ELEMENT_FOREST -> petIdView.setTextColor(Color.parseColor("#4CAF50"))
+        }
+
+        val skillName = dialogView.findViewById<TextView>(R.id.detail_petSkill)
+        skillName.text = pet.skillName
+
+
+        val elementDot = dialogView.findViewById<ImageView>(R.id.detail_element)
+        when(pet.element){
+            dict.ELEMENT_FIRE -> elementDot.setImageResource(R.drawable.game_element_frame_fire)
+            dict.ELEMENT_WATER -> elementDot.setImageResource(R.drawable.game_element_frame_water)
+            dict.ELEMENT_FOREST -> elementDot.setImageResource(R.drawable.game_element_frame_forest)
+        }
+
+        val description = dialogView.findViewById<TextView>(R.id.detail_skillCondition)
+        description.text = pet.description
+
+
+        val condition = dialogView.findViewById<TextView>(R.id.detail_nextReminder)
+        condition.text = pet.condition(petStatusBuffer, petOrder)
+
+        val nextDmg = dialogView.findViewById<TextView>(R.id.detail_nextDmgAmount)
+        nextDmg.text = pet.nextDamage(petStatusBuffer, petOrder)
+
 //        val textView = dialogView.findViewById<TextView>(R.id.card_pet_name)
 
     }

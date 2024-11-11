@@ -5,8 +5,6 @@ import kotlin.math.abs
 
 class petInfo2 {
 
-    private val TOTAL = 5
-
     private val CHUBBY_BUNNY = 0
     private val EVIL_WATER = 1
     private val FLAMING_SKULL = 2
@@ -25,8 +23,6 @@ class petInfo2 {
         )
         return petMap[id]?.invoke()
     }
-
-    fun getTotalPetAmount() : Int { return TOTAL }
 
     interface Pet{
         val id: Int
@@ -76,12 +72,12 @@ class petInfo2 {
         }
 
         override fun condition(petStatus: Array<petStatus?>, petOrder: Int): String {
-            if(petStatus[petOrder]!!.location == dict.onDECK){
-                return count.toString()+" more turn(s) to stay on the board "
-            }
-            else{
+           if(petStatus[petOrder]!!.location == dict.onDECK){
+               return count.toString()+" more turn(s) to stay on the board "
+           }
+           else{
                 return attackCountdown(petStatus, petOrder).toString()+" more turn(s) to stay on the board"
-            }
+           }
 
         }
 
