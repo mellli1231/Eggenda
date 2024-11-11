@@ -2,7 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="wrap_content"
+    android:layout_width="200dp"
     android:layout_height="wrap_content"
     android:background="#6BFFFFFF"
     >
@@ -58,13 +58,13 @@
         android:fontFamily="@font/titan_one"
         android:text="004"
         android:textColor="#3D2AFF"
-        android:textSize="10sp"
+        android:textSize="12sp"
         app:layout_constraintBottom_toTopOf="@+id/guideline7"
         app:layout_constraintEnd_toStartOf="@+id/detail_petName"
         app:layout_constraintTop_toTopOf="@+id/guideline7" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="wrap_content"
+        android:layout_width="200dp"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toTopOf="@+id/guideline19"
         app:layout_constraintEnd_toEndOf="parent"
@@ -140,9 +140,9 @@
             android:id="@+id/detail_element"
             android:layout_width="10dp"
             android:layout_height="10dp"
-            android:layout_marginStart="80dp"
+            android:layout_marginEnd="3dp"
             app:layout_constraintBottom_toBottomOf="@+id/detail_petSkill"
-            app:layout_constraintStart_toEndOf="@+id/detail_petSkill"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/detail_petSkill"
             app:srcCompat="@drawable/game_count_frame_water" />
 
