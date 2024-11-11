@@ -56,12 +56,13 @@ class petInfo2 {
         override val count: Int = 3
         override val skillName :String ="Sleepy..."
         override val description: String = "Deal"+damage+" "+dict.ELEMENT_STRING[element]+" damage\n" +
-                "on every 3 turn\n" +
+                "on every "+count +" turns\n" +
                 "it stay on the board."
         override val rarity: Int = dict.RARITY_NORMAL
 
         override fun dealDamage(petStatus: Array<petStatus?>, petOrder: Int): Int {
-            if(petStatus[petOrder]!!.stayNum != 0 && petStatus[petOrder]!!.stayNum % count == 0 ) {
+            if(petStatus[petOrder]!!.stayNum != 0 && petStatus[petOrder]!!.stayNum % count == 0 && petStatus[petOrder]!!.location == dict.onBoard) {
+
                 return damage
             }
             return 0

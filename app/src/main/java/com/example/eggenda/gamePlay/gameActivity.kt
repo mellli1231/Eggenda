@@ -598,7 +598,7 @@ class gameActivity : AppCompatActivity() {
             newCurrentHp = 0
         }
         val diff = currentHp - newCurrentHp
-        val totalTime = 500
+        val totalTime = 300
         val interval = (totalTime.toDouble()/diff.toDouble()).toInt().toLong()
 
         if(diff >0){
@@ -790,6 +790,7 @@ class gameActivity : AppCompatActivity() {
 //        val textView = dialogView.findViewById<TextView>(R.id.card_pet_name)
 
     }
+
     private fun initPetStatus(chosenPetId: IntArray): Array<petStatus?>{
         val unitsOnBoard: Array<petStatus?> = arrayOfNulls<petStatus?>(deckSize)
         for (i in 0..deckSize-1) {
