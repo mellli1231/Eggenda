@@ -29,6 +29,8 @@ object dict {
     const val RARITY_RARE = 1
     const val RARITY_LEGENDARY = 2
 
+    val ATK_STRING = arrayOf("Stay", "Return", "Bounce")
+
     const val ATK_TYPE_STAY = 0
     const val ATK_TYPE_RETURN = 1
     const val ATK_TYPE_BOUNCE = 2

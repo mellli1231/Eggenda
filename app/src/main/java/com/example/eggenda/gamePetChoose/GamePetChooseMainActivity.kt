@@ -51,13 +51,6 @@ class GamePetChooseMainActivity : AppCompatActivity(){
         //the mutuable list that can save the list of the photots,that can send to the game part
         val selectedPetPhoto =  MutableList<Int?>(maxSelectableImage){ null }
 
-
-        //set and save the shared preference of max amount of pets can play
-        // should be at monster choose page
-//        val maxAmountPetsSP = getSharedPreferences("Max_pets_allow", MODE_PRIVATE)
-
-        // max Selectable Image = maxAmountPetsSp
-
         //initialize view model
         val factory = GamePetChooseViewModel.GamePetChooseViewModelFactory(sharedPreferenceManager)
         petsViewModel = ViewModelProvider(this, factory).get(GamePetChooseViewModel::class.java)
@@ -74,9 +67,14 @@ class GamePetChooseMainActivity : AppCompatActivity(){
         characterRecyclerView.layoutManager = GridLayoutManager(this, 3)
 
         //set adapter for showing pets
-        petsAdapter = GamePetChooseAdapter(allPetsArrayID, selectedPetPhoto, sharedPreferenceManager
-            ,this, { imageId -> onImageSelected(imageId, selectedPetPhoto) }
-            , {imageId ->  onImageDeselected(imageId, selectedPetPhoto) })
+        petsAdapter = GamePetChooseAdapter(
+            allPetsArrayID,
+            selectedPetPhoto,
+            sharedPreferenceManager,
+            this,
+            { imageId -> onImageSelected(imageId, selectedPetPhoto) },
+            {imageId ->  onImageDeselected(imageId, selectedPetPhoto) },
+            {petId -> showPetDetailDialog(petId)})
         petsAdapter.notifyDataSetChanged()
         characterRecyclerView.adapter = petsAdapter
 
@@ -92,7 +90,6 @@ class GamePetChooseMainActivity : AppCompatActivity(){
 
         //observe the changes of the pets photo
         petsViewModel.allPets.observe(this, Observer { photos ->
-
             Log.d("MainActivity", "allPets updated: $photos")
             petsAdapter.updateImages(photos)
         })
@@ -184,6 +181,14 @@ class GamePetChooseMainActivity : AppCompatActivity(){
             startButton.invalidate()
 
         }
+    }
+
+    //set the show dialog funciton
+    private fun showPetDetailDialog(petId:Int){
+
+        val dialog = PetChooseDialogFragment.newInstance(petId)
+        dialog.show(supportFragmentManager, "PetChooseDialog")
+
     }
 
 }

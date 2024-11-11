@@ -57,6 +57,14 @@
     <string name="terms_conditions_details" translatable="false">terms and conditions</string>
     <string name="game">Start Game</string>
 
+
+    <string name="choose_attack_type_description">Attack Type</string>
+    <string name="atk_type_stay">Stay</string>
+    <string name="atk_type_return">Return</string>
+    <string name="atk_type_bounce">Bounce</string>
+
+    <string name="atk_count_des">Count</string>
+
     <string-array name="language_options">
         <item>English</item>
         <item>Chinese</item>

@@ -21,7 +21,8 @@ class GamePetChooseAdapter(private var characterList: IntArray,
                            private val sharedPreferenceManager: SharedPreferenceManager,
                            private val context: Context,
                            private val onImageSelected: (Int) -> Unit,
-                           private val onImageDeselected: (Int) -> Unit
+                           private val onImageDeselected: (Int) -> Unit,
+                           private val onLongClick: (Int) -> Unit
 ) : RecyclerView.Adapter<GamePetChooseAdapter.ViewHolder>(){
 
     //gson list about the status of the pets
@@ -46,57 +47,42 @@ class GamePetChooseAdapter(private var characterList: IntArray,
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         Log.d("GamePetChooseAdapter", "Binding position: $position")
-        val petInfo = petInfo2()
-        val petImageId = petInfo.getPetInfoById(filteredPetsList[position])?.imageId
-        petImageId?.let { holder.bind(it) }
-
-////        update the selection state and display the label index into the selected image
-//        holder.imageView.isSelected = selectedImages.contains(filteredPetsList[position])
-//
-//        Log.d("Choosing Adpater", "position: $position")
-
-//        //setting the number pads label
-//        val labelIndex = selectedImages.indexOf(position)
-//
-//        Log.d("Choosing Adpater", "label: index: $labelIndex")
-
-
-//        //do not let the pets be choosable if the pets are not unlocked
-//        if(position < ownedPets.size && !ownedPets[position]){
-//            holder.grey_layer.visibility = View.VISIBLE
-//            holder.imageView.isEnabled = false      //to let the photo be unclikable
-//        }
-//        else {
-//            holder.grey_layer.visibility = View.GONE            //to let the photo be normal
-//            holder.imageView.isEnabled = true       //to let the photo be clikable
-//
-//        }
-
-        //if the pet here is not yet getable, then just let it out of the list, otherwise let it stays at the list
+        holder.bind(filteredPetsList[position])
+//        val petInfo = petInfo2()
+//        val petImageId = petInfo.getPetInfoById(filteredPetsList[position])?.imageId
+//        petImageId?.let { holder.bind(it) }
     }
 
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val imageView: ImageView = itemView.findViewById(R.id.imageView)
-//        val grey_layer: View = itemView.findViewById(R.id.gray_layer)
-//        val textViewLabel : TextView = itemView.findViewById(R.id.textViewLabel)
+        val petInfo  =  petInfo2()
 
-        fun bind(photoResId: Int) {
-            imageView.setImageResource(photoResId) // Set the image resource
+        fun bind(petInfoID: Int) {
+            val photoResId = petInfo.getPetInfoById(petInfoID)?.imageId
+
+            if (photoResId != null) { imageView.setImageResource(photoResId) } // Set the image resource
+
             // Set click listener on the item
             itemView.setOnClickListener {
 
-//               if(imageView.isEnabled){     //check if the photo is enabled
+                //unselect it if the photos has already being chosen
                 if (selectedImages.contains(photoResId)) {
-                    onImageDeselected(photoResId)
+                    if (photoResId != null) { onImageDeselected(photoResId) }
 
-                } else {
-                    onImageSelected(photoResId)
+                } //select if the image has not been selected
+                else {
+                    if (photoResId != null) { onImageSelected(photoResId) }
 
                 }
-//               }
+            } //end of onclicklistener
+
+            //trigger the long-click logic for showing details
+            itemView.setOnLongClickListener {
+                onLongClick(petInfoID)
+                true
             }
-        }
+        } //end of bind funciton
     }
 
 
