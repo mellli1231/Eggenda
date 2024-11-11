@@ -56,7 +56,7 @@ class GamePetChooseMainActivity : AppCompatActivity(){
         petsViewModel = ViewModelProvider(this, factory).get(GamePetChooseViewModel::class.java)
 
         //initialize pets array that has in the code in int array
-        allPetsArrayID = IntArray(petsTotalAmount) {it + 1}
+        allPetsArrayID = IntArray(petsTotalAmount) {0;1;2;3;4}
 
         //initialize start button
         startButton = findViewById(R.id.fight_start)

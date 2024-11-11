@@ -29,6 +29,8 @@ class GamePetChooseAdapter(private var characterList: IntArray,
     private val ownedPetsTemp = sharedPreferenceManager.getPetOwnership()   //ArrayList <Int>
     private val ownedPets : IntArray = ownedPetsTemp.toIntArray()           //change it to Int Array
 
+    private var temp : Int = 0
+
     //filter out the unlocked character list
     private var filteredPetsList = characterList.filterIndexed { index, _->
         index < ownedPets.size && ownedPets[index] == 1
@@ -47,10 +49,14 @@ class GamePetChooseAdapter(private var characterList: IntArray,
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         Log.d("GamePetChooseAdapter", "Binding position: $position")
-        holder.bind(filteredPetsList[position])
-//        val petInfo = petInfo2()
-//        val petImageId = petInfo.getPetInfoById(filteredPetsList[position])?.imageId
-//        petImageId?.let { holder.bind(it) }
+
+        Log.d("Choose Adapter" , "what da fuck $filteredPetsList[position]")
+//        holder.bind(filteredPetsList[position])
+        val petInfo = petInfo2()
+        val petImageId = petInfo.getPetInfoById(filteredPetsList[position])?.imageId
+            temp = petInfo.getPetInfoById(filteredPetsList[position])?.id!!
+//        Log.d("Choose Adapter" , "what da fuck $filteredPetsList[position]")
+        petImageId?.let { holder.bind(it) }
     }
 
 
@@ -58,8 +64,8 @@ class GamePetChooseAdapter(private var characterList: IntArray,
         val imageView: ImageView = itemView.findViewById(R.id.imageView)
         val petInfo  =  petInfo2()
 
-        fun bind(petInfoID: Int) {
-            val photoResId = petInfo.getPetInfoById(petInfoID)?.imageId
+        fun bind(photoResId: Int) {
+//            val photoResId = petInfo.getPetInfoById(petInfoID)?.imageId
 
             if (photoResId != null) { imageView.setImageResource(photoResId) } // Set the image resource
 
@@ -81,10 +87,39 @@ class GamePetChooseAdapter(private var characterList: IntArray,
 
             //trigger the long-click logic for showing details
             itemView.setOnLongClickListener {
+                val petInfoID = temp
                 onLongClick(petInfoID)
                 true
             }
         } //end of bind funciton
+
+//        fun bind(petInfoID: Int) {
+//            val photoResId = petInfo.getPetInfoById(petInfoID)?.imageId
+//
+//            if (photoResId != null) { imageView.setImageResource(photoResId) } // Set the image resource
+//
+//            // Set click listener on the item
+//            itemView.setOnClickListener {
+//
+//                //unselect it if the photos has already being chosen
+//                if (selectedImages.contains(photoResId)) {
+//                    if (photoResId != null) { onImageDeselected(photoResId) }
+//
+//                } //select if the image has not been selected
+//                else {
+//                    if (photoResId != null) { onImageSelected(photoResId) }
+//
+//                }
+//            } //end of onclicklistener
+//
+//            //hello ashpfiohj qpe
+//
+//            //trigger the long-click logic for showing details
+//            itemView.setOnLongClickListener {
+//                onLongClick(petInfoID)
+//                true
+//            }
+//        } //end of bind funciton
     }
 
 
