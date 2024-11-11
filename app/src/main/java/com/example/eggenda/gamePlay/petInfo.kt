@@ -45,6 +45,11 @@ class petInfo {
 //        rarity = dict.RARITY_LEGENDARY
     )
 
+//    // Function to get the pet info by ID
+//    fun getViewInfoById(id: Int): petViewInfo? {
+//        return petInfoMap[id]?.invoke() // Returns an instance of the specified pet class
+//    }
+
     //deal 10 damage every 3 turns on board
     private fun catDealDamage(petStatus: Array<petStatus?>,petOrder:Int):Int{
         if(petStatus[petOrder]!!.stayNum != 0 && petStatus[petOrder]!!.stayNum % catInfo.count == 0 ) {
@@ -243,6 +248,19 @@ class petInfo {
 
     fun getPetCount(petStatus: Array<petStatus?>,petOrder:Int): Int {
         return petCountMap[petStatus[petOrder]!!.unitId]!!.invoke(petStatus,petOrder)
+    }
+
+//    fun getViewInfoById(id: Int): petViewInfo? {
+//        return petInfoMap[id]?.invoke() // Returns an instance of the specified pet class
+//    }
+
+    fun getAllPetImageIds(): List<Int> {
+        return (0 until TOTAL).mapNotNull { getPetInfoById(it)?.imageId }
+//
+//        val ret = MutableList<Int>()
+//        for(i in 0..TOTAL-1){
+//            ret.add(getPetInfoById(i)!!.imageId)
+//        }
     }
 
 }
