@@ -77,6 +77,8 @@ class GamePetChooseAdapter(private var characterList: IntArray,
                 }
             } //end of onclicklistener
 
+            //hello ashpfiohj qpe
+
             //trigger the long-click logic for showing details
             itemView.setOnLongClickListener {
                 onLongClick(petInfoID)
