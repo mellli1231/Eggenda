@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <shape xmlns:android="http://schemas.android.com/apk/res/android">
-    <solid android:color="@color/white" /> <!-- Stroke color -->" /> <!-- Background color -->
+    <solid android:color="@color/fire" /> <!-- Stroke color -->" /> <!-- Background color -->
     <stroke
-        android:width="10dp"
-        android:color="#FF0000">
+        android:width="3dp"
+        android:color="@color/bronze_rare"
+        android:padding = "2dp">
     </stroke>      <!-- Stroke width -->
     <corners android:radius="5dp" /> <!-- Optional: rounded corners -->
 </shape>

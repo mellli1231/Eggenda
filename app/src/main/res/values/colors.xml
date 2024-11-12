@@ -12,5 +12,10 @@
     <color name="dark_blue">#1B1F31</color>
     <color name="enable_color">#FFB554</color>
     <color name="disabled_color">#DFD7D7</color>
+    <color name="gold_rare">#EEFFDB59</color>
+    <color name="silver_rare">#C0C0C0</color>
+    <color name="bronze_rare">#B08D57</color>
     <color name="fire">#EEFF5959</color>
+    <color name="water">#EE5996FF</color>
+    <color name="forest">#EE16FF6C</color>
 </resources>
