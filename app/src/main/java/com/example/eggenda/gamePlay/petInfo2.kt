@@ -204,6 +204,7 @@ class petInfo2 {
                 return petStatus[petOrder]!!.stayNum * abs(10-petStatus[petOrder]!!.stayNum)
             }
             return 0
+            //he
         }
 
         override fun attackCountdown(petStatus: Array<petStatus?>, petOrder: Int): Int {
