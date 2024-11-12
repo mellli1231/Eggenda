@@ -15,6 +15,7 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.eggenda.R
+import com.example.eggenda.gamePetChoose.SharedPreferenceManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -23,6 +24,8 @@ import kotlinx.coroutines.launch
 import org.w3c.dom.Text
 
 class gameActivity : AppCompatActivity() {
+
+    private lateinit var sharedPreferenceManager: SharedPreferenceManager
 
     //load the info from hardcoded dataset
     private lateinit var stageInfo:stageInfo
@@ -97,10 +100,12 @@ class gameActivity : AppCompatActivity() {
         //load the info from hardcoded dataset
         stageInfo = stageInfo()
         petInfo = petInfo2()
+        sharedPreferenceManager = SharedPreferenceManager(this)
 
 
         selectedStage = 0
-        chosenPetId = intArrayOf(0,1,2,3,4)
+//        chosenPetId = intArrayOf(0,1,2,3,4)
+        chosenPetId = sharedPreferenceManager.getPetsList()
         boardRow = 3
         boardCol = 5
         boardSize = boardRow * boardCol

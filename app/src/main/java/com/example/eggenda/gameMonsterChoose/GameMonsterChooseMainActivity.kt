@@ -20,7 +20,7 @@ class GameMonsterChooseMainActivity : AppCompatActivity () {
 
         sharedPreferenceManager = SharedPreferenceManager(this)
 
-        val amount = 3
+        val amount = 5
         sharedPreferenceManager.savePetsAmount(amount)
 
         val retrievedList = sharedPreferenceManager.getPetOwnership()
