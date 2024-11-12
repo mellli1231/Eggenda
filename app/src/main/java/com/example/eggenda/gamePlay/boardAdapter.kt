@@ -19,10 +19,6 @@ class boardAdapter(
         val imageView: ImageView = itemView.findViewById(R.id.imageView)
 
         val elementFrame: ImageView = itemView.findViewById(R.id.elementFrame)
-
-//        val nextDmgFrame: ImageView = itemView.findViewById(R.id.nextDmgFrame)
-//        val nextDmgView: TextView = itemView.findViewById(R.id.nextDmg)
-
         val countFrame: ImageView = itemView.findViewById(R.id.countFrame)
         val countView: TextView = itemView.findViewById(R.id.attackCount)
 
