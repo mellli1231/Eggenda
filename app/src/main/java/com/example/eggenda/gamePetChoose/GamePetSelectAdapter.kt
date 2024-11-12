@@ -8,8 +8,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
+import com.example.eggenda.gamePlay.petInfo2
 
-class SelectAdapter(private var itemCount: Int, private var selectedImages: MutableList<Int?>)
+class SelectAdapter(private var itemCount: Int,
+                    private var selectedIDs: MutableList<Int?>,
+                    private var petInfo : petInfo2)
     : RecyclerView.Adapter<SelectAdapter.ViewHolder>(){
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -21,15 +24,13 @@ class SelectAdapter(private var itemCount: Int, private var selectedImages: Muta
     override fun getItemCount(): Int  = itemCount
 
     override fun onBindViewHolder(holder:ViewHolder, position: Int) {
-//       selectedImages[position].let { imageId ->
-//           selectedImages[position]?.let {
-//               holder.imageView.setImageResource(it) }
-//       } ?: run{
-//           holder.imageView.setImageResource(R.drawable.rectangle_blocks)
-//       }
+        if (selectedIDs[position] != null) {
 
-        if (selectedImages[position] != null) {
-            holder.imageView.setImageResource(selectedImages[position]!!)
+            //get the photo id by function
+            petInfo = petInfo2()
+            val imageSetting = petInfo.getPetInfoById(selectedIDs[position]!!)?.imageId
+            holder.imageView.setImageResource(imageSetting!!)
+
         } else {
             holder.imageView.setImageResource(R.drawable.game_set_colur)
         }
@@ -38,36 +39,16 @@ class SelectAdapter(private var itemCount: Int, private var selectedImages: Muta
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val imageView: ImageView = itemView.findViewById(R.id.imageView)
-
     }
 
-    fun updateImageAt(position: Int, imageId: Int?) {
-        selectedImages[position] = imageId // 更新指定位置的圖片
-        notifyItemChanged(position) // 通知更新
+    fun updatePetsAt(position: Int, petId: Int?) {
+        selectedIDs[position] = petId // renew specific place's id
+        notifyItemChanged(position) // inform updated
     }
 
-    fun updateImages(newImages: MutableList<Int?>) {
-        selectedImages = newImages.toMutableList()
+    fun updatePets(newPets: MutableList<Int?>) {
+        selectedIDs = newPets.toMutableList()
         notifyDataSetChanged()
     }
-
-    //when remove a photo, go to front one
-//    fun removeImage (imageId: Int?){
-//        val index = selectedImages.indexOf(imageId)
-//        if(index != -1){
-//
-//            for(i in index until selectedImages.size - 1){
-//                selectedImages[i] = selectedImages[i+1]
-//            }
-//            selectedImages[selectedImages.size-1] = null
-//            // Notify that an item was removed
-//            notifyItemRemoved(index)
-//            notifyItemRangeChanged(index, selectedImages.size-index)
-//            // Log the current state of the list
-//            Log.d("SelectAdapter", "Image removed: $imageId, New list: ${selectedImages.joinToString()}")
-//        }
-//
-//        Log.d("SelectAdapter", "Image removed: $imageId, New list: ${selectedImages.joinToString()}")
-//    }
 
 }

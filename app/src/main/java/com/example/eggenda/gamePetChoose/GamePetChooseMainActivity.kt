@@ -48,19 +48,19 @@ class GamePetChooseMainActivity : AppCompatActivity(){
         //get the pets ID with int array
         val petsTotalAmount : Int = petInfo.getTotalPetAmount()
 
-        //the mutuable list that can save the list of the photots,that can send to the game part
-        val selectedPetPhoto =  MutableList<Int?>(maxSelectableImage){ null }
+        //the mutuable list that can save the list of the pets ,that can send to the game part
+        val selectedPetID =  MutableList<Int?>(maxSelectableImage){ null }
 
         //initialize view model
         val factory = GamePetChooseViewModel.GamePetChooseViewModelFactory(sharedPreferenceManager)
         petsViewModel = ViewModelProvider(this, factory).get(GamePetChooseViewModel::class.java)
 
         //initialize pets array that has in the code in int array
-        allPetsArrayID = IntArray(petsTotalAmount) {it + 1}
+        allPetsArrayID = intArrayOf(0,1,2,3,4)
 
         //initialize start button
         startButton = findViewById(R.id.fight_start)
-        updateStartButtonState(false, selectedPetPhoto)   //update the start button to gray
+        updateStartButtonState(false, selectedPetID)   //update the start button to gray
 
         //set the character 3 in a row
         characterRecyclerView = findViewById(R.id.game_characterchoose_recyclerView)
@@ -69,11 +69,11 @@ class GamePetChooseMainActivity : AppCompatActivity(){
         //set adapter for showing pets
         petsAdapter = GamePetChooseAdapter(
             allPetsArrayID,
-            selectedPetPhoto,
+            selectedPetID,
             sharedPreferenceManager,
             this,
-            { imageId -> onImageSelected(imageId, selectedPetPhoto) },
-            {imageId ->  onImageDeselected(imageId, selectedPetPhoto) },
+            {petId -> onImageSelected(petId, selectedPetID) },
+            {petId ->  onImageDeselected(petId, selectedPetID) },
             {petId -> showPetDetailDialog(petId)})
         petsAdapter.notifyDataSetChanged()
         characterRecyclerView.adapter = petsAdapter
@@ -85,77 +85,84 @@ class GamePetChooseMainActivity : AppCompatActivity(){
         characterSelectedList.layoutManager = GridLayoutManager(this, maxSelectableImage)
 
         //set the adapter for selecting pets
-        selectPetsAdapter = SelectAdapter(maxSelectableImage, selectedPetPhoto)
+        selectPetsAdapter = SelectAdapter(maxSelectableImage, selectedPetID, petInfo)
         characterSelectedList.adapter = selectPetsAdapter
 
         //observe the changes of the pets photo
         petsViewModel.allPets.observe(this, Observer { photos ->
             Log.d("MainActivity", "allPets updated: $photos")
-            petsAdapter.updateImages(photos)
+            petsAdapter.updatePetsChoose(photos)
         })
 
         petsViewModel.selectedPets.observe(this, Observer { photos ->
-            selectPetsAdapter.updateImages(photos)
+            selectPetsAdapter.updatePets(photos)
             Log.d("Main Activity", "updated")
-            updateStartButtonState(petsViewModel.isSelectionComplete(), selectedPetPhoto)
+            updateStartButtonState(petsViewModel.isSelectionComplete(), selectedPetID)
         })
 
-        petsViewModel.updateList(selectedPetPhoto)
+        petsViewModel.updateList(selectedPetID)
 
     }
 
-    //make updates of selected photos with selectedAdapter
-    private fun onImageSelected(imageId: Int, selectedPetPhoto :MutableList <Int?> ) {
-        val emptyIndex = selectedPetPhoto.indexOfFirst { it == null}
+    //make updates of selected pets with selectedAdapter
+    private fun onImageSelected(petId: Int, selectedPetID :MutableList <Int?> ) {
+        val emptyIndex = selectedPetID.indexOfFirst { it == null}
+
+        //get the petId by function
+        val petSelected = petInfo.getPetInfoById(petId)?.id
+
         //if there is space
         if(emptyIndex != -1){
-            selectedPetPhoto[emptyIndex] = imageId //renew the photo
-            selectPetsAdapter.updateImageAt(emptyIndex, imageId)
+            selectedPetID[emptyIndex] = petSelected //renew the photo
+            selectPetsAdapter.updatePetsAt(emptyIndex, petSelected)
 
             // Update the ViewModel with the current selection
-            petsViewModel.updateList(selectedPetPhoto)
+            petsViewModel.updateList(selectedPetID)
+
+            Log.d("MainActivity", "Image selected: $petId, Current selection: ${selectedPetID.joinToString()}")
 
         }
-        updateStartButtonState(petsViewModel.isSelectionComplete(), selectedPetPhoto)
+        updateStartButtonState(petsViewModel.isSelectionComplete(), selectedPetID)
         petsAdapter.notifyDataSetChanged() // 更新所有圖片的 RecyclerView
         selectPetsAdapter.notifyDataSetChanged() // 更新已選擇圖片的 RecyclerView
     }
 
     //make deletetion and change of list with selected Adapter
-    private fun onImageDeselected(imageId: Int, selectedPetPhoto: MutableList<Int?>) {
+    private fun onImageDeselected(petId: Int, selectedPetID: MutableList<Int?>) {
         // find the chosen place of the photo
-        val index = selectedPetPhoto.indexOf(imageId)
+        val index = selectedPetID.indexOf(petId)
+
         if (index != -1) { // if photo found
 
-            selectedPetPhoto[index] = null
+            selectedPetID[index] = null
 //            selectPetsAdapter.removeImage(imageId)
 
             // clear the chosen photo
-            selectedPetPhoto[index] = null
+            selectedPetID[index] = null
 
             // move photo
-            for (i in index until selectedPetPhoto.size - 1) {
-                selectedPetPhoto[i] = selectedPetPhoto[i + 1] // 將下一個圖片移到當前位置
+            for (i in index until selectedPetID.size - 1) {
+                selectedPetID[i] = selectedPetID[i + 1] // 將下一個圖片移到當前位置
             }
-            selectedPetPhoto[selectedPetPhoto.size - 1] = null // 清空最後一個位置
+            selectedPetID[selectedPetID.size - 1] = null // 清空最後一個位置
 
             // Update the ViewModel with the current selection
-            petsViewModel.updateList(selectedPetPhoto)
+            petsViewModel.updateList(selectedPetID)
 
-            Log.d("MainActivity", "Image deselected: $imageId, Current selection: ${selectedPetPhoto.joinToString()}")
+            Log.d("MainActivity", "Image deselected: $petId, Current selection: ${selectedPetID.joinToString()}")
 //
         }
 
-        updateStartButtonState(petsViewModel.isSelectionComplete(), selectedPetPhoto)
+        updateStartButtonState(petsViewModel.isSelectionComplete(), selectedPetID)
 
-        Log.d("MainActivity", "Image removed: $imageId, New list: ${selectedPetPhoto.joinToString()}")
+        Log.d("MainActivity", "Image removed: $petId, New list: ${selectedPetID.joinToString()}")
 
         petsAdapter.notifyDataSetChanged()
         selectPetsAdapter.notifyDataSetChanged()
     }
 
     //update the color state of the start button
-    private fun updateStartButtonState(isEnable:Boolean, selectedPetPhoto: MutableList<Int?>){
+    private fun updateStartButtonState(isEnable:Boolean, selectedPetArray: MutableList<Int?>){
         if(isEnable){
             //validate start button and let it go to the next page
             startButton.isEnabled = true
@@ -165,7 +172,7 @@ class GamePetChooseMainActivity : AppCompatActivity(){
             startButton.setOnClickListener{
                 //save the list to shared preference
                 sharedPreferenceManager = SharedPreferenceManager(this)     //initalize mananger
-                val petIntArray : IntArray = selectedPetPhoto.filterNotNull().toIntArray()
+                val petIntArray : IntArray = selectedPetArray.filterNotNull().toIntArray()
                 sharedPreferenceManager.savePetsList(petIntArray)
 
                 //go to game start activity
@@ -185,7 +192,6 @@ class GamePetChooseMainActivity : AppCompatActivity(){
 
     //set the show dialog funciton
     private fun showPetDetailDialog(petId:Int){
-
         val dialog = PetChooseDialogFragment.newInstance(petId)
         dialog.show(supportFragmentManager, "PetChooseDialog")
 
