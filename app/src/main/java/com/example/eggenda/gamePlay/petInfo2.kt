@@ -242,10 +242,10 @@ class petInfo2 {
         override val element: Int =  dict.ELEMENT_WATER
         override val attackType: Int = dict.ATK_TYPE_STAY
         override val damage: Int = 100
-        override val count: Int = 5
+        override val count: Int = 4
         override val skillName: String = "Hello..."
         override val description: String = "Deal "+damage+" "+dict.ELEMENT_STRING[element]+"\n" +
-                "on the 5 th turn\n" +
+                "on the "+count+ " th turn\n" +
                 "when it is placed on the board"
         override val rarity: Int = dict.RARITY_LEGENDARY
 

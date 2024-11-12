@@ -17,10 +17,10 @@ class gameViewModel2 : ViewModel(){
     private val _deckStatus = MutableLiveData<IntArray>()
     private val _damageDealt = MutableLiveData<IntArray>()
 
+    private val _currentPlayerHp = MutableLiveData<Int>()
 
 
     private val _damageReport = MutableLiveData<String>()
-
     private val _gameMessage = MutableLiveData<String>()
     private val _forceReturn = MutableLiveData<Boolean>()
 
@@ -89,6 +89,18 @@ class gameViewModel2 : ViewModel(){
         }
     }
 
+    val currentPlayerHp: LiveData<Int> get() = _currentPlayerHp
+
+    fun getCurrentPlayerHp():Int{
+        return _currentPlayerHp.value!!
+    }
+
+    fun updateCurrentPlayerHp(newCurrentPlayerHp: Int) {
+        viewModelScope.launch {
+            _currentPlayerHp.value = newCurrentPlayerHp
+        }
+    }
+
     val damageReport: LiveData<String> get() = _damageReport
 
     fun getDamageReport():String{
@@ -116,7 +128,7 @@ class gameViewModel2 : ViewModel(){
         }
     }
 
-    val deckStatus: LiveData<IntArray> get() = _deckStatus
+    private val deckStatus: LiveData<IntArray> get() = _deckStatus
 
     fun getDeckStatus():IntArray{
         return _deckStatus.value!!
@@ -129,7 +141,7 @@ class gameViewModel2 : ViewModel(){
     }
 
 
-    val boardStatus: LiveData<IntArray> get() = _boardStatus
+    private val boardStatus: LiveData<IntArray> get() = _boardStatus
     fun getBoardStatus():IntArray{
         return _boardStatus.value!!
     }
