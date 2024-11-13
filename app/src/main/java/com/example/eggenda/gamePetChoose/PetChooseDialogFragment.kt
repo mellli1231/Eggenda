@@ -38,6 +38,8 @@ class PetChooseDialogFragment  : DialogFragment (){
         val rarity = dict.RARETY_STRING[getpet?.rarity!!]
         val rootLayout : View = view.findViewById(R.id.dialog_root_layout)
 
+
+        //rarity need to change
         when (rarity){
             "LEGENDARY" ->
                 when(element_background){
