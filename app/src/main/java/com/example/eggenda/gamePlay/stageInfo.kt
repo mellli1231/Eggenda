@@ -123,7 +123,7 @@ class stageInfo {
         override val acceptElement: Int = dict.STAGE_ACCEPT_ALL_ELEMENT
         override val objectiveType: Int = dict.STAGE_OBJECTIVE_FIGHT
         override val maxTurn: Int = 6
-        override val damageRequirement: Int = 140
+        override val damageRequirement: Int = 160
         override val description: String = "Icy will pull your pet for comfy hug :3"
         override val deckSize:Int = 3
 
