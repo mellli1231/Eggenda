@@ -684,7 +684,7 @@ class gameActivity : AppCompatActivity() {
         val petStatus = petStatusBuffer
         val reportList = mutableListOf<String>()
         val acceptElement = stageInfo.StageInfoMap(selectedStage)!!.acceptElement
-        hitNum = 0
+        hitNum = 0//
         for(i in 0..deckSize-1){
             val damage = petInfo.getPetInfoById(chosenPetId[i])!!.dealDamage(petStatus,i)
             val petElement = petInfo.getPetInfoById(chosenPetId[i])!!.element
