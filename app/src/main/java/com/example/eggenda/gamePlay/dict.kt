@@ -47,7 +47,10 @@ object dict {
     const val STAGE_ACTION_ATTACK = 1
     const val STAGE_ACTION_PUSH = 2
 
+    const val STAGE_PUSH_NORTH = 0
+    const val STAGE_PUSH_SOUTH = 1
 
+    val PUSH_STRING = arrayOf("north","south")
 
     //For run stage
     const val GAME_NOT_START = -2

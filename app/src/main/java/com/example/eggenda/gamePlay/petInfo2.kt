@@ -50,10 +50,10 @@ class petInfo2 {
         override val id: Int = 0
         override val name: String = "Chubby Bunny"
         override val imageId: Int = R.drawable.pet_chubby_bunny_large
-        override val element: Int = dict.ELEMENT_FIRE
+        override val element: Int = dict.ELEMENT_FOREST
         override val attackType: Int = dict.ATK_TYPE_STAY
         override val damage: Int = 30
-        override val count: Int = 3
+        override val count: Int = 2
         override val skillName :String ="Sleepy..."
         override val description: String = "Deal"+damage+" "+dict.ELEMENT_STRING[element]+" damage\n" +
                 "on every "+count +" turns\n" +
@@ -150,7 +150,7 @@ class petInfo2 {
         override val id: Int = 2
         override val name: String = "Flaming Skull"
         override val imageId: Int = R.drawable.pet_flaming_skull_large
-        override val element: Int =  dict.ELEMENT_FOREST
+        override val element: Int =  dict.ELEMENT_FIRE
         override val attackType: Int = dict.ATK_TYPE_BOUNCE
         override val damage: Int = 40
         override val count: Int = 2
@@ -203,6 +203,7 @@ class petInfo2 {
         override fun dealDamage(petStatus: Array<petStatus?>, petOrder: Int): Int {
             if(petStatus[petOrder]!!.location == dict.onBoard){
                 return petStatus[petOrder]!!.stayNum * abs(10-petStatus[petOrder]!!.stayNum)
+//                return 0
             }
             return 0
             //he
@@ -241,7 +242,7 @@ class petInfo2 {
         override val imageId: Int = R.drawable.pet_shy_raccoon_large
         override val element: Int =  dict.ELEMENT_WATER
         override val attackType: Int = dict.ATK_TYPE_STAY
-        override val damage: Int = 100
+        override val damage: Int = 120
         override val count: Int = 4
         override val skillName: String = "Hello..."
         override val description: String = "Deal "+damage+" "+dict.ELEMENT_STRING[element]+"\n" +
