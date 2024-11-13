@@ -23,7 +23,7 @@ object dict {
     const val ELEMENT_WATER = 1
     const val ELEMENT_FOREST = 2
 
-    val ELEMENT_STRING = arrayOf("Fire", "Water", "Forest")
+    val ELEMENT_STRING = arrayOf("Fire", "Water", "Forest", "All")
 
     const val RARITY_NORMAL = 0
     const val RARITY_RARE = 1
@@ -37,9 +37,11 @@ object dict {
     val ATK_STRING = arrayOf("Stay", "Return", "Bounce")
 
     //For stage
-    const val STAGE_OBJECTIVE_EXACT = 0
-    const val STAGE_OBJECTIVE_BEST = 1
-    const val STAGE_OBJECTIVE_FIGHT = 2
+    const val STAGE_OBJECTIVE_EXACT = 0     //exact value
+    const val STAGE_OBJECTIVE_BEST = 1      //as long as you can kill them
+    const val STAGE_OBJECTIVE_FIGHT = 2     //boss will fight you back
+
+//    val STAGE_
 
     const val STAGE_ACCEPT_ALL_ELEMENT = 3
 

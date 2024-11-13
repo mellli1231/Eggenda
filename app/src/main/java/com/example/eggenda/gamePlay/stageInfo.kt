@@ -16,8 +16,6 @@ class stageInfo {
     )
 
 
-
-
     fun StageInfoMap(id: Int): stage?{
         val petMap: Map<Int, () -> stage> = mapOf(
             0 to { stage_0() },
