@@ -33,7 +33,7 @@
             android:id="@+id/bossView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:srcCompat="@drawable/game_stage1" />
+            app:srcCompat="@drawable/game_enemy_goblin" />
 
         <ImageView
             android:id="@+id/effect"
@@ -136,6 +136,7 @@
 
 
     <FrameLayout
+        android:id="@+id/hp_bar_player_BG"
         android:layout_width="300dp"
         android:layout_height="30dp"
         android:background="@drawable/game_hp_bar_background"
