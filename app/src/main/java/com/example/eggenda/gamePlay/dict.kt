@@ -56,6 +56,7 @@ object dict {
     const val GAME_WON = 1
     const val GAME_TURN_EXCEED = 2
     const val GAME_DAMAGE_EXCEED = 3
+    const val GAME_PLAYER_HP_ZERO = 4
 
 
 

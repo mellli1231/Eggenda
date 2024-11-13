@@ -1,6 +1,5 @@
 package com.example.eggenda.gamePlay
 
-import android.media.audiofx.DynamicsProcessing.Stage
 import com.example.eggenda.R
 
 
@@ -47,10 +46,10 @@ class stageInfo {
     private class stage_0():stage{
         override val id: Int = 0
         override val name: String = "Dummy"
-        override val bossImageId: Int = R.drawable.game_stage2
+        override val bossImageId: Int = R.drawable.game_enemy_stamp
         override val element: Int = dict.STAGE_ACCEPT_ALL_ELEMENT
         override val objectiveType: Int = dict.STAGE_OBJECTIVE_BEST
-        override val maxTurn: Int = 11
+        override val maxTurn: Int = 9
         override val damageRequirement: Int = 150
 
         override fun actionType(turn: Int): Int {
@@ -70,7 +69,7 @@ class stageInfo {
     private class stage_1():stage{
         override val id: Int = 1
         override val name: String = "Dummy"
-        override val bossImageId: Int = R.drawable.game_stage2
+        override val bossImageId: Int = R.drawable.game_enemy_stamp
         override val element: Int = dict.ELEMENT_FIRE
         override val objectiveType: Int = dict.STAGE_OBJECTIVE_EXACT
         override val maxTurn: Int = 9
@@ -92,8 +91,8 @@ class stageInfo {
     private class stage_2():stage{
         override val id: Int = 2
         override val name: String = "Goblin"
-        override val bossImageId: Int = R.drawable.game_stage2
-        override val element: Int = dict.ELEMENT_FIRE
+        override val bossImageId: Int = R.drawable.game_enemy_goblin
+        override val element: Int = dict.STAGE_ACCEPT_ALL_ELEMENT
         override val objectiveType: Int = dict.STAGE_OBJECTIVE_FIGHT
         override val maxTurn: Int = 10
         override val damageRequirement: Int = 230
