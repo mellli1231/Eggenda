@@ -12,12 +12,13 @@ class gameViewModel2 : ViewModel(){
     private val _gameRunState = MutableLiveData<Int>(-2)
     private val _turn = MutableLiveData<Int>()
     private val _currentBossHp = MutableLiveData<Int>()
-    val _petStatus = MutableLiveData<Array<petStatus?>>()
+    private val _petStatus = MutableLiveData<Array<petStatus?>>()
     private val _boardStatus = MutableLiveData<IntArray>()
     private val _deckStatus = MutableLiveData<IntArray>()
     private val _damageDealt = MutableLiveData<IntArray>()
 
     private val _currentPlayerHp = MutableLiveData<Int>()
+    private val _damageFromBoss = MutableLiveData<Int>()
 
 
     private val _damageReport = MutableLiveData<String>()
@@ -98,6 +99,16 @@ class gameViewModel2 : ViewModel(){
     fun updateCurrentPlayerHp(newCurrentPlayerHp: Int) {
         viewModelScope.launch {
             _currentPlayerHp.value = newCurrentPlayerHp
+        }
+    }
+
+    fun getDamageFromBoss():Int{
+        return _damageFromBoss.value!!
+    }
+
+    fun updateDamageFromBoss(newDamageFromBoss: Int){
+        viewModelScope.launch {
+            _damageFromBoss.value = newDamageFromBoss
         }
     }
 
