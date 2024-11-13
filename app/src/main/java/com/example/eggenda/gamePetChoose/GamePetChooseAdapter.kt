@@ -42,15 +42,15 @@ class GamePetChooseAdapter(private var characterList: IntArray,
         return ViewHolder(view)
     }
 
+    //hello
+
     override fun getItemCount(): Int {return filteredPetsList.size}
 
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         Log.d("GamePetChooseAdapter", "Binding position: $position")
-        Log.d("Choose Adapter" , "what da fuck $filteredPetsList[position]")
         val petInfo = petInfo2()
         val petId = petInfo.getPetInfoById(filteredPetsList[position])?.id!!
-        Log.d("Choose Adapter", "PET IDDDD : $petId")
         petId?.let { holder.bind(it) }
     }
 
