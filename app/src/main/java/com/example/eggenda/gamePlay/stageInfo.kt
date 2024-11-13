@@ -21,7 +21,9 @@ class stageInfo {
 
     fun StageInfoMap(id: Int): stage?{
         val petMap: Map<Int, () -> stage> = mapOf(
-            0 to{ stage_0() }
+            0 to { stage_0() },
+            1 to { stage_1() },
+            2 to { stage_2() },
         )
         return petMap[id]?.invoke()
     }
@@ -88,11 +90,11 @@ class stageInfo {
     }
 
     private class stage_2():stage{
-        override val id: Int = 1
+        override val id: Int = 2
         override val name: String = "Goblin"
         override val bossImageId: Int = R.drawable.game_stage2
         override val element: Int = dict.ELEMENT_FIRE
-        override val objectiveType: Int = dict.STAGE_OBJECTIVE_EXACT
+        override val objectiveType: Int = dict.STAGE_OBJECTIVE_FIGHT
         override val maxTurn: Int = 10
         override val damageRequirement: Int = 230
 
@@ -112,7 +114,7 @@ class stageInfo {
 
         override fun actionDescription(turn: Int): String {
             if(turn % 2 == 0){
-                return name+" dealt 20 damages to you!!"
+                return name+" dealt "+actionAmount(turn)+" damages to you!!"
             }
             return ""
         }
