@@ -93,7 +93,7 @@ class stageInfo {
         override val damageRequirement: Int = 260
         override val description: String = ""
         override val deckSize:Int = 4
-
+        //
         override fun actionType(turn: Int): Int {
             if(turn % 2 == 0){
                 return dict.STAGE_ACTION_ATTACK
