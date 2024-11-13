@@ -29,8 +29,8 @@ class stageInfo {
 
         //for game play use
         fun actionType(turn:Int ):Int
-        fun actionAmount(turn: Int):Int
-        fun actionDescription(turn: Int):String
+        fun actionAmount(turn: Int, petStatus: Array<petStatus?>):Int
+        fun actionDescription(turn: Int,petStatus: Array<petStatus?>):String
 
     }
 
@@ -49,11 +49,11 @@ class stageInfo {
             return dict.STAGE_ACTION_NO_ACTION
         }
 
-        override fun actionAmount(turn: Int): Int {
+        override fun actionAmount(turn: Int,petStatus: Array<petStatus?>): Int {
             return 0
         }
 
-        override fun actionDescription(turn: Int): String {
+        override fun actionDescription(turn: Int,petStatus: Array<petStatus?>): String {
             return ""
         }
     }
@@ -74,11 +74,11 @@ class stageInfo {
             return dict.STAGE_ACTION_NO_ACTION
         }
 
-        override fun actionAmount(turn: Int): Int {
+        override fun actionAmount(turn: Int,petStatus: Array<petStatus?>): Int {
             return 0
         }
 
-        override fun actionDescription(turn: Int): String {
+        override fun actionDescription(turn: Int,petStatus: Array<petStatus?>): String {
             return ""
         }
     }
@@ -101,16 +101,16 @@ class stageInfo {
             return dict.STAGE_ACTION_NO_ACTION
         }
 
-        override fun actionAmount(turn: Int): Int {
+        override fun actionAmount(turn: Int,petStatus: Array<petStatus?>): Int {
             if(turn % 2 == 0){
                 return 20
             }
             return 0
         }
 
-        override fun actionDescription(turn: Int): String {
+        override fun actionDescription(turn: Int, petStatus: Array<petStatus?>): String {
             if(turn % 2 == 0){
-                return name+" dealt "+actionAmount(turn)+" damages to you!!"
+                return name+" dealt "+actionAmount(turn,petStatus)+" damages to you!!"
             }
             return ""
         }
@@ -134,16 +134,16 @@ class stageInfo {
             return dict.STAGE_ACTION_NO_ACTION
         }
 
-        override fun actionAmount(turn: Int): Int {
+        override fun actionAmount(turn: Int,petStatus: Array<petStatus?>): Int {
             if(turn % 3 == 0){
                 return dict.STAGE_PUSH_NORTH
             }
             return 0
         }
 
-        override fun actionDescription(turn: Int): String {
+        override fun actionDescription(turn: Int,petStatus: Array<petStatus?>): String {
             if(turn % 3 == 0){
-                return name+" pull your pet to the "+dict.PUSH_STRING[actionAmount(turn)]+"!!"
+                return name+" pull your pet to the "+dict.PUSH_STRING[actionAmount(turn,petStatus)]+"!!"
             }
             return ""
         }
