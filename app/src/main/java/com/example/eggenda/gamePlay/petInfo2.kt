@@ -52,11 +52,10 @@ class petInfo2 {
         override val imageId: Int = R.drawable.pet_chubby_bunny_large
         override val element: Int = dict.ELEMENT_FOREST
         override val attackType: Int = dict.ATK_TYPE_STAY
-        override val damage: Int = 30
+        override val damage: Int = -30
         override val count: Int = 2
         override val skillName :String ="Sleepy..."
-        override val description: String = "Deal"+damage+" "+dict.ELEMENT_STRING[element]+" damage\n" +
-                "on every "+count +" turns\n" +
+        override val description: String = "Heals "+(damage * -1)+" hp on every "+count +" turns\n" +
                 "it stay on the board."
         override val rarity: Int = dict.RARITY_NORMAL
 
@@ -87,7 +86,7 @@ class petInfo2 {
         }
 
         override fun nextDamage(petStatus: Array<petStatus?>,petOrder:Int,deckSize:Int): String {
-            return damage.toString()+" "+dict.ELEMENT_STRING[element]+" damages"
+            return "Heals "+(damage * -1).toString()+" hp"
         }
 
     }

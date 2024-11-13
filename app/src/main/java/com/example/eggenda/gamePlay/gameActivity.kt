@@ -23,6 +23,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.w3c.dom.Text
+import kotlin.math.abs
 
 class gameActivity : AppCompatActivity() {
 
@@ -85,6 +86,7 @@ class gameActivity : AppCompatActivity() {
     private lateinit var damageDealtBuffer: IntArray
     private var currentPlayerHpBuffer: Int = 0
     private var damageFromBossBuffer: Int = 0
+    private var healToPlayerBuffer :Int = 0
 
 
     //game visual purpose
@@ -113,9 +115,9 @@ class gameActivity : AppCompatActivity() {
         sharedPreferenceManager = SharedPreferenceManager(this)
 
 
-        selectedStage = 3
-//        chosenPetId = intArrayOf(0,1,2,3,4)
-        chosenPetId = sharedPreferenceManager.getPetsList()
+        selectedStage = 2
+        chosenPetId = intArrayOf(0,1,2,3,4)
+//        chosenPetId = sharedPreferenceManager.getPetsList()
         boardRow = 3
         boardCol = 5
         boardSize = boardRow * boardCol
@@ -221,6 +223,7 @@ class gameActivity : AppCompatActivity() {
 
         currentPlayerHpBuffer = 100
         damageFromBossBuffer = 0
+        healToPlayerBuffer = 0
 
         //Plug init value to viewModel
         if(viewModel.getGameRunState() != dict.GAME_START){
@@ -233,6 +236,7 @@ class gameActivity : AppCompatActivity() {
 
             viewModel.updateCurrentPlayerHp(currentPlayerHpBuffer)
             viewModel.updateDamageFromBoss(damageFromBossBuffer)
+            viewModel.updateHealToPLayer(healToPlayerBuffer)
         }
 
         if(stageInfo.StageInfoMap(selectedStage)!!.objectiveType != dict.STAGE_OBJECTIVE_FIGHT){
@@ -370,6 +374,7 @@ class gameActivity : AppCompatActivity() {
 
         currentPlayerHpBuffer = viewModel.getCurrentPlayerHp()
         damageFromBossBuffer = viewModel.getDamageFromBoss()
+        healToPlayerBuffer = viewModel.getHealToPLayer()
     }
 
     private fun fightSaver(){
@@ -382,6 +387,7 @@ class gameActivity : AppCompatActivity() {
 
         viewModel.updateCurrentPlayerHp(currentPlayerHpBuffer)
         viewModel.updateDamageFromBoss(damageFromBossBuffer)
+        viewModel.updateHealToPLayer(healToPlayerBuffer)
     }
 
     private fun gameFightStart(){
@@ -427,6 +433,7 @@ class gameActivity : AppCompatActivity() {
 
                 if (reportList.size > 0) {
                     showReportDialog(reportList)
+                    playerHpBarVisualization(currentPlayerHpBuffer)
                 }
 
                 while (bounceNumResetQueue.size > 0) {
@@ -733,7 +740,7 @@ class gameActivity : AppCompatActivity() {
         return victimBackPos
     }
 
-    //Dirty, modify damageDealtBuffer
+    //Dirty, modify damageDealtBuffer, currentPlayerHpBuffer
     private suspend fun handleDamageDealt(damageDealtBuffer:IntArray, includeStay: Boolean):MutableList<String>{
         val damageHistory = damageDealtBuffer
         val petStatus = petStatusBuffer
@@ -766,7 +773,24 @@ class gameActivity : AppCompatActivity() {
                     hitNum ++
                 }
 
+            }
+            else if (damage < 0){
 
+                val stage = stageInfo.StageInfoMap(selectedStage)!!
+                if(stage.objectiveType == dict.STAGE_OBJECTIVE_FIGHT){
+                    val petID = petStatus[i]?.unitId!!
+                    val pet = petInfo.getPetInfoById(petID)!!
+                    val atkElement = pet.element
+                    val atkType = pet.attackType
+                    val healReport = pet.name+" heals "+(damage * -1)+" hp!!"
+
+
+                    if((atkType == dict.ATK_TYPE_STAY && includeStay)|| atkType != dict.ATK_TYPE_STAY){
+                        healToPlayerBuffer += damage
+                        reportList.add(healReport)
+                    }
+
+                }
             }
         }
 
@@ -878,10 +902,14 @@ class gameActivity : AppCompatActivity() {
 //            newCurrentHp -= damageDealtBuffer[i]
 //        }
         newCurrentHp -= damageFromBossBuffer
+        newCurrentHp += abs(healToPlayerBuffer)
 
         Log.d("hp", "newCurrentHp: ${newCurrentHp}")
         if( newCurrentHp < 0){
             newCurrentHp = 0
+        }
+        if(newCurrentHp > 100){
+            newCurrentHp = 100
         }
         val diff = currentHp - newCurrentHp
         val totalTime = 300
@@ -892,6 +920,17 @@ class gameActivity : AppCompatActivity() {
 
             for (i in 0..diff){
                 val newHpBarLen = (((currentHp.toDouble()-i.toDouble())/maxHp.toDouble()) * player_hpBarLength.toDouble()).toInt()
+                Log.d("hp", "new hpBarLength: ${newHpBarLen}")
+                player_hpBarView.layoutParams.width = newHpBarLen
+                player_hpBarView.layoutParams = layoutParams
+                delay(interval)
+            }
+            this@gameActivity.currentPlayerHpBuffer = newCurrentHp
+        }
+        else if(diff < 0){
+            val layoutParams = player_hpBarView.layoutParams
+            for (i in 0..abs(diff)){
+                val newHpBarLen = (((currentHp.toDouble() + i.toDouble())/maxHp.toDouble()) * player_hpBarLength.toDouble()).toInt()
                 Log.d("hp", "new hpBarLength: ${newHpBarLen}")
                 player_hpBarView.layoutParams.width = newHpBarLen
                 player_hpBarView.layoutParams = layoutParams

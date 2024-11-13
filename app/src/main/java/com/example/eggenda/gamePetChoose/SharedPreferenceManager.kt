@@ -37,7 +37,6 @@ class SharedPreferenceManager (context: Context) {
 
     }
 
-
     //to save the amount of the max pets can choose
     fun savePetsAmount (petAmount: Int){
         maxAmountPetsSP.edit().putInt("max_key", petAmount).apply()
