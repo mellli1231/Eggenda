@@ -978,13 +978,13 @@ class gameActivity : AppCompatActivity() {
         val reportList = mutableListOf<String>()
         Log.d("fight", "stage.actionType(turnBuffer): ${stage.actionType(turnBuffer)}")
         if(stage.actionType(turnBuffer) == dict.STAGE_ACTION_ATTACK){
-            val damageDealt: Int = stage.actionAmount(turnBuffer)
+            val damageDealt: Int = stage.actionAmount(turnBuffer, petStatusBuffer)
             Log.d("fight", "Boss dmg: ${damageDealt}")
             this@gameActivity.damageFromBossBuffer += damageDealt
 
             Log.d("fight", "damageFromBossBuffer: ${this@gameActivity.damageFromBossBuffer}")
 
-            val report = stage.actionDescription(turnBuffer)
+            val report = stage.actionDescription(turnBuffer, petStatusBuffer)
 
             Log.d("fight", "report: ${report}")
 
@@ -1001,7 +1001,7 @@ class gameActivity : AppCompatActivity() {
         val reportList = mutableListOf<String>()
         Log.d("push", "stage.actionType(turnBuffer): ${stage.actionType(turnBuffer)}")
         if(stage.actionType(turnBuffer) == dict.STAGE_ACTION_PUSH){
-            val dir = stage.actionAmount(turnBuffer)
+            val dir = stage.actionAmount(turnBuffer, petStatusBuffer)
             Log.d("push", "Boss push dir: ${dir}")
 
             if (dir == dict.STAGE_PUSH_NORTH){
@@ -1052,7 +1052,7 @@ class gameActivity : AppCompatActivity() {
 
             }
 
-            val report = stage.actionDescription(turnBuffer)
+            val report = stage.actionDescription(turnBuffer, petStatusBuffer)
             Log.d("push", "report: ${report}")
 
             reportList.add(report)
