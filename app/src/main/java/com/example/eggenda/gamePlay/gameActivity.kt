@@ -104,6 +104,7 @@ class gameActivity : AppCompatActivity() {
 //            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
 //            insets
 //        }
+        //hi
 
         //load the info from hardcoded dataset
         stageInfo = stageInfo()
