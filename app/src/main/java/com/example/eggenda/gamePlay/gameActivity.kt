@@ -717,7 +717,7 @@ class gameActivity : AppCompatActivity() {
 //                        viewModel.updateBoardStatus(boardStatus)
 
                         //for moving effect
-                        oldEffectBoardIndex.add(victimPos[t])
+                        oldEffectBoardIndex.add(victimPos[t])//
                     }
                 }
             }
