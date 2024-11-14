@@ -5,13 +5,15 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".gamePlay.gameActivity"
+    android:fitsSystemWindows="true"
+    android:paddingBottom="?attr/actionBarSize"
     android:background="#FFEBCC">
 
     <TextView
         android:id="@+id/turnView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="10dp"
         android:text="Turn 1"
         android:textSize="24sp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -20,8 +22,8 @@
 
     <FrameLayout
         android:id="@+id/bossFrame"
-        android:layout_width="220dp"
-        android:layout_height="220dp"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
         android:background="@drawable/game_word_background"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.496"
@@ -73,7 +75,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_begin="446dp" />
+        app:layout_constraintGuide_begin="412dp" />
 
     <TextView
         android:id="@+id/textView"
@@ -92,7 +94,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_begin="583dp" />
+        app:layout_constraintGuide_begin="542dp" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayout2"

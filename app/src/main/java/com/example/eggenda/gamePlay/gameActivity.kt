@@ -9,9 +9,12 @@ import android.widget.Button
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.view.isInvisible
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.GridLayoutManager
@@ -97,13 +100,16 @@ class gameActivity : AppCompatActivity() {
     private lateinit var bounceNumResetQueue: ArrayDeque<Int>
     private lateinit var bounceNumAddQueue: ArrayDeque<Int>
     private lateinit var stayNumResetQueue: ArrayDeque<Int>
-
+    private lateinit var oldBoard: IntArray
+    private lateinit var oldEffectBoardIndex:ArrayDeque<Int>
+    private lateinit var newEffectBoardIndex:ArrayList<Int>
 
     private val coroutineScope = CoroutineScope(Dispatchers.Main + Job())
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-//        enableEdgeToEdge()
+        enableEdgeToEdge()
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
         setContentView(R.layout.activity_game)
 //        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
 //            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
@@ -280,9 +286,11 @@ class gameActivity : AppCompatActivity() {
             var turnExceed = false
             var damageMatchRequired = 0
             var result = 0
+
             bounceNumResetQueue = ArrayDeque()
 //            stayNumPlusQueue = ArrayDeque()
             stayNumResetQueue = ArrayDeque()
+            oldEffectBoardIndex = ArrayDeque()
             deckVisualize()
             boardVisualize()
             viewModel.updateGameRunState(dict.GAME_START)
@@ -307,6 +315,8 @@ class gameActivity : AppCompatActivity() {
                     petStatusBuffer
                 )
 
+                Log.d("effect", "hi:${oldEffectBoardIndex.toString()}")
+                oldBoardDisappearEffect()
                 deckVisualize()
                 boardVisualize()
 
@@ -355,6 +365,7 @@ class gameActivity : AppCompatActivity() {
                 Log.d("end info", "damageMatchRequired ${damageMatchRequired}")
                 turnBuffer += 1
 
+                delay(500)
                 dummySaver()
 
             }
@@ -437,7 +448,7 @@ class gameActivity : AppCompatActivity() {
                     boardStatusBuffer,
                     petStatusBuffer
                 )
-
+                oldBoardDisappearEffect()
                 deckVisualize()
                 boardVisualize()
 
@@ -494,6 +505,7 @@ class gameActivity : AppCompatActivity() {
                     var petOrder = bounceNumAddQueue.removeFirst()
                     petStatusBuffer[petOrder]!!.bounceNum ++
                 }
+                oldBoardDisappearEffect()
                 deckVisualize()
                 boardVisualize()
 
@@ -540,6 +552,7 @@ class gameActivity : AppCompatActivity() {
                     break
                 }
 
+                delay(500)
                 turnBuffer += 1
 
                 fightSaver()
@@ -637,6 +650,9 @@ class gameActivity : AppCompatActivity() {
         val victimPosBack = makeVictimBackPos(victimPos)
         val boardStatus = boardStatusBuffer
         val petStatus = petStatusBuffer
+//        newEffectBoardIndex = ArrayList()
+        oldBoard = boardStatusBuffer.copyOf()
+
         Log.d("handleBounceVictim", "petPut: ${petPut}")
         for (t in 0..7) {
             Log.d("handleBounceVictim", "Loop: ${t}: victimPos: ${victimPos[t]}")
@@ -652,16 +668,17 @@ class gameActivity : AppCompatActivity() {
                     Log.d("handleBounceVictim", "victimPosBack[t]: ${victimPosBack[t]}")
 
 
-                    for(k in 0..7){
-                        Log.d("handleBounceVictim", "victimPos: ${victimPos[k]}")
-                    }
-
-                    for(k in 0..7){
-                        Log.d("handleBounceVictim", "victimPosBack: ${victimPosBack[k]}")
-                    }
+//                    for(k in 0..7){
+//                        Log.d("handleBounceVictim", "victimPos: ${victimPos[k]}")
+//                    }
+//
+//                    for(k in 0..7){
+//                        Log.d("handleBounceVictim", "victimPosBack: ${victimPosBack[k]}")
+//                    }
                     if(victimPosBack[t]in 0..boardSize - 1){
                         val victimBackOrder = boardStatus[victimPosBack[t]]
 
+                        //victim bounce to board
                         if(victimBackOrder == dict.noPet){
 //                            Log.d("handleBounceVictim", "victimBackOrder == dict.noPet: ${victimBackOrder == dict.noPet}")
                             //update pet status
@@ -673,6 +690,12 @@ class gameActivity : AppCompatActivity() {
                             boardStatus[victimPos[t]] = dict.noPet
                             boardStatus[victimPosBack[t]] = victimOrder
 //                            viewModel.updateBoardStatus(boardStatus)
+
+                            //for moving effect
+                            oldEffectBoardIndex.add(victimPos[t])
+//                            newEffectBoardIndex. add(victimPosBack[t])
+
+
                         }
                     }
                     else{   //victim return to deck
@@ -689,6 +712,9 @@ class gameActivity : AppCompatActivity() {
                         //update board status
                         boardStatus[victimPos[t]] = dict.noPet
 //                        viewModel.updateBoardStatus(boardStatus)
+
+                        //for moving effect
+                        oldEffectBoardIndex.add(victimPos[t])
                     }
                 }
             }
@@ -1123,11 +1149,20 @@ class gameActivity : AppCompatActivity() {
         return reportList
     }
 
+    //dirty, may modify boardStatusBuffer
     private suspend fun handleBossPush (turnBuffer: Int, deckStatusBuffer: IntArray,boardStatusBuffer: IntArray, petStatusBuffer: Array<petStatus?>):MutableList<String>{
         Log.d("push", "turn: ${turnBuffer}")
         val stage = stageInfo.StageInfoMap(selectedStage)!!
         val reportList = mutableListOf<String>()
         Log.d("push", "stage.actionType(turnBuffer): ${stage.actionType(turnBuffer)}")
+        oldBoard = boardStatusBuffer.copyOf()
+
+        for(index in boardStatusBuffer){
+            if(index >= 0){
+                oldEffectBoardIndex.add(index)
+            }
+        }
+
         if(stage.actionType(turnBuffer) == dict.STAGE_ACTION_PUSH){
             val dir = stage.actionAmount(turnBuffer, petStatusBuffer)
             Log.d("push", "Boss push dir: ${dir}")
@@ -1192,6 +1227,31 @@ class gameActivity : AppCompatActivity() {
         return reportList
     }
 
+    private suspend fun oldBoardDisappearEffect(){
+        if(oldEffectBoardIndex.size == 0){
+            return
+        }
+        for(index in oldEffectBoardIndex){
+            boardAlpha(index, 0.8f)
+        }
+        delay(5)
+        for(index in oldEffectBoardIndex){
+            boardAlpha(index, 0.6f)
+        }
+        delay(4)
+        for(index in oldEffectBoardIndex){
+            boardAlpha(index, 0.4f)
+        }
+        delay(3)
+//        for(index in oldEffectBoardIndex){
+//            boardAlpha(index, 0.2f)
+//        }
+        while(oldEffectBoardIndex.size > 0){
+            boardAlpha(oldEffectBoardIndex.removeFirst(), 0.2f)
+        }
+        delay(2)
+
+    }
     //Small helper functions
     private fun showPetCard(petId:Int, petOrder: Int){
         val dialogView = layoutInflater.inflate(R.layout.game_pet_detail_dialog, null)
@@ -1400,6 +1460,65 @@ class gameActivity : AppCompatActivity() {
             targetboard?.countView?.isInvisible = true
             targetboard?.elementFrame?.isInvisible = true
             targetboard?.countFrame?.isInvisible = true
+        }
+    }
+
+    private fun boardAlpha(boardIndex:Int, alpha: Float){
+        //        val board = viewModel.getBoardStatus()
+        val board = oldBoard
+//        val pet= viewModel.petStatus.value?.get(board[boardIndex])
+
+//        val petStatus = viewModel.getPetStatus()
+        val petStatus = petStatusBuffer
+        val petOrder = oldBoard[boardIndex]
+//        val pet = viewModel.getPetStatus()[petOrder]
+        val pet = petStatus[petOrder]
+//        val imageId = inventory.getViewInfoById(pet?.unitId!!)?.imageId
+        val imageId = petInfo.getPetInfoById(pet?.unitId!!)?.imageId
+//        Log.d("returnPet","returnPet triggered")
+        boardRecyclerView.post {
+            val targetboard= boardRecyclerView.findViewHolderForAdapterPosition(boardIndex) as? boardAdapter.ViewHolder
+
+
+            targetboard?.imageView?.setImageResource(imageId!!)
+
+//            val count = petInfo.getPetCount(petStatus,petOrder)
+
+            val count = petInfo.getPetInfoById(chosenPetId[petOrder])!!.attackCountdown(petStatus,petOrder, deckSize)
+            if(count >=0){
+                targetboard?.countView?.text = count.toString()
+            }
+            else{
+                targetboard?.countView?.text = "∞"
+            }
+
+            val element = petInfo.getPetInfoById(pet?.unitId!!)?.element
+            if(element == dict.ELEMENT_FIRE){
+//                targetboard?.nextDmgFrame
+                targetboard?.countFrame?.setImageResource(R.drawable.game_count_frame_fire)
+                targetboard?.elementFrame?.setImageResource(R.drawable.game_element_frame_fire)
+
+            }
+            else if(element == dict.ELEMENT_WATER){
+                targetboard?.countFrame?.setImageResource(R.drawable.game_count_frame_water)
+                targetboard?.elementFrame?.setImageResource(R.drawable.game_element_frame_water)
+            }
+            else if(element == dict.ELEMENT_FOREST){
+                targetboard?.countFrame?.setImageResource(R.drawable.game_count_frame_forest)
+                targetboard?.elementFrame?.setImageResource(R.drawable.game_element_frame_forest)
+            }
+
+            targetboard?.imageView?.isInvisible = false
+            targetboard?.imageView?.alpha = alpha
+
+            targetboard?.countView?.isInvisible = false
+            targetboard?.countView?.alpha = alpha
+
+            targetboard?.elementFrame?.isInvisible = false
+            targetboard?.elementFrame?.alpha = alpha
+
+            targetboard?.countFrame?.isInvisible = false
+            targetboard?.countFrame?.alpha = alpha
         }
     }
 }
