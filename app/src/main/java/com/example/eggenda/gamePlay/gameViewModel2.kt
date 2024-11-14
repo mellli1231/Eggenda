@@ -9,7 +9,7 @@ import kotlinx.coroutines.launch
 
 class gameViewModel2 : ViewModel(){
     //
-    private val _gameRunState = MutableLiveData<Int>(-2)
+    private val _gameRunState = MutableLiveData<Int>(dict.GAME_NOT_START)
     private val _turn = MutableLiveData<Int>()
     private val _currentBossHp = MutableLiveData<Int>()
     private val _petStatus = MutableLiveData<Array<petStatus?>>()
@@ -19,6 +19,7 @@ class gameViewModel2 : ViewModel(){
 
     private val _currentPlayerHp = MutableLiveData<Int>()
     private val _damageFromBoss = MutableLiveData<Int>()
+    private val _healToPlayer = MutableLiveData<Int>()
 
 
     private val _damageReport = MutableLiveData<String>()
@@ -109,6 +110,16 @@ class gameViewModel2 : ViewModel(){
     fun updateDamageFromBoss(newDamageFromBoss: Int){
         viewModelScope.launch {
             _damageFromBoss.value = newDamageFromBoss
+        }
+    }
+
+    fun getHealToPLayer():Int{
+        return _healToPlayer.value!!
+    }
+
+    fun updateHealToPLayer(newHealToPLayer: Int){
+        viewModelScope.launch {
+            _healToPlayer.value = newHealToPLayer
         }
     }
 

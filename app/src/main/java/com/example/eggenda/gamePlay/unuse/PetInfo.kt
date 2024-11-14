@@ -1,7 +1,9 @@
-package com.example.eggenda.gamePlay
+package com.example.eggenda.gamePlay.unuse
 
 
 import com.example.eggenda.R
+import com.example.eggenda.gamePlay.dict
+import com.example.eggenda.gamePlay.petStatus
 import kotlin.math.abs
 
 class petInfo {
@@ -51,7 +53,7 @@ class petInfo {
 //    }
 
     //deal 10 damage every 3 turns on board
-    private fun catDealDamage(petStatus: Array<petStatus?>,petOrder:Int):Int{
+    private fun catDealDamage(petStatus: Array<petStatus?>, petOrder:Int):Int{
         if(petStatus[petOrder]!!.stayNum != 0 && petStatus[petOrder]!!.stayNum % catInfo.count == 0 ) {
             return catInfo.damage
         }
@@ -59,7 +61,7 @@ class petInfo {
     }
 
     //return the count number on UI
-    private fun catCount(petStatus: Array<petStatus?>,petOrder:Int):Int{
+    private fun catCount(petStatus: Array<petStatus?>, petOrder:Int):Int{
         if(petStatus[petOrder]!!.location == dict.onDECK){
             return 0
         }
@@ -78,15 +80,15 @@ class petInfo {
     )
 
     //deal damage when it return to deck at after it stay on the board for exactly 1 turn
-    private fun wormDealDamage(petStatus: Array<petStatus?>,petOrder:Int):Int{
-        if(petStatus[petOrder]!!.stayNum == wormInfo.count && petStatus[petOrder]!!.location == dict.onDECK ) {
+    private fun wormDealDamage(petStatus: Array<petStatus?>, petOrder:Int):Int{
+        if(petStatus[petOrder]!!.stayNum == wormInfo.count && petStatus[petOrder]!!.location == dict.onDECK) {
             return wormInfo.damage
         }
         return 0
     }
 
     //return the count number on UI
-    private fun wormCount(petStatus: Array<petStatus?>,petOrder:Int):Int{
+    private fun wormCount(petStatus: Array<petStatus?>, petOrder:Int):Int{
         val stayNum = petStatus[petOrder]!!.stayNum
         if( stayNum <= 1 ){
             return wormInfo.count - stayNum
@@ -106,7 +108,7 @@ class petInfo {
     )
 
     //need fixed
-    private fun tigerDealDamage(petStatus: Array<petStatus?>,petOrder:Int):Int{
+    private fun tigerDealDamage(petStatus: Array<petStatus?>, petOrder:Int):Int{
         val tigerStatus = petStatus[petOrder]!!
         if(tigerStatus.bounceNum !=0 && tigerStatus.bounceNum % tigerInfo.count == 0) {
             return tigerInfo.damage
@@ -115,7 +117,7 @@ class petInfo {
     }
 
     //return the count number on UI
-    private fun tigerCount(petStatus: Array<petStatus?>,petOrder:Int):Int{
+    private fun tigerCount(petStatus: Array<petStatus?>, petOrder:Int):Int{
 //        if(petStatus[petOrder]!!.stayNum == 0 ){
 //            return 0
 //        }
@@ -138,7 +140,7 @@ class petInfo {
     )
 
     //
-    private fun dragonDealDamage(petStatus: Array<petStatus?>,petOrder:Int):Int{
+    private fun dragonDealDamage(petStatus: Array<petStatus?>, petOrder:Int):Int{
         if(petStatus[petOrder]!!.location == dict.onBoard){
             return petStatus[petOrder]!!.stayNum * abs(10-petStatus[petOrder]!!.stayNum)
         }
@@ -146,7 +148,7 @@ class petInfo {
     }
 
     //return the count number on UI
-    private fun dragonCount(petStatus: Array<petStatus?>,petOrder:Int):Int{
+    private fun dragonCount(petStatus: Array<petStatus?>, petOrder:Int):Int{
 //        if(petStatus[petOrder]!!.location == dict.onBoard){
 //            return dragonInfo.count
 //        }
@@ -169,7 +171,7 @@ class petInfo {
     )
 
     //
-    private fun mewtwoDealDamage(petStatus: Array<petStatus?>,petOrder:Int):Int{
+    private fun mewtwoDealDamage(petStatus: Array<petStatus?>, petOrder:Int):Int{
         if(petStatus[petOrder]!!.stayNum == mewtwoInfo.count){
             return mewtwoInfo.damage
         }
@@ -177,7 +179,7 @@ class petInfo {
     }
 
     //return the count number on UI
-    private fun mewtwoCount(petStatus: Array<petStatus?>,petOrder:Int):Int{
+    private fun mewtwoCount(petStatus: Array<petStatus?>, petOrder:Int):Int{
         if(petStatus[petOrder]!!.stayNum >mewtwoInfo.count ){
             return -1
         }
@@ -195,7 +197,7 @@ class petInfo {
     )
 
     //
-    private fun mewoneDealDamage(petStatus: Array<petStatus?>,petOrder:Int):Int{
+    private fun mewoneDealDamage(petStatus: Array<petStatus?>, petOrder:Int):Int{
         if(petStatus[petOrder]!!.stayNum == mewtwoInfo.count){
             return mewOneInfo.damage
         }
@@ -203,7 +205,7 @@ class petInfo {
     }
 
     //return the count number on UI
-    private fun mewoneCount(petStatus: Array<petStatus?>,petOrder:Int):Int{
+    private fun mewoneCount(petStatus: Array<petStatus?>, petOrder:Int):Int{
         if(petStatus[petOrder]!!.stayNum >mewtwoInfo.count ){
             return -1
         }
@@ -223,7 +225,7 @@ class petInfo {
         return petInfoMap[id]  // Returns the corresponding AnimalInfo object or null if not found
     }
 
-    private val petDamageMap: Map<Int, (Array<petStatus?>,Int) -> Int> = mapOf(
+    private val petDamageMap: Map<Int, (Array<petStatus?>, Int) -> Int> = mapOf(
         CAT to ::catDealDamage,
         WORM to :: wormDealDamage,
         TIGER to :: tigerDealDamage,
@@ -232,7 +234,7 @@ class petInfo {
         MEWONE to :: mewoneDealDamage
     )
 
-    fun getPetDamage(petStatus: Array<petStatus?>,petOrder:Int): Int {
+    fun getPetDamage(petStatus: Array<petStatus?>, petOrder:Int): Int {
         return petDamageMap[petStatus[petOrder]!!.unitId]!!.invoke(petStatus, petOrder)
     }
 
@@ -246,7 +248,7 @@ class petInfo {
 
     )
 
-    fun getPetCount(petStatus: Array<petStatus?>,petOrder:Int): Int {
+    fun getPetCount(petStatus: Array<petStatus?>, petOrder:Int): Int {
         return petCountMap[petStatus[petOrder]!!.unitId]!!.invoke(petStatus,petOrder)
     }
 

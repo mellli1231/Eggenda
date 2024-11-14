@@ -177,6 +177,7 @@ class GamePetChooseMainActivity : AppCompatActivity(){
 
                 //go to game start activity
                 val intent = Intent(this,gameActivity::class.java )
+                finish()
                 startActivity(intent)
             }
 

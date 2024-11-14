@@ -5,6 +5,8 @@ import com.example.eggenda.R
 
 class stageInfo {
 
+    val stageTotalNum = 4
+
     fun StageInfoMap(id: Int): stage?{
         val petMap: Map<Int, () -> stage> = mapOf(
             0 to { stage_0() },
@@ -36,12 +38,12 @@ class stageInfo {
 
     private class stage_0():stage{
         override val id: Int = 0
-        override val name: String = "Dummy"
+        override val name: String = "Stamp"
         override val bossImageId: Int = R.drawable.game_enemy_stamp
         override val acceptElement: Int = dict.STAGE_ACCEPT_ALL_ELEMENT
         override val objectiveType: Int = dict.STAGE_OBJECTIVE_BEST
         override val maxTurn: Int = 9
-        override val damageRequirement: Int = 150
+        override val damageRequirement: Int = 120
         override val description: String = ""
         override val deckSize:Int = 3
 
@@ -61,7 +63,7 @@ class stageInfo {
 
     private class stage_1():stage{
         override val id: Int = 1
-        override val name: String = "Dummy"
+        override val name: String = "High Quality Stamp"
         override val bossImageId: Int = R.drawable.game_enemy_stamp
         override val acceptElement: Int = dict.STAGE_ACCEPT_ALL_ELEMENT
         override val objectiveType: Int = dict.STAGE_OBJECTIVE_EXACT
@@ -89,8 +91,8 @@ class stageInfo {
         override val bossImageId: Int = R.drawable.game_enemy_goblin
         override val acceptElement: Int = dict.STAGE_ACCEPT_ALL_ELEMENT
         override val objectiveType: Int = dict.STAGE_OBJECTIVE_FIGHT
-        override val maxTurn: Int = 10
-        override val damageRequirement: Int = 260
+        override val maxTurn: Int = 8
+        override val damageRequirement: Int = 235
         override val description: String = ""
         override val deckSize:Int = 4
         //
@@ -103,7 +105,7 @@ class stageInfo {
 
         override fun actionAmount(turn: Int,petStatus: Array<petStatus?>): Int {
             if(turn % 2 == 0){
-                return 20
+                return 40
             }
             return 0
         }

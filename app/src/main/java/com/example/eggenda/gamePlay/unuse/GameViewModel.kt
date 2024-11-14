@@ -1,9 +1,10 @@
-package com.example.eggenda.gamePlay
+package com.example.eggenda.gamePlay.unuse
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.delay
+import com.example.eggenda.gamePlay.dict
+import com.example.eggenda.gamePlay.petStatus
 import kotlinx.coroutines.launch
 
 
@@ -34,7 +35,7 @@ class gameViewModel : ViewModel(){
         updateAllowPick(true)
         updateForceReturn(false)
         initPetStatus(newPetStatus)
-        updateDeckStatus(IntArray(5){dict.hasPet})
+        updateDeckStatus(IntArray(5){ dict.hasPet })
         updateBoardStatus(initBoard)
         updateGameMessage(gameObj)
     }

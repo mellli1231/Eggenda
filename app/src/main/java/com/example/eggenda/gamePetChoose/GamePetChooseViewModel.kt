@@ -1,12 +1,11 @@
 package com.example.eggenda.gamePetChoose
 
-import android.content.SharedPreferences
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.example.eggenda.gamePlay.petInfo
+import com.example.eggenda.gamePlay.unuse.petInfo
 
 class GamePetChooseViewModel(private val maxAmountPets: SharedPreferenceManager) : ViewModel(){
 
