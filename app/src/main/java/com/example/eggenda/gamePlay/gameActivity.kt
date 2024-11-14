@@ -315,7 +315,7 @@ class gameActivity : AppCompatActivity() {
                 if (reportList.size > 0) {
                     showReportDialog(reportList)
                 }
-
+                hpBarVisualization(currentBossHpBuffer)
                 while (bounceNumResetQueue.size > 0) {
                     val petOrder = bounceNumResetQueue.removeFirst()
                     petStatusBuffer[petOrder]!!.bounceNum = 0

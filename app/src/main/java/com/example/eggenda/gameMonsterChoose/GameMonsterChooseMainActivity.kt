@@ -25,6 +25,7 @@ class GameMonsterChooseMainActivity : AppCompatActivity () {
     private lateinit var viewModel: monsterChooseViewModel
     private var stageId: Int = 0
 
+    private lateinit var stageTitle:TextView
     private lateinit var bossTitle:TextView
     private lateinit var backBtn:ImageView
     private lateinit var nextBtn:ImageView
@@ -40,6 +41,7 @@ class GameMonsterChooseMainActivity : AppCompatActivity () {
         stageInfo = stageInfo()
         viewModel = monsterChooseViewModel()
 
+        stageTitle = findViewById(R.id.stage_Title)
         bossTitle = findViewById(R.id.boss_title)
         backBtn = findViewById(R.id.back_button)
         nextBtn = findViewById(R.id.next_button)
@@ -70,16 +72,16 @@ class GameMonsterChooseMainActivity : AppCompatActivity () {
                 nextBtn.isInvisible = false
             }
             val selectedStage = stageInfo.StageInfoMap(newStageId)!!
-            val title = "Stage "+(newStageId + 1).toString()+": "+selectedStage.name
-
+            val stageStr = "Stage "+(newStageId + 1).toString()+":"
+            val bossStr = selectedStage.name
             if(stageDoneArrayList[newStageId] == 1){
                 bossDefeatCover.isInvisible = false
             }
             else{
                 bossDefeatCover.isInvisible = true
             }
-
-            bossTitle.text = title
+            stageTitle.text = stageStr
+            bossTitle.text = bossStr
             bossImage.setImageResource(selectedStage.bossImageId)
             viewModel.updateAmount(selectedStage.deckSize)
 //            viewModel.updateChosenStageID(0)
