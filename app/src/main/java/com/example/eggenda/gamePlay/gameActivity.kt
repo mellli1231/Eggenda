@@ -1435,10 +1435,13 @@ class gameActivity : AppCompatActivity() {
         boardRecyclerView.post {
             val targetboard= boardRecyclerView.findViewHolderForAdapterPosition(boardIndex) as? boardAdapter.ViewHolder
             targetboard?.imageView?.isInvisible = false
+            targetboard?.imageView?.alpha = 1.0f
             targetboard?.countView?.isInvisible = false
+            targetboard?.countView?.alpha = 1.0f
             targetboard?.elementFrame?.isInvisible = false
+            targetboard?.elementFrame?.alpha = 1.0f
             targetboard?.countFrame?.isInvisible = false
-
+            targetboard?.countFrame?.alpha = 1.0f
             targetboard?.imageView?.setImageResource(imageId!!)
 
 //            val count = petInfo.getPetCount(petStatus,petOrder)
