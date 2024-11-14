@@ -29,6 +29,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.w3c.dom.Text
+import java.time.LocalDateTime
 import kotlin.math.abs
 
 class gameActivity : AppCompatActivity() {
@@ -423,12 +424,13 @@ class gameActivity : AppCompatActivity() {
             stayNumResetQueue = ArrayDeque()
             bounceNumAddQueue = ArrayDeque()
 
+
             deckVisualize()
             boardVisualize()
             viewModel.updateGameRunState(dict.GAME_START)
             while (true) {
                 fightLoader()
-
+                oldEffectBoardIndex = ArrayDeque()
                 showTurnDialog(turnBuffer)
                 turnFractionVisualization(turnBuffer)
                 deckVisualize()
@@ -448,6 +450,7 @@ class gameActivity : AppCompatActivity() {
                     boardStatusBuffer,
                     petStatusBuffer
                 )
+                Log.d("effect", "${oldEffectBoardIndex}")
                 oldBoardDisappearEffect()
                 deckVisualize()
                 boardVisualize()
@@ -1155,17 +1158,22 @@ class gameActivity : AppCompatActivity() {
         val stage = stageInfo.StageInfoMap(selectedStage)!!
         val reportList = mutableListOf<String>()
         Log.d("push", "stage.actionType(turnBuffer): ${stage.actionType(turnBuffer)}")
-        oldBoard = boardStatusBuffer.copyOf()
 
-        for(index in boardStatusBuffer){
-            if(index >= 0){
-                oldEffectBoardIndex.add(index)
-            }
-        }
+        Log.d("effect", "boardStatusBuffer: ${boardStatusBuffer.toString()}")
+        Log.d("effect", "oldEffectBoardIndex: ${oldEffectBoardIndex}")
 
         if(stage.actionType(turnBuffer) == dict.STAGE_ACTION_PUSH){
             val dir = stage.actionAmount(turnBuffer, petStatusBuffer)
             Log.d("push", "Boss push dir: ${dir}")
+
+            oldBoard = boardStatusBuffer.copyOf()
+
+
+            for (i in 0..<boardSize){
+                if(boardStatusBuffer[i] >= 0){
+                    oldEffectBoardIndex.add(i)
+                }
+            }
 
             if (dir == dict.STAGE_PUSH_NORTH){
                 for(i in 0..< deckSize){
@@ -1192,6 +1200,13 @@ class gameActivity : AppCompatActivity() {
             }
 
             else if (dir == dict.STAGE_PUSH_SOUTH){
+                oldBoard = boardStatusBuffer.copyOf()
+
+                for (i in 0..<boardSize){
+                    if(boardStatusBuffer[i] >= 0){
+                        oldEffectBoardIndex.add(i)
+                    }
+                }
                 for(i in 0..< deckSize){
                     if(petStatusBuffer[i]!!.location == dict.onBoard){
 //                        petStatusBuffer[i]!!.bounceNum ++
@@ -1228,28 +1243,29 @@ class gameActivity : AppCompatActivity() {
     }
 
     private suspend fun oldBoardDisappearEffect(){
+        Log.d("effect", "size: ${oldEffectBoardIndex.size}")
         if(oldEffectBoardIndex.size == 0){
             return
         }
         for(index in oldEffectBoardIndex){
             boardAlpha(index, 0.8f)
         }
-        delay(5)
+        delay(4)
         for(index in oldEffectBoardIndex){
             boardAlpha(index, 0.6f)
         }
-        delay(4)
+        delay(3)
         for(index in oldEffectBoardIndex){
             boardAlpha(index, 0.4f)
         }
-        delay(3)
+        delay(2)
 //        for(index in oldEffectBoardIndex){
 //            boardAlpha(index, 0.2f)
 //        }
         while(oldEffectBoardIndex.size > 0){
             boardAlpha(oldEffectBoardIndex.removeFirst(), 0.2f)
         }
-        delay(2)
+        delay(1)
 
     }
     //Small helper functions
