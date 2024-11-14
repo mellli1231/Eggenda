@@ -43,7 +43,7 @@ class HomeFragment : Fragment() {
     private val maxExperience = 100
 
     private val PET_OWNERSHIP_KEY = "pet_ownership"
-    private val DEFAULT_PET_OWNERSHIP = arrayOf(0, 0, 0, 0, 0) // 5 pets, all initially unowned
+    private val DEFAULT_PET_OWNERSHIP = arrayOf(1, 1, 1, 0, 0) // 5 pets, all initially unowned
 
 
     @SuppressLint("SetTextI18n")
@@ -57,6 +57,7 @@ class HomeFragment : Fragment() {
         val root: View = binding.root
         val petOwnership = loadPetOwnership()
 //        sharedPreferenceManager = SharedPreferenceManager(requireContext())
+
 
         // xp
         loadProgress()

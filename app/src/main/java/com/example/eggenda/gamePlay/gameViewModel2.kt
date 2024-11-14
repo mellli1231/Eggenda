@@ -9,7 +9,7 @@ import kotlinx.coroutines.launch
 
 class gameViewModel2 : ViewModel(){
     //
-    private val _gameRunState = MutableLiveData<Int>(-2)
+    private val _gameRunState = MutableLiveData<Int>(dict.GAME_NOT_START)
     private val _turn = MutableLiveData<Int>()
     private val _currentBossHp = MutableLiveData<Int>()
     private val _petStatus = MutableLiveData<Array<petStatus?>>()

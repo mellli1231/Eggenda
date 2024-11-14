@@ -1,5 +1,6 @@
 package com.example.eggenda.gamePlay
 
+import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
@@ -15,8 +16,10 @@ import androidx.core.view.isInvisible
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.eggenda.MainActivity
 import com.example.eggenda.R
 import com.example.eggenda.gamePetChoose.SharedPreferenceManager
+import com.example.eggenda.ui.home.HomeFragment
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -115,9 +118,10 @@ class gameActivity : AppCompatActivity() {
         sharedPreferenceManager = SharedPreferenceManager(this)
 
 
-        selectedStage = 2
-        chosenPetId = intArrayOf(0,1,2,3,4)
-//        chosenPetId = sharedPreferenceManager.getPetsList()
+//        selectedStage = 2
+        selectedStage = sharedPreferenceManager.getStageChoose()
+//        chosenPetId = intArrayOf(0,1,2,3,4)
+        chosenPetId = sharedPreferenceManager.getPetsList()
         boardRow = 3
         boardCol = 5
         boardSize = boardRow * boardCol
@@ -285,12 +289,13 @@ class gameActivity : AppCompatActivity() {
             while (true) {
                 dummyLoader()
                 showTurnDialog(turnBuffer)
-                turnFractionVisualization(turnBuffer)
-                updateStayNum()
 
+                turnFractionVisualization(turnBuffer)
+                hpBarVisualization(currentBossHpBuffer)
                 deckVisualize()
                 boardVisualize()
 
+                updateStayNum()
                 allowPick = true
 
                 handlePutPet(deckStatusBuffer, boardStatusBuffer, petStatusBuffer)
@@ -322,7 +327,7 @@ class gameActivity : AppCompatActivity() {
                 }
 
                 bossImageFlash(hitNum)
-                hpBarVisualization(currentBossHpBuffer)
+
 
                 deckVisualize()
                 boardVisualize()
@@ -354,6 +359,11 @@ class gameActivity : AppCompatActivity() {
 
             }
             Log.d("end info", "outside While")
+            if(result == dict.GAME_WON){
+                val oldRecord = sharedPreferenceManager.getStageDone()
+                oldRecord[selectedStage] = 1
+                sharedPreferenceManager.saveStageDone(oldRecord)
+            }
             viewModel.updateGameRunState(result)
             showResultDialog(result)
         }
@@ -410,10 +420,12 @@ class gameActivity : AppCompatActivity() {
 
                 showTurnDialog(turnBuffer)
                 turnFractionVisualization(turnBuffer)
-                updateStayNum()
-
                 deckVisualize()
                 boardVisualize()
+                hpBarVisualization(currentBossHpBuffer)
+                playerHpBarVisualization(currentPlayerHpBuffer)
+
+                updateStayNum()
 
                 allowPick = true
                 handlePutPet(deckStatusBuffer, boardStatusBuffer, petStatusBuffer)
@@ -447,8 +459,8 @@ class gameActivity : AppCompatActivity() {
                 }
 
                 bossImageFlash(hitNum)
+                playerHpBarVisualization(currentPlayerHpBuffer)
                 hpBarVisualization(currentBossHpBuffer)
-
                 deckVisualize()
                 boardVisualize()
 
@@ -531,6 +543,11 @@ class gameActivity : AppCompatActivity() {
                 turnBuffer += 1
 
                 fightSaver()
+            }
+            if(result == dict.GAME_WON){
+                val oldRecord = sharedPreferenceManager.getStageDone()
+                oldRecord[selectedStage] = 1
+                sharedPreferenceManager.saveStageDone(oldRecord)
             }
             Log.d("end info", "outside While")
             viewModel.updateGameRunState(result)
@@ -927,6 +944,9 @@ class gameActivity : AppCompatActivity() {
             }
             this@gameActivity.currentPlayerHpBuffer = newCurrentHp
         }
+        else if( diff == 0){
+
+        }
         else if(diff < 0){
             val layoutParams = player_hpBarView.layoutParams
             for (i in 0..abs(diff)){
@@ -1061,8 +1081,17 @@ class gameActivity : AppCompatActivity() {
         val goHomeBtn = dialogView.findViewById<Button>(R.id.game_toBossChoose)
         goHomeBtn.setOnClickListener {
             viewModel.updateGameRunState(dict.GAME_NOT_START)
-            customDialog.dismiss()
+
+            val intent = Intent(this, MainActivity::class.java)
+
+            // Optionally, you can add extra data to the intent
+            // intent.putExtra("key", "value")
+
+            // Start the SecondActivity
             finish()
+            startActivity(intent)
+            customDialog.dismiss()
+
         }
 
 //        dialogIsShowing = false

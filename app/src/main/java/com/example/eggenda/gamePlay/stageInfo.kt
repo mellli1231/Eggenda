@@ -5,6 +5,8 @@ import com.example.eggenda.R
 
 class stageInfo {
 
+    val stageTotalNum = 4
+
     fun StageInfoMap(id: Int): stage?{
         val petMap: Map<Int, () -> stage> = mapOf(
             0 to { stage_0() },
@@ -89,8 +91,8 @@ class stageInfo {
         override val bossImageId: Int = R.drawable.game_enemy_goblin
         override val acceptElement: Int = dict.STAGE_ACCEPT_ALL_ELEMENT
         override val objectiveType: Int = dict.STAGE_OBJECTIVE_FIGHT
-        override val maxTurn: Int = 10
-        override val damageRequirement: Int = 230
+        override val maxTurn: Int = 8
+        override val damageRequirement: Int = 235
         override val description: String = ""
         override val deckSize:Int = 4
 
@@ -103,7 +105,7 @@ class stageInfo {
 
         override fun actionAmount(turn: Int,petStatus: Array<petStatus?>): Int {
             if(turn % 2 == 0){
-                return 20
+                return 40
             }
             return 0
         }
