@@ -1,5 +1,6 @@
 package com.example.eggenda.gamePetChoose
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity.MODE_PRIVATE
@@ -16,6 +17,9 @@ class SharedPreferenceManager (context: Context) {
 
     //the fighting pets list : choose -> gameplay  (not done)
     private val fightingPetsSP : SharedPreferences = context.getSharedPreferences("PetsToFight", Context.MODE_PRIVATE)
+
+    //the stage choose:
+    private val stageSP: SharedPreferences = context.getSharedPreferences("stageChoose", Context.MODE_PRIVATE)
 
     //gson that to make the arrays into string ans saved into shared preference
     private val gson = Gson()
@@ -34,9 +38,7 @@ class SharedPreferenceManager (context: Context) {
         } else {
             ArrayList()
         }
-
     }
-
 
     //to save the amount of the max pets can choose
     fun savePetsAmount (petAmount: Int){
@@ -63,6 +65,32 @@ class SharedPreferenceManager (context: Context) {
             intArrayOf()  // Return empty array if nothing is saved
         }
 
+    }
+
+    @SuppressLint("CommitPrefEdits")
+    fun saveStageChoose(stageId: Int){
+        stageSP.edit().putInt("stageId", stageId).apply()
+    }
+
+    fun getStageChoose():Int{
+        return stageSP.getInt("stageId", 0)
+    }
+
+    // for the stage done by the user. 0 = unfinished, 1 = finished
+    fun saveStageDone(stageDone: ArrayList<Int>) {
+//        val editor = sharedPreferences.edit()
+        val json = gson.toJson(stageDone)
+        stageSP.edit().putString("stageDone", json).apply()
+    }
+
+    fun getStageDone() : ArrayList<Int>{
+        val json = stageSP.getString("stageDone", null)
+        val type = object : TypeToken<ArrayList<Int>>() {}.type
+        return if (json != null){
+            gson.fromJson(json,type)
+        } else {
+            ArrayList()
+        }
     }
 
 

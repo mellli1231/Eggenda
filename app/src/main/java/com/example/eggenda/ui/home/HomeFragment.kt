@@ -43,7 +43,7 @@ class HomeFragment : Fragment() {
     private val maxExperience = 100
 
     private val PET_OWNERSHIP_KEY = "pet_ownership"
-    private val DEFAULT_PET_OWNERSHIP = arrayOf(0, 0, 0, 0, 0) // 5 pets, all initially unowned
+    private val DEFAULT_PET_OWNERSHIP = arrayOf(1, 1, 1, 0, 0) // 5 pets, all initially unowned
 
 
     @SuppressLint("SetTextI18n")
@@ -53,10 +53,11 @@ class HomeFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
+        sharedPreferenceManager = SharedPreferenceManager(requireContext())
         val root: View = binding.root
         val petOwnership = loadPetOwnership()
+//        sharedPreferenceManager = SharedPreferenceManager(requireContext())
 
-        sharedPreferenceManager = SharedPreferenceManager(requireContext())
 
         // xp
         loadProgress()
@@ -121,6 +122,7 @@ class HomeFragment : Fragment() {
             DEFAULT_PET_OWNERSHIP.clone() // Return a clone to avoid modifying the original
         }
     }
+
 
 //    private fun savePetOwnership(petOwnership: Array<Int>) {
 //        val sharedPreferences = requireContext().getSharedPreferences("eggenda_prefs", Context.MODE_PRIVATE)
