@@ -44,6 +44,7 @@ class petInfo2 {
         fun attackCountdown(petStatus: Array<petStatus?>,petOrder:Int,deckSize:Int):Int
         fun condition(petStatus: Array<petStatus?>,petOrder:Int,deckSize:Int):String
         fun nextDamage(petStatus: Array<petStatus?>,petOrder:Int,deckSize:Int):String
+        fun resetAfterDamage():Boolean
     }
 
     private class chubbyBunny :Pet {
@@ -87,6 +88,10 @@ class petInfo2 {
 
         override fun nextDamage(petStatus: Array<petStatus?>,petOrder:Int,deckSize:Int): String {
             return "Heals "+(damage * -1).toString()+" hp"
+        }
+
+        override fun resetAfterDamage(): Boolean {
+            return true
         }
 
     }
@@ -143,6 +148,10 @@ class petInfo2 {
             }
             return "0 " +dict.ELEMENT_STRING[element]+" damages"
         }
+
+        override fun resetAfterDamage(): Boolean {
+            return true
+        }
     }
 
     private class flamingSkull :Pet {
@@ -183,6 +192,10 @@ class petInfo2 {
 
         override fun nextDamage(petStatus: Array<petStatus?>, petOrder: Int,deckSize:Int): String {
             return damage.toString()+" "+dict.ELEMENT_STRING[element]+" damages"
+        }
+
+        override fun resetAfterDamage(): Boolean {
+            return true
         }
     }
 
@@ -235,6 +248,10 @@ class petInfo2 {
             else{
                 return dealDamage(petStatus, petOrder,deckSize).toString()+" "+dict.ELEMENT_STRING[element]+" damages"
             }
+        }
+
+        override fun resetAfterDamage(): Boolean {
+            return false
         }
     }
 
@@ -302,6 +319,10 @@ class petInfo2 {
                 return mulDmg.toString()+" " +dict.ELEMENT_STRING[element]+" damages"
             }
             return "0 " +dict.ELEMENT_STRING[element]+" damages"
+        }
+
+        override fun resetAfterDamage(): Boolean {
+            return false
         }
 
     }
