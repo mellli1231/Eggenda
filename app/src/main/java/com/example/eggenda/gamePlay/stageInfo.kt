@@ -5,17 +5,6 @@ import com.example.eggenda.R
 
 class stageInfo {
 
-    data class StageInfo(
-        val name: String,
-        val bossImageId: Int,
-        val bossHurtImageId: Int,
-        val element: Int,
-        val objectiveType: Int,
-        val turn: Int,
-        val damage: Int
-    )
-
-
     fun StageInfoMap(id: Int): stage?{
         val petMap: Map<Int, () -> stage> = mapOf(
             0 to { stage_0() },
@@ -34,6 +23,7 @@ class stageInfo {
         val objectiveType: Int
         val maxTurn: Int
         val damageRequirement: Int
+        val description: String
 
         fun actionType(turn:Int ):Int
         fun actionAmount(turn: Int):Int
@@ -49,6 +39,7 @@ class stageInfo {
         override val objectiveType: Int = dict.STAGE_OBJECTIVE_BEST
         override val maxTurn: Int = 9
         override val damageRequirement: Int = 150
+        override val description: String = ""
 
         override fun actionType(turn: Int): Int {
             return dict.STAGE_ACTION_NO_ACTION
@@ -72,6 +63,7 @@ class stageInfo {
         override val objectiveType: Int = dict.STAGE_OBJECTIVE_EXACT
         override val maxTurn: Int = 9
         override val damageRequirement: Int = 134
+        override val description: String = ""
 
         override fun actionType(turn: Int): Int {
             return dict.STAGE_ACTION_NO_ACTION
@@ -94,6 +86,7 @@ class stageInfo {
         override val objectiveType: Int = dict.STAGE_OBJECTIVE_FIGHT
         override val maxTurn: Int = 10
         override val damageRequirement: Int = 230
+        override val description: String = ""
 
         override fun actionType(turn: Int): Int {
             if(turn % 2 == 0){
