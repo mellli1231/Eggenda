@@ -823,12 +823,21 @@ class gameActivity : AppCompatActivity() {
                 val damageReport = pet.name+" dealt "+damage+" "+dict.ELEMENT_STRING[atkElement]+ " damage!!"
 
 
-                if (atkType == dict.ATK_TYPE_BOUNCE && petStatus[i]?.location == dict.onBoard){
-                    bounceNumResetQueue.add(i)
+//                if (atkType == dict.ATK_TYPE_BOUNCE && petStatus[i]?.location == dict.onBoard){
+//                    bounceNumResetQueue.add(i)
+//                }
+//                else if(atkType == dict.ATK_TYPE_RETURN && petStatus[i]?.location == dict.onDECK){
+//                    stayNumResetQueue.add(i)
+//                }
+                if(pet.resetAfterDamage()){
+                    if (atkType == dict.ATK_TYPE_BOUNCE && pet.resetAfterDamage()){
+                        bounceNumResetQueue.add(i)
+                    }
+                    else {
+                            stayNumResetQueue.add(i)
+                        }
                 }
-                else if(atkType == dict.ATK_TYPE_RETURN && petStatus[i]?.location == dict.onDECK){
-                    stayNumResetQueue.add(i)
-                }
+
 
                 if((atkType == dict.ATK_TYPE_STAY && includeStay)|| atkType != dict.ATK_TYPE_STAY){
                     damageHistory[atkElement] += damage
@@ -851,6 +860,15 @@ class gameActivity : AppCompatActivity() {
                     if((atkType == dict.ATK_TYPE_STAY && includeStay)|| atkType != dict.ATK_TYPE_STAY){
                         healToPlayerBuffer += damage
                         reportList.add(healReport)
+                    }
+
+                    if(pet.resetAfterDamage()){
+                        if (atkType == dict.ATK_TYPE_BOUNCE && pet.resetAfterDamage()){
+                            bounceNumResetQueue.add(i)
+                        }
+                        else {
+                            stayNumResetQueue.add(i)
+                        }
                     }
 
                 }
