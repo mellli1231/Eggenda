@@ -967,16 +967,19 @@ class gameActivity : AppCompatActivity() {
         newCurrentHp -= damageFromBossBuffer
         newCurrentHp += abs(healToPlayerBuffer)
 
-        Log.d("hp", "newCurrentHp: ${newCurrentHp}")
+
         if( newCurrentHp < 0){
             newCurrentHp = 0
         }
         if(newCurrentHp > 100){
             newCurrentHp = 100
         }
+        Log.d("playerHp", "currentHp: ${currentHp}")
+        Log.d("playerHp", "newCurrentHp: ${newCurrentHp}")
         val diff = currentHp - newCurrentHp
+        Log.d("playerHp","diff: ${diff}")
         val totalTime = 300
-        val interval = (totalTime.toDouble()/diff.toDouble()).toInt().toLong()
+        val interval = (totalTime.toDouble()/abs(diff.toDouble())).toInt().toLong()
 
         if(diff >0){
             val layoutParams = player_hpBarView.layoutParams
