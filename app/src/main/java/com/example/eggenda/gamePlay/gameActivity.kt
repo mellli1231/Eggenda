@@ -624,6 +624,8 @@ class gameActivity : AppCompatActivity() {
                 //update board status
                 val boardStatus = boardStatusBuffer
                 boardStatus[selectedGird] = selectedPetOrder
+                boardVisualize()
+                delay(50)
 
                 Log.d("check", "selectedGird: ${selectedGird}")
                 //update deck status
@@ -1248,24 +1250,24 @@ class gameActivity : AppCompatActivity() {
             return
         }
         for(index in oldEffectBoardIndex){
-            boardAlpha(index, 0.8f)
-        }
-        delay(4)
-        for(index in oldEffectBoardIndex){
             boardAlpha(index, 0.6f)
         }
-        delay(3)
+        delay(6)
         for(index in oldEffectBoardIndex){
             boardAlpha(index, 0.4f)
         }
-        delay(2)
+        delay(5)
+        for(index in oldEffectBoardIndex){
+            boardAlpha(index, 0.2f)
+        }
+        delay(4)
 //        for(index in oldEffectBoardIndex){
 //            boardAlpha(index, 0.2f)
 //        }
         while(oldEffectBoardIndex.size > 0){
-            boardAlpha(oldEffectBoardIndex.removeFirst(), 0.2f)
+            boardAlpha(oldEffectBoardIndex.removeFirst(), 0.0f)
         }
-        delay(1)
+        delay(50)
 
     }
     //Small helper functions
