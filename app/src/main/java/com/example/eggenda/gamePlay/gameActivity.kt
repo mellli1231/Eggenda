@@ -103,6 +103,8 @@ class gameActivity : AppCompatActivity() {
     private lateinit var stayNumResetQueue: ArrayDeque<Int>
     private lateinit var oldBoard: IntArray
     private lateinit var oldEffectBoardIndex:ArrayDeque<Int>
+//    private lateinit var oldEffectBoardIndex2:ArrayDeque<Int>
+    private lateinit var oldEffectBoardDir:ArrayDeque<Int>
     private lateinit var newEffectBoardIndex:ArrayList<Int>
 
     private val coroutineScope = CoroutineScope(Dispatchers.Main + Job())
@@ -292,6 +294,8 @@ class gameActivity : AppCompatActivity() {
 //            stayNumPlusQueue = ArrayDeque()
             stayNumResetQueue = ArrayDeque()
             oldEffectBoardIndex = ArrayDeque()
+//            oldEffectBoardIndex2 = ArrayDeque()
+            oldEffectBoardDir = ArrayDeque()
             deckVisualize()
             boardVisualize()
             viewModel.updateGameRunState(dict.GAME_START)
@@ -317,7 +321,9 @@ class gameActivity : AppCompatActivity() {
                 )
 
                 Log.d("effect", "hi:${oldEffectBoardIndex.toString()}")
-                oldBoardDisappearEffect()
+//                Log.d("move", "${oldEffectBoardIndex2}")
+                oldBoardMoveEffect()
+//                oldBoardDisappearEffect()
                 deckVisualize()
                 boardVisualize()
 
@@ -423,6 +429,8 @@ class gameActivity : AppCompatActivity() {
 //            stayNumPlusQueue = ArrayDeque()
             stayNumResetQueue = ArrayDeque()
             bounceNumAddQueue = ArrayDeque()
+            oldEffectBoardIndex = ArrayDeque()
+            oldEffectBoardDir = ArrayDeque()
 
 
             deckVisualize()
@@ -430,7 +438,7 @@ class gameActivity : AppCompatActivity() {
             viewModel.updateGameRunState(dict.GAME_START)
             while (true) {
                 fightLoader()
-                oldEffectBoardIndex = ArrayDeque()
+
                 showTurnDialog(turnBuffer)
                 turnFractionVisualization(turnBuffer)
                 deckVisualize()
@@ -451,7 +459,8 @@ class gameActivity : AppCompatActivity() {
                     petStatusBuffer
                 )
                 Log.d("effect", "${oldEffectBoardIndex}")
-                oldBoardDisappearEffect()
+//                oldBoardDisappearEffect()
+                oldBoardMoveEffect()
                 deckVisualize()
                 boardVisualize()
 
@@ -508,7 +517,8 @@ class gameActivity : AppCompatActivity() {
                     var petOrder = bounceNumAddQueue.removeFirst()
                     petStatusBuffer[petOrder]!!.bounceNum ++
                 }
-                oldBoardDisappearEffect()
+//                oldBoardDisappearEffect()
+                oldBoardMoveEffect()
                 deckVisualize()
                 boardVisualize()
 
@@ -699,6 +709,8 @@ class gameActivity : AppCompatActivity() {
                             //for moving effect
                             oldEffectBoardIndex.add(victimPos[t])
 //                            newEffectBoardIndex. add(victimPosBack[t])
+//                            oldEffectBoardIndex2.add(victimPos[t])
+                            oldEffectBoardDir.add(t)
 
 
                         }
@@ -720,6 +732,9 @@ class gameActivity : AppCompatActivity() {
 
                         //for moving effect
                         oldEffectBoardIndex.add(victimPos[t])//
+
+//                        oldEffectBoardIndex2.add(victimPos[t])
+                        oldEffectBoardDir.add(t)
                     }
                 }
             }
@@ -1170,14 +1185,13 @@ class gameActivity : AppCompatActivity() {
 
             oldBoard = boardStatusBuffer.copyOf()
 
-
-            for (i in 0..<boardSize){
-                if(boardStatusBuffer[i] >= 0){
-                    oldEffectBoardIndex.add(i)
-                }
-            }
-
             if (dir == dict.STAGE_PUSH_NORTH){
+                for (i in 0..<boardSize){
+                    if(boardStatusBuffer[i] >= 0){
+                        oldEffectBoardIndex.add(i)
+                        oldEffectBoardDir.add(1)
+                    }
+                }
                 for(i in 0..< deckSize){
                     if(petStatusBuffer[i]!!.location == dict.onBoard){
                         bounceNumAddQueue.add(i)
@@ -1202,8 +1216,13 @@ class gameActivity : AppCompatActivity() {
             }
 
             else if (dir == dict.STAGE_PUSH_SOUTH){
-                oldBoard = boardStatusBuffer.copyOf()
-
+//                oldBoard = boardStatusBuffer.copyOf()
+                for (i in 0..<boardSize){
+                    if(boardStatusBuffer[i] >= 0){
+                        oldEffectBoardIndex.add(i)
+                        oldEffectBoardDir.add(6)
+                    }
+                }
                 for (i in 0..<boardSize){
                     if(boardStatusBuffer[i] >= 0){
                         oldEffectBoardIndex.add(i)
@@ -1269,6 +1288,74 @@ class gameActivity : AppCompatActivity() {
         }
         delay(50)
 
+    }
+
+    private suspend fun oldBoardMoveEffect(){
+        if(oldEffectBoardIndex.size == 0){
+            return
+        }
+        val size = oldEffectBoardIndex.size
+
+        for(i in 0..<size){
+
+            boardItemMargin(oldEffectBoardIndex[i], oldEffectBoardDir[i], 20)
+        }
+        delay(6)
+        for(i in 0..<size){
+
+            boardItemMargin(oldEffectBoardIndex[i], oldEffectBoardDir[i], 50)
+        }
+        delay(5)
+//        for(index in oldEffectBoardIndex2){
+////            boardAlpha(index, 0.6f)
+//            boardItemMargin(index, oldEffectBoardDir[index], 75)
+//        }
+        while(oldEffectBoardIndex.size > 0){
+            boardItemMargin(oldEffectBoardIndex.removeFirst(), oldEffectBoardDir.removeFirst(), 75)
+        }
+        delay(3)
+
+    }
+
+    private fun boardItemMargin(boardIndex:Int, dir: Int, margin: Int ){
+        boardRecyclerView.post {
+            val targetboard= boardRecyclerView.findViewHolderForAdapterPosition(boardIndex) as? boardAdapter.ViewHolder
+            val masterFrame = targetboard!!.masterFrame!!
+            val params = targetboard!!.masterFrame!!.layoutParams as FrameLayout.LayoutParams
+//            params.marginStart = 0
+//            params.marginEnd = 0
+//            params.topMargin = 0
+//            params.bottomMargin = 0
+            if(dir ==0 ){ //top left
+                params.marginEnd = margin
+                params.bottomMargin = margin
+            }
+            else if(dir == 1){//top
+                params.bottomMargin = margin
+            }
+            else if(dir == 2){//top right
+                params.marginStart = margin
+                params.bottomMargin = margin
+            }
+            else if(dir == 3){//left
+                params.marginEnd = margin
+            }
+            else if (dir == 4){//right
+                params.marginStart = margin
+            }
+            else if (dir == 5){//bottom left
+                params.marginEnd = margin
+                params.topMargin = margin
+            }
+            else if (dir == 6){//bottom
+                params.topMargin = margin
+            }
+            else if(dir == 7){//bottom right
+                params.marginStart = margin
+                params.topMargin = margin
+            }
+            targetboard!!.masterFrame!!.layoutParams = params
+        }
     }
     //Small helper functions
     private fun showPetCard(petId:Int, petOrder: Int){
@@ -1436,14 +1523,14 @@ class gameActivity : AppCompatActivity() {
 //        Log.d("returnPet","returnPet triggered")
         boardRecyclerView.post {
             val targetboard= boardRecyclerView.findViewHolderForAdapterPosition(boardIndex) as? boardAdapter.ViewHolder
-            targetboard?.imageView?.isInvisible = false
-            targetboard?.imageView?.alpha = 1.0f
-            targetboard?.countView?.isInvisible = false
-            targetboard?.countView?.alpha = 1.0f
-            targetboard?.elementFrame?.isInvisible = false
-            targetboard?.elementFrame?.alpha = 1.0f
-            targetboard?.countFrame?.isInvisible = false
-            targetboard?.countFrame?.alpha = 1.0f
+//            targetboard?.imageView?.isInvisible = false
+//            targetboard?.imageView?.alpha = 1.0f
+//            targetboard?.countView?.isInvisible = false
+//            targetboard?.countView?.alpha = 1.0f
+//            targetboard?.elementFrame?.isInvisible = false
+//            targetboard?.elementFrame?.alpha = 1.0f
+//            targetboard?.countFrame?.isInvisible = false
+//            targetboard?.countFrame?.alpha = 1.0f
             targetboard?.imageView?.setImageResource(imageId!!)
 
 //            val count = petInfo.getPetCount(petStatus,petOrder)
@@ -1471,16 +1558,28 @@ class gameActivity : AppCompatActivity() {
                 targetboard?.countFrame?.setImageResource(R.drawable.game_count_frame_forest)
                 targetboard?.elementFrame?.setImageResource(R.drawable.game_element_frame_forest)
             }
+
+            targetboard?.masterFrame?.alpha = 1.0f
+            val params = targetboard?.masterFrame?.layoutParams as FrameLayout.LayoutParams
+            params.marginStart = 0
+            params.topMargin = 0
+            params.marginEnd = 0
+            params.bottomMargin = 0
+
+            targetboard?.masterFrame?.layoutParams = params
+            targetboard?.masterFrame?.isInvisible = false
+
         }
     }
 
     private fun invisPetOnBoard(boardIndex: Int){
         boardRecyclerView.post {
             val targetboard= boardRecyclerView.findViewHolderForAdapterPosition(boardIndex) as? boardAdapter.ViewHolder
-            targetboard?.imageView?.isInvisible = true
-            targetboard?.countView?.isInvisible = true
-            targetboard?.elementFrame?.isInvisible = true
-            targetboard?.countFrame?.isInvisible = true
+//            targetboard?.imageView?.isInvisible = true
+//            targetboard?.countView?.isInvisible = true
+//            targetboard?.elementFrame?.isInvisible = true
+//            targetboard?.countFrame?.isInvisible = true
+            targetboard?.masterFrame?.isInvisible = true
         }
     }
 
@@ -1500,7 +1599,6 @@ class gameActivity : AppCompatActivity() {
         boardRecyclerView.post {
             val targetboard= boardRecyclerView.findViewHolderForAdapterPosition(boardIndex) as? boardAdapter.ViewHolder
 
-
             targetboard?.imageView?.setImageResource(imageId!!)
 
 //            val count = petInfo.getPetCount(petStatus,petOrder)
@@ -1529,17 +1627,22 @@ class gameActivity : AppCompatActivity() {
                 targetboard?.elementFrame?.setImageResource(R.drawable.game_element_frame_forest)
             }
 
-            targetboard?.imageView?.isInvisible = false
-            targetboard?.imageView?.alpha = alpha
+//            targetboard?.imageView?.isInvisible = false
+//            targetboard?.imageView?.alpha = alpha
+//
+//            targetboard?.countView?.isInvisible = false
+//            targetboard?.countView?.alpha = alpha
+//
+//            targetboard?.elementFrame?.isInvisible = false
+//            targetboard?.elementFrame?.alpha = alpha
+//
+//            targetboard?.countFrame?.isInvisible = false
+//            targetboard?.countFrame?.alpha = alpha
 
-            targetboard?.countView?.isInvisible = false
-            targetboard?.countView?.alpha = alpha
-
-            targetboard?.elementFrame?.isInvisible = false
-            targetboard?.elementFrame?.alpha = alpha
-
-            targetboard?.countFrame?.isInvisible = false
-            targetboard?.countFrame?.alpha = alpha
+            targetboard?.masterFrame?.isInvisible = false
+            targetboard?.masterFrame?.alpha = alpha
         }
     }
+
+
 }
