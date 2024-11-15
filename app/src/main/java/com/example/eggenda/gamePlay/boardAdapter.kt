@@ -3,6 +3,7 @@ package com.example.eggenda.gamePlay
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
@@ -16,8 +17,8 @@ class boardAdapter(
 ) : RecyclerView.Adapter<boardAdapter.ViewHolder>() {
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        val masterFrame: FrameLayout = itemView.findViewById(R.id.masterFrame)
         val imageView: ImageView = itemView.findViewById(R.id.imageView)
-
         val elementFrame: ImageView = itemView.findViewById(R.id.elementFrame)
         val countFrame: ImageView = itemView.findViewById(R.id.countFrame)
         val countView: TextView = itemView.findViewById(R.id.attackCount)
