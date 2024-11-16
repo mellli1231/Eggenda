@@ -56,8 +56,8 @@ class petInfo2 {
         override val damage: Int = -30
         override val count: Int = 2
         override val skillName :String ="Sleepy..."
-        override val description: String = "Heals "+(damage * -1)+" hp after every "+count +" turns\n" +
-                "when it is placed or it healed you."
+        override val description: String = "Heals "+(damage * -1)+" hp every "+count +" turns\n" +
+                "when it stays on the board."
         override val rarity: Int = dict.RARITY_NORMAL
 
         override fun dealDamage(petStatus: Array<petStatus?>, petOrder: Int,deckSize:Int): Int {

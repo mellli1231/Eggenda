@@ -5,6 +5,7 @@ import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.view.Gravity
+import android.view.animation.TranslateAnimation
 import android.widget.Button
 import android.widget.FrameLayout
 import android.widget.ImageView
@@ -74,6 +75,8 @@ class gameActivity : AppCompatActivity() {
     private lateinit var unitRecyclerView: RecyclerView
     private lateinit var deckAdapter: deckAdapter
 
+    private lateinit var tempRestart: Button
+
     //variables for UI
     private var selectedPetOrder: Int = -1
     private var newSelectedPetOrder: Int = -1
@@ -105,7 +108,8 @@ class gameActivity : AppCompatActivity() {
     private lateinit var oldEffectBoardIndex:ArrayDeque<Int>
 //    private lateinit var oldEffectBoardIndex2:ArrayDeque<Int>
     private lateinit var oldEffectBoardDir:ArrayDeque<Int>
-    private lateinit var newEffectBoardIndex:ArrayList<Int>
+    private lateinit var newEffectBoardIndex:ArrayDeque<Int>
+    private lateinit var newEffectBoardDir:ArrayDeque<Int>
 
     private val coroutineScope = CoroutineScope(Dispatchers.Main + Job())
 
@@ -226,6 +230,13 @@ class gameActivity : AppCompatActivity() {
 
 //        viewModel.init(stageInfo.StageInfoMap[selectedStage]!!.damage, dict.ALLOW, chosenPetId, initPetStatus(chosenPetId), initBoard, gameObjBuilder())
 
+        //temp restart
+        tempRestart = findViewById(R.id.temp_restart)
+        tempRestart.setOnClickListener {
+            viewModel.updateGameRunState(dict.GAME_NOT_START)
+            recreate()
+        }
+
         //buffers initialization
         turnBuffer = 1
         currentBossHpBuffer = stageInfo.StageInfoMap(selectedStage)!!.damageRequirement
@@ -296,6 +307,8 @@ class gameActivity : AppCompatActivity() {
             oldEffectBoardIndex = ArrayDeque()
 //            oldEffectBoardIndex2 = ArrayDeque()
             oldEffectBoardDir = ArrayDeque()
+            newEffectBoardIndex = ArrayDeque()
+            newEffectBoardDir = ArrayDeque()
             deckVisualize()
             boardVisualize()
             viewModel.updateGameRunState(dict.GAME_START)
@@ -431,6 +444,8 @@ class gameActivity : AppCompatActivity() {
             bounceNumAddQueue = ArrayDeque()
             oldEffectBoardIndex = ArrayDeque()
             oldEffectBoardDir = ArrayDeque()
+            newEffectBoardIndex = ArrayDeque()
+            newEffectBoardDir = ArrayDeque()
 
 
             deckVisualize()
@@ -623,6 +638,7 @@ class gameActivity : AppCompatActivity() {
         var putSuccess = 0
         selectedPetOrder = -1
         selectedGird = -1
+
         while (putSuccess == 0) {
             if (petClicked == 1 && newSelectedPetOrder != -1) {
                 selectedPetOrder = toggleFrame(newSelectedPetOrder)
@@ -711,6 +727,8 @@ class gameActivity : AppCompatActivity() {
 //                            newEffectBoardIndex. add(victimPosBack[t])
 //                            oldEffectBoardIndex2.add(victimPos[t])
                             oldEffectBoardDir.add(t)
+                            newEffectBoardIndex.add(victimPosBack[t])
+                            newEffectBoardDir.add(t)
 
 
                         }
@@ -732,9 +750,10 @@ class gameActivity : AppCompatActivity() {
 
                         //for moving effect
                         oldEffectBoardIndex.add(victimPos[t])//
-
-//                        oldEffectBoardIndex2.add(victimPos[t])
                         oldEffectBoardDir.add(t)
+
+//                        newEffectBoardIndex.add(victimPosBack[t])
+//                        newEffectBoardDir.add(t)
                     }
                 }
             }
@@ -1211,6 +1230,7 @@ class gameActivity : AppCompatActivity() {
                     if(boardStatusBuffer[i] >= 0){
                         oldEffectBoardIndex.add(i)
                         oldEffectBoardDir.add(1)
+
                     }
                 }
                 for(i in 0..< deckSize){
@@ -1228,6 +1248,10 @@ class gameActivity : AppCompatActivity() {
                 }
                 for(i in 0 ..< boardSize-boardCol){
                     boardStatusBuffer[i] = boardStatusBuffer[i+boardCol]
+                    if(boardStatusBuffer[i+boardCol] >= 0){
+                        newEffectBoardIndex.add(i)
+                        newEffectBoardDir.add(1)
+                    }
                 }
 
                 for(i in boardSize-boardCol ..< boardSize){
@@ -1262,10 +1286,18 @@ class gameActivity : AppCompatActivity() {
                         deckStatusBuffer[petOrder] = dict.hasPet
                     }
                     boardStatusBuffer[i] = boardStatusBuffer[i-boardCol]
+                    if(boardStatusBuffer[i-boardCol] >= 0){
+                        newEffectBoardIndex.add(i)
+                        newEffectBoardDir.add(6)
+                    }
                 }
 
                 for(i in boardCol ..< boardSize-boardCol){
                     boardStatusBuffer[i] = boardStatusBuffer[i-boardCol]
+                    if(boardStatusBuffer[i-boardCol] >= 0){
+                        newEffectBoardIndex.add(i)
+                        newEffectBoardDir.add(6)
+                    }
                 }
 
                 for(i in 0 ..< boardCol){
@@ -1514,6 +1546,7 @@ class gameActivity : AppCompatActivity() {
 
 //        Log.d("returnPet","returnPet triggered")
         unitRecyclerView.post {
+
             val targetDeck= unitRecyclerView.findViewHolderForAdapterPosition(petOrder) as? deckAdapter.ViewHolder
             targetDeck?.imageView?.isInvisible = false
             targetDeck?.imageView?.setImageResource(imageId!!)
@@ -1552,6 +1585,7 @@ class gameActivity : AppCompatActivity() {
 //            targetboard?.elementFrame?.alpha = 1.0f
 //            targetboard?.countFrame?.isInvisible = false
 //            targetboard?.countFrame?.alpha = 1.0f
+
             targetboard?.imageView?.setImageResource(imageId!!)
 
 //            val count = petInfo.getPetCount(petStatus,petOrder)
@@ -1586,9 +1620,14 @@ class gameActivity : AppCompatActivity() {
             params.topMargin = 0
             params.marginEnd = 0
             params.bottomMargin = 0
-
+//            val translateAnimation = TranslateAnimation(
+//                0f, -targetboard?.masterFrame?.width?.toFloat()!!, // start and end positions for X-axis
+//                0f, -targetboard?.masterFrame?.width?.toFloat()!! // start and end positions for Y-axis (no vertical movement)
+//            )
+//            translateAnimation.duration = 1000
             targetboard?.masterFrame?.layoutParams = params
             targetboard?.masterFrame?.isInvisible = false
+//            targetboard?.masterFrame?.startAnimation(translateAnimation)
 
         }
     }
