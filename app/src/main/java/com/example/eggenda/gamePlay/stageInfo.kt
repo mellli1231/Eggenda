@@ -39,7 +39,7 @@ class stageInfo {
 
     private class stage_0():stage{
         override val id: Int = 0
-        override val name: String = "Wood Pile"
+        override val name: String = "Innocent Sapling"
         override val bossImageId: Int = R.drawable.game_enemy_sapling
         override val acceptElement: Int = dict.STAGE_ACCEPT_ALL_ELEMENT
         override val objectiveType: Int = dict.STAGE_OBJECTIVE_BEST
