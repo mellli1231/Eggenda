@@ -107,7 +107,7 @@ class petInfo2 {
         override val skillName :String ="Fragile!"
         override val description: String = "Deal "+damage.toString()+" "+dict.ELEMENT_STRING[element]+" damages\n" +
                 "when it is knocked out from the board\n" +
-                "on the 1st turn after it is placed on the board."
+                "on the next turn after it is placed on the board."
         override val rarity: Int = dict.RARITY_NORMAL
 
         override fun dealDamage(petStatus: Array<petStatus?>, petOrder: Int,deckSize:Int): Int {
@@ -164,8 +164,7 @@ class petInfo2 {
         override val count: Int = 2
         override val skillName:String = "You can't catch me!"
         override val description: String = "Deal "+damage+" "+dict.ELEMENT_STRING[element]+" damage\n" +
-                "after every "+count+ " bounces\n" +
-                "when it stay on the board."
+                "after every "+count+ " position change when it is on the board."
         override val rarity: Int = dict.RARITY_RARE
 
         override fun dealDamage(petStatus: Array<petStatus?>, petOrder: Int,deckSize:Int): Int {
