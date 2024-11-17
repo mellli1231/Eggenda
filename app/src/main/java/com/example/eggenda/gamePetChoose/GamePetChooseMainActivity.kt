@@ -11,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
@@ -197,6 +198,12 @@ class GamePetChooseMainActivity : AppCompatActivity(){
 
     //set the show dialog funciton
     private fun showPetDetailDialog(petId:Int){
+
+        //debug
+        val oldDialog = supportFragmentManager.findFragmentByTag("PetGameDialog")
+        if (oldDialog != null) {
+            (oldDialog as DialogFragment).dismiss()
+        }
         val dialog = PetChooseDialogFragment.newInstance(petId)
         dialog.show(supportFragmentManager, "PetChooseDialog")
 

@@ -17,6 +17,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.view.isInvisible
+import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -1411,6 +1412,23 @@ class gameActivity : AppCompatActivity() {
         }
     }
     //Small helper functions
+
+    private fun showPetCard(petId : Int, petOrder: Int){
+        val pet = petInfo.getPetInfoById(petId)!!
+        val conditionText : String =  pet.condition(petStatusBuffer, petOrder, deckSize)
+        val nextDmg : String = pet.nextDamage(petStatusBuffer, petOrder, deckSize)
+
+        //debug
+        val oldDialog = supportFragmentManager.findFragmentByTag("PetChooseDialog")
+        if (oldDialog != null) {
+            (oldDialog as DialogFragment).dismiss()
+        }
+
+        val dialog = petDialog.newInstance(petId, petOrder, conditionText, nextDmg)
+        dialog.show(supportFragmentManager, "PetGameDialog")
+    }
+
+/*
     private fun showPetCard(petId:Int, petOrder: Int){
         val dialogView = layoutInflater.inflate(R.layout.game_pet_detail_dialog, null)
 
@@ -1462,6 +1480,7 @@ class gameActivity : AppCompatActivity() {
 
     }
 
+    */
     private fun initPetStatus(chosenPetId: IntArray): Array<petStatus?>{
         val unitsOnBoard: Array<petStatus?> = arrayOfNulls<petStatus?>(deckSize)
         for (i in 0..deckSize-1) {
@@ -1474,6 +1493,8 @@ class gameActivity : AppCompatActivity() {
         }
         return unitsOnBoard.copyOf()
     }
+
+
 
     private fun gameObjBuilder():String{
         val stage = stageInfo.StageInfoMap(selectedStage)!!
