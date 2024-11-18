@@ -34,7 +34,7 @@ class GalleryFragment : Fragment() {
 
 
     // This property is only valid between onCreateView and
-    // onDestroyView.
+    // onDestroyView.edrqwe
     private val binding get() = _binding!!
 
     override fun onCreateView(
