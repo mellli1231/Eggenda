@@ -72,6 +72,7 @@ class petDialog : DialogFragment(){
             view.findViewById<TextView>(R.id.game_card_petId).text = String.format("%03d", getpet.id)
             view.findViewById<TextView>(R.id.game_card_petName).text = getpet.name
             view.findViewById<TextView>(R.id.game_dialog_petSkill_name).text = getpet.skillName
+            view.findViewById<TextView>(R.id.game_dialog_skillDescription).text = getpet.description
             view.findViewById<TextView>(R.id.game_dialog_next_reminder).text = petCondition
             view.findViewById<TextView>(R.id.game_dialog_nextDmgAmount).text = petNextDmg
         }

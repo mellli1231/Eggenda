@@ -23,7 +23,7 @@ object dict {
     const val ELEMENT_WATER = 1
     const val ELEMENT_FOREST = 2
 
-    val ELEMENT_STRING = arrayOf("Fire", "Water", "Forest", "All")
+    val ELEMENT_STRING = arrayOf("Fire", "Water", "Forest", "Fire, Water, Forest")
 
     const val RARITY_NORMAL = 0
     const val RARITY_RARE = 1
@@ -41,7 +41,7 @@ object dict {
     const val STAGE_OBJECTIVE_BEST = 1      //as long as you can kill them
     const val STAGE_OBJECTIVE_FIGHT = 2     //boss will fight you back
 
-//    val STAGE_
+    val STAGE_STRING = arrayOf("Deal EXACT Damage", "No Damage Restriction", "No Damage Restriction + BOSS will HIT YOU ")
 
     const val STAGE_ACCEPT_ALL_ELEMENT = 3
 

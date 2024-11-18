@@ -4,11 +4,15 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.widget.Button
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.activity.ComponentActivity
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
@@ -17,8 +21,10 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.eggenda.R
+import com.example.eggenda.gameMonsterChoose.GameMonsterDialogFragment
 import com.example.eggenda.gamePlay.gameActivity
 import com.example.eggenda.gamePlay.petInfo2
+import com.example.eggenda.gamePlay.stageInfo
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 
@@ -31,7 +37,12 @@ class GamePetChooseMainActivity : AppCompatActivity(){
     private lateinit var startButton: Button
     private lateinit var sharedPreferenceManager: SharedPreferenceManager
     private lateinit var allPetsArrayID : IntArray
+    private lateinit var stageInfo : stageInfo
     private lateinit var petInfo : petInfo2
+
+    //load info from other activities
+    private var selectedStage : Int = -1
+
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -43,33 +54,47 @@ class GamePetChooseMainActivity : AppCompatActivity(){
         //initalize classes
         sharedPreferenceManager = SharedPreferenceManager(this)
         petInfo = petInfo2()
+        stageInfo = stageInfo()
+
+        selectedStage = sharedPreferenceManager.getStageChoose()
+
 
         //to set the game should have maximum how many characters
-//        var maxSelectableImage = sharedPreferenceManager.getPetsAmountInt()
-
-        var maxSelectableImage = sharedPreferenceManager. getPetsAmount()
-
-
-        //get the pets ID with int array
-        val petsTotalAmount : Int = petInfo.getTotalPetAmount()
+        var deckSize = stageInfo.StageInfoMap(selectedStage)!!.deckSize
 
         //the mutuable list that can save the list of the pets ,that can send to the game part
-        val selectedPetID =  MutableList<Int?>(maxSelectableImage){ null }
+        val selectedPetID =  MutableList<Int?>(deckSize){ null }
 
         //initialize view model
         val factory = GamePetChooseViewModel.GamePetChooseViewModelFactory(sharedPreferenceManager)
         petsViewModel = ViewModelProvider(this, factory).get(GamePetChooseViewModel::class.java)
 
         //initialize pets array that has in the code in int array
+        //here should take it form pet info class
         allPetsArrayID = intArrayOf(0,1,2,3,4)
 
         //initialize start button
         startButton = findViewById(R.id.fight_start)
         updateStartButtonState(false, selectedPetID)   //update the start button to gray
 
+
+        //set the monster class
+        val monsterConstraint = findViewById<ConstraintLayout>(R.id.monster_constraint_layout)
+        val monsterName = findViewById<TextView>(R.id.game_pet_choose_monseter)
+        val monsterPhoto = findViewById<ImageView>(R.id.game_pet_choose_monster_image)
+        monsterName.text = stageInfo.StageInfoMap(selectedStage)!!.name
+        monsterPhoto.setImageResource(stageInfo.StageInfoMap(selectedStage)!!.bossImageId)
+
+        //set a long click to check monster info
+        monsterConstraint.setOnLongClickListener{
+            showMonsterDetailDialog(selectedStage)
+            true
+        }
+
+
         //set the character 3 in a row
         characterRecyclerView = findViewById(R.id.game_characterchoose_recyclerView)
-        characterRecyclerView.layoutManager = GridLayoutManager(this, 3)
+        characterRecyclerView.layoutManager = GridLayoutManager(this, 5)
 
         //set adapter for showing pets
         petsAdapter = GamePetChooseAdapter(
@@ -78,7 +103,7 @@ class GamePetChooseMainActivity : AppCompatActivity(){
             sharedPreferenceManager,
             this,
             {petId -> onImageSelected(petId, selectedPetID) },
-            {petId ->  onImageDeselected(petId, selectedPetID) },
+            {petId -> onImageDeselected(petId, selectedPetID) },
             {petId -> showPetDetailDialog(petId)})
         petsAdapter.notifyDataSetChanged()
         characterRecyclerView.adapter = petsAdapter
@@ -86,11 +111,11 @@ class GamePetChooseMainActivity : AppCompatActivity(){
 
         //set the selected image view with customized amount
         characterSelectedList = findViewById(R.id.game_character_selectedList)
-        val spanCount = if(maxSelectableImage > 0) maxSelectableImage else 3
-        characterSelectedList.layoutManager = GridLayoutManager(this, maxSelectableImage)
+//        val spanCount = if(maxSelectableImage > 0) maxSelectableImage else 3
+        characterSelectedList.layoutManager = GridLayoutManager(this, deckSize)
 
         //set the adapter for selecting pets
-        selectPetsAdapter = SelectAdapter(maxSelectableImage, selectedPetID, petInfo)
+        selectPetsAdapter = SelectAdapter(deckSize, selectedPetID, petInfo)
         characterSelectedList.adapter = selectPetsAdapter
 
         //observe the changes of the pets photo
@@ -98,6 +123,29 @@ class GamePetChooseMainActivity : AppCompatActivity(){
             Log.d("MainActivity", "allPets updated: $photos")
             petsAdapter.updatePetsChoose(photos)
         })
+
+
+        // Observe currently selected pet
+        petsViewModel.currentSelectedPet.observe(this) { petId ->
+            //set the chosen image
+            val petChosenImage = findViewById<ImageView>(R.id.game_pet_choose_image)
+
+            if (petId == null) {
+                // No pet selected, return to the initalized format
+                petChosenImage.setImageResource(R.drawable.game_choose_nth_3)
+                petChosenImage.setOnLongClickListener(null)
+            } else {
+                // Pet selected, display the image
+                petChosenImage.setImageResource(petInfo.getPetInfoById(petId)?.imageId ?: R.layout.gallery_pet_items_frame)
+                petChosenImage.visibility = View.VISIBLE
+
+                //set a long click so it can show the info of the pet
+                petChosenImage.setOnLongClickListener{
+                    showPetDetailDialog(petId)
+                    true
+                }
+            }
+        }
 
         petsViewModel.selectedPets.observe(this, Observer { photos ->
             selectPetsAdapter.updatePets(photos)
@@ -112,9 +160,7 @@ class GamePetChooseMainActivity : AppCompatActivity(){
     //make updates of selected pets with selectedAdapter
     private fun onImageSelected(petId: Int, selectedPetID :MutableList <Int?> ) {
         val emptyIndex = selectedPetID.indexOfFirst { it == null}
-
-        //get the petId by function
-        val petSelected = petInfo.getPetInfoById(petId)?.id
+        val petSelected = petInfo.getPetInfoById(petId)?.id     //get the petId by function
 
         //if there is space
         if(emptyIndex != -1){
@@ -123,45 +169,31 @@ class GamePetChooseMainActivity : AppCompatActivity(){
 
             // Update the ViewModel with the current selection
             petsViewModel.updateList(selectedPetID)
-
-            Log.d("MainActivity", "Image selected: $petId, Current selection: ${selectedPetID.joinToString()}")
-
+            petsViewModel.selectPet(petId)  //notify View Model of the current selection
         }
         updateStartButtonState(petsViewModel.isSelectionComplete(), selectedPetID)
-        petsAdapter.notifyDataSetChanged() // 更新所有圖片的 RecyclerView
-        selectPetsAdapter.notifyDataSetChanged() // 更新已選擇圖片的 RecyclerView
+        petsAdapter.notifyDataSetChanged() // update all photo's RecyclerView
+        selectPetsAdapter.notifyDataSetChanged() // update selected photo RecyclerView
     }
 
     //make deletetion and change of list with selected Adapter
     private fun onImageDeselected(petId: Int, selectedPetID: MutableList<Int?>) {
-        // find the chosen place of the photo
-        val index = selectedPetID.indexOf(petId)
+        val index = selectedPetID.indexOf(petId)         // find the chosen place of the photo
 
         if (index != -1) { // if photo found
-
-            selectedPetID[index] = null
-//            selectPetsAdapter.removeImage(imageId)
-
-            // clear the chosen photo
-            selectedPetID[index] = null
+            selectedPetID[index] = null // clear the chosen photo
 
             // move photo
             for (i in index until selectedPetID.size - 1) {
-                selectedPetID[i] = selectedPetID[i + 1] // 將下一個圖片移到當前位置
+                selectedPetID[i] = selectedPetID[i + 1] // the next photo move the the current position
             }
-            selectedPetID[selectedPetID.size - 1] = null // 清空最後一個位置
+            selectedPetID[selectedPetID.size - 1] = null // clear the last position
+            petsViewModel.updateList(selectedPetID)      // Update the ViewModel with the current selection
+            petsViewModel.clearSelection()              // Clear the chosen image on top
 
-            // Update the ViewModel with the current selection
-            petsViewModel.updateList(selectedPetID)
-
-            Log.d("MainActivity", "Image deselected: $petId, Current selection: ${selectedPetID.joinToString()}")
-//
         }
 
         updateStartButtonState(petsViewModel.isSelectionComplete(), selectedPetID)
-
-        Log.d("MainActivity", "Image removed: $petId, New list: ${selectedPetID.joinToString()}")
-
         petsAdapter.notifyDataSetChanged()
         selectPetsAdapter.notifyDataSetChanged()
     }
@@ -196,16 +228,17 @@ class GamePetChooseMainActivity : AppCompatActivity(){
         }
     }
 
-    //set the show dialog funciton
+    //set the show pet dialog function
     private fun showPetDetailDialog(petId:Int){
-
-        //debug
-        val oldDialog = supportFragmentManager.findFragmentByTag("PetGameDialog")
-        if (oldDialog != null) {
-            (oldDialog as DialogFragment).dismiss()
-        }
         val dialog = PetChooseDialogFragment.newInstance(petId)
         dialog.show(supportFragmentManager, "PetChooseDialog")
+
+    }
+
+    //set the show monster dialog function
+    private fun showMonsterDetailDialog(stageId : Int){
+        val dialog = GameMonsterDialogFragment.newInstance(stageId)
+        dialog.show(supportFragmentManager, "MonsterChooseDialog")
 
     }
 

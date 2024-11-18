@@ -20,43 +20,23 @@ class GamePetChooseViewModel(private val maxAmountPets: SharedPreferenceManager)
     private val _selectedPets = MutableLiveData<MutableList<Int?>>(mutableListOf())
     val selectedPets: LiveData<MutableList<Int?>> get() = _selectedPets
 
-    //
+    private val _currentSelectedPet = MutableLiveData<Int?>() // Null means no pet is selected
+    val currentSelectedPet: LiveData<Int?> = _currentSelectedPet
 
-    private val inventory = petInfo()
+    fun selectPet(petId: Int?) {
+        _currentSelectedPet.value = petId
+    }
 
-//    init{
-//        loadPetsImages()
-//    }
+    fun clearSelection() {
+        _currentSelectedPet.value = null
+    }
 
-    //function to UPDATE the character appearance
-//    fun updateAppearance (id: Int, hasOwned : Int){
-//        _isOwned.value?.let { array ->
-//            val updatedArray = array.copyOf()
-//            updatedArray[id] = if(hasOwned == 1) 1 else 0
-//            _isOwned.value = updatedArray
-//        }
-//    }
 
-//    //function that to get the owned pets only
-//    fun getAppearedPets() : List<Int>{
-//        val pets = _allPets.value?: return emptyList()
-//        val isOwned = _isOwned.value?: return emptyList()
-//        return pets.filterIndexed { index, _-> isOwned.getOrNull(index) == 1 }
-//    }
 
-    //    private fun loadPetsImages(){
-//        val ids = petInfo.getAllPetImageIds()
-//        _allPets.value = ids
-//    }
-//
     fun updateList(newList: MutableList<Int?>){
         // Update the existing MutableList and notify observers
         _selectedPets.value = newList.toMutableList() // Create a new list to notify observers
     }
-
-//    private fun getAmount(): Int {
-//        return maxAmountPets.getInt("max_key", 0)
-//    }
 
     fun isSelectionComplete(): Boolean {
         val getAmount = maxAmountPets.getPetsAmount()

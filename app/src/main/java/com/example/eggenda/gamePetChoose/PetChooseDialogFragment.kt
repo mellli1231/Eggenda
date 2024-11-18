@@ -58,12 +58,12 @@ class PetChooseDialogFragment  : DialogFragment (){
         //set the data on views
         if (getpet != null) {
             view.findViewById<ImageView>(R.id.card_pet_image).setImageResource(getpet.imageId)
-            view.findViewById<TextView>(R.id.card_petId).text = getpet.id.toString()
+            view.findViewById<TextView>(R.id.card_petId).text = String.format("%03d", getpet.id)
             view.findViewById<TextView>(R.id.card_petName).text = getpet.name
+            view.findViewById<TextView>(R.id.dialog_petSkill_name).text = getpet.skillName
             view.findViewById<TextView>(R.id.dialog_skillCondition).text = getpet.description
             view.findViewById<TextView>(R.id.dialog_attackType).text = dict.ATK_STRING[getpet.attackType]
-            view.findViewById<TextView>(R.id.dialog_count).text = getpet.count.toString()
-            view.findViewById<TextView>(R.id.dialog_petSkill_name).text = getpet.skillName
+            view.findViewById<TextView>(R.id.dialog_count).text = getpet.count.toString() + "turn(s) to make an attack"
         }
 
         return view
@@ -72,7 +72,6 @@ class PetChooseDialogFragment  : DialogFragment (){
 
     override fun onCreate (savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Log.d("DialogFragment", "FirstDialogFragment created")
         val petInfo = petInfo2()
         val getId = arguments?.getInt(ARG_PET_ID)
         val getpet = getId?.let { petInfo.getPetInfoById(it) }

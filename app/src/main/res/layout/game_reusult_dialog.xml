@@ -25,7 +25,7 @@
         android:layout_marginBottom="10dp"
         android:padding="10dp"
         android:text="Restart"
-        app:layout_constraintBottom_toTopOf="@+id/guideline2"
+        app:layout_constraintBottom_toTopOf="@+id/selectHorLine"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
@@ -36,11 +36,11 @@
         android:layout_marginBottom="10dp"
         android:padding="10dp"
         android:text="Go Home"
-        app:layout_constraintBottom_toTopOf="@+id/guideline2"
+        app:layout_constraintBottom_toTopOf="@+id/selectHorLine"
         app:layout_constraintEnd_toEndOf="parent" />
 
     <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline2"
+        android:id="@+id/selectHorLine"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"

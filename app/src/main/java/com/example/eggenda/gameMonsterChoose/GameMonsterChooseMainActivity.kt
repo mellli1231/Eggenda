@@ -14,6 +14,7 @@ import androidx.core.view.isInvisible
 import androidx.lifecycle.Observer
 import com.example.eggenda.R
 import com.example.eggenda.gamePetChoose.GamePetChooseMainActivity
+import com.example.eggenda.gamePetChoose.PetChooseDialogFragment
 import com.example.eggenda.gamePetChoose.SharedPreferenceManager
 import com.example.eggenda.gamePlay.stageInfo
 
@@ -89,7 +90,14 @@ class GameMonsterChooseMainActivity : AppCompatActivity () {
             bossImage.setImageResource(selectedStage.bossImageId)
             viewModel.updateAmount(selectedStage.deckSize)
 //            viewModel.updateChosenStageID(0)
+
         })
+
+        bossImage.setOnLongClickListener {
+            val stageId = viewModel.chosenStageID.value ?: 0
+            showPetDetailDialog(stageId)
+            true
+        }
 
         backBtn.setOnClickListener{
             viewModel.subtractChosenStageID()
@@ -97,12 +105,6 @@ class GameMonsterChooseMainActivity : AppCompatActivity () {
         nextBtn.setOnClickListener{
             viewModel.addChosenStageID()
         }
-//        val amount = 5
-//        sharedPreferenceManager.savePetsAmount(amount)
-//
-//        val retrievedList = sharedPreferenceManager.getPetOwnership()
-//        val intArrayhihi : IntArray = retrievedList.toIntArray()
-//        Log.d("Retrieved List", "IntArray: ${intArrayhihi.joinToString(",")}")
 
         button = findViewById(R.id.game_monster_go)
 
@@ -120,8 +122,8 @@ class GameMonsterChooseMainActivity : AppCompatActivity () {
 
             Log.d("stageID", "saved: ${sharedPreferenceManager.getStageChoose()}")
             val intent = Intent(this, GamePetChooseMainActivity::class.java)
-            finish()
             startActivity(intent)
+            finish()
         }
 
     }
@@ -137,6 +139,13 @@ class GameMonsterChooseMainActivity : AppCompatActivity () {
             index ++
         }
         return ret
+    }
+
+    //set the show dialog funciton
+    private fun showPetDetailDialog(stageId:Int){
+        val dialog = GameMonsterDialogFragment.newInstance(stageId)
+        dialog.show(supportFragmentManager, "MonsterChooseDialog")
+
     }
 
 
