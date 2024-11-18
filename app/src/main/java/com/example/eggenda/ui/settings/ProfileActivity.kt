@@ -32,8 +32,6 @@ import java.io.File
 
 class ProfileActivity: AppCompatActivity() {
     companion object {
-        const val FEMALE = 0
-        const val MALE = 1
         const val DIALOG_KEY = "dialog"
         const val PHOTO_DIALOG = 4
     }
@@ -77,7 +75,7 @@ class ProfileActivity: AppCompatActivity() {
         button = findViewById(R.id.btnChangePhoto)
         saveProfile = findViewById(R.id.save_profile)
         cancelProfile = findViewById(R.id.cancel_profile)
-        sharedPreferences = getSharedPreferences("profile", MODE_PRIVATE)
+        sharedPreferences = getSharedPreferences("account", MODE_PRIVATE)
 
         //retrieve saved data on startup
         loadProfile()
@@ -229,14 +227,14 @@ class ProfileActivity: AppCompatActivity() {
     }
 
     //function to open gallery and call activity result to display photo
-    private fun openGallery() {
+    fun openGallery() {
         val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
         galleryResult.launch(intent)
         println("gallery opened")
     }
 
     //function to open camera and take photo then call activity result to display photo
-    private fun takePhoto() {
+    fun takePhoto() {
         val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
         intent.putExtra(MediaStore.EXTRA_OUTPUT, tempImgUri)
         cameraResult.launch(intent)

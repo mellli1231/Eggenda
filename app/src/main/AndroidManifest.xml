@@ -42,6 +42,9 @@
 
 
         <activity android:name=".ui.settings.ProfileActivity"/>
+        <activity android:name=".ui.account.LoginActivity"/>
+        <activity android:name=".ui.account.CreateAccountActivity"/>
+        <activity android:name=".ui.account.CreateProfileActivity"/>
         <activity android:name=".ui.task.AddTaskActivity"/>
         <activity android:name=".ui.task.ConfirmTasksActivity"/>
         <provider

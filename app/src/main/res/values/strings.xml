@@ -56,6 +56,16 @@
     <string name="logout">Log Out\n</string>
     <string name="terms_conditions_details" translatable="false">terms and conditions</string>
     <string name="game">Start Game</string>
+    <string name="password_hint">Password</string>
+    <string name="login_button">Login</string>
+    <string name="logout_confirmation">Are you sure you want to log out?</string>
+    <string name="log_out">Log Out</string>
+    <string name="new_to_eggenda">New to Eggenda?</string>
+    <string name="create_account">Create Account</string>
+    <string name="confirm_password">Confirm Password</string>
+    <string name="create_an_account">Create An Account</string>
+    <string name="password_empty">Password Empty</string>
+    <string name="passwords_do_not_match">Passwords do not match</string>
 
     <string-array name="language_options">
         <item>English</item>

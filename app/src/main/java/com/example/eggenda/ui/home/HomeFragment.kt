@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
+import android.graphics.BitmapFactory
 import android.media.MediaPlayer
 import android.os.Bundle
 import android.os.Handler
@@ -26,6 +27,7 @@ import com.example.eggenda.gamePlay.gameActivity
 import com.example.eggenda.ui.task.ConfirmTasksActivity
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import java.io.File
 import kotlin.random.Random
 
 class HomeFragment : Fragment() {
@@ -52,6 +54,25 @@ class HomeFragment : Fragment() {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         val root: View = binding.root
         val petOwnership = loadPetOwnership()
+
+        //display username
+        val sharedPreferences = requireContext().getSharedPreferences("account", Context.MODE_PRIVATE)
+        val username = sharedPreferences.getString("username", "John Smith")
+        binding.displayName.text=username
+
+        //load profile picture
+        val profileImgPath = sharedPreferences.getString("profileImagePath", null)
+        if (profileImgPath != null) { //if profile pic exists, set
+            val ogFile = File(profileImgPath)
+            if (ogFile.exists()) {
+                val bitmap = BitmapFactory.decodeFile(ogFile.absolutePath)
+                binding.profilePic.setImageBitmap(bitmap)
+            } else {
+                binding.profilePic.setImageResource(R.drawable.defaultprofile)
+            }
+        } else {
+            binding.profilePic.setImageResource(R.drawable.defaultprofile)
+        }
 
         // xp
         loadProgress()

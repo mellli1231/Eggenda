@@ -3,14 +3,14 @@ package com.example.eggenda.ui.settings
 
 import android.app.AlertDialog
 import android.app.Dialog
+import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.content.SharedPreferences
 import android.content.SharedPreferences.Editor
 import android.os.Bundle
 import android.view.View
-import android.widget.EditText
-import android.widget.RadioGroup
+import android.widget.Button
 import android.widget.Toast
 import androidx.fragment.app.DialogFragment
 import androidx.preference.Preference
@@ -18,11 +18,13 @@ import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.PreferenceManager
 import com.example.eggenda.LocaleHelper
 import com.example.eggenda.R
+import com.example.eggenda.ui.account.LoginActivity
 
 class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedPreferenceChangeListener{
     companion object {
         const val DIALOG_KEY = "dialog"
         const val TERMS_CONDITIONS_DIALOG = 0
+        const val LOGOUT_DIALOG = 1
     }
     private lateinit var sharedPreferences: SharedPreferences
     private lateinit var editor: Editor
@@ -65,7 +67,15 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
         val termsConditions: Preference? = findPreference("terms")
         termsConditions?.setOnPreferenceClickListener {
             println("terms and conditions clicked")
-            showMyDialogFragment(TERMS_CONDITIONS_DIALOG, R.string.conditions_header.toString())
+            showMyDialogFragment(TERMS_CONDITIONS_DIALOG)
+
+            true
+        }
+
+        val logout: Preference? = findPreference("logout")
+        logout?.setOnPreferenceClickListener {
+            println("logout button clicked")
+            showMyDialogFragment(LOGOUT_DIALOG)
 
             true
         }
@@ -78,7 +88,6 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
             val bundle = arguments
             val dialogId = bundle?.getInt(DIALOG_KEY)
             val builder = AlertDialog.Builder(requireActivity())
-            val title = bundle?.getString("TITLE") ?: ""
 
             if (dialogId == TERMS_CONDITIONS_DIALOG) {
                 val view: View = requireActivity().layoutInflater.inflate(
@@ -89,6 +98,41 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
                 builder.setTitle(R.string.conditions_header)
 
                 builder.setNegativeButton(R.string.cancel_button, this)
+                ret = builder.create()
+            }
+            else if (dialogId == LOGOUT_DIALOG) {
+                val view: View = requireActivity().layoutInflater.inflate(
+                    R.layout.dialog_logout,
+                    null
+                )
+                builder.setView(view)
+                builder.setTitle(R.string.log_out)
+
+                //get sharedPreferences for account
+                val logoutBtn: Button = view.findViewById(R.id.logout_button)
+                val cancelBtn: Button = view.findViewById(R.id.cancel_button)
+                val sharedPreferences : SharedPreferences =
+                    requireActivity().getSharedPreferences("account", Context.MODE_PRIVATE)
+
+                //if confirm logout
+                logoutBtn.setOnClickListener {
+                    val editor = sharedPreferences.edit()
+                    editor.putBoolean("isLoggedIn", false) //logout user
+                    editor.apply()
+
+                    Toast.makeText(requireActivity(), "Logging Out", Toast.LENGTH_SHORT).show()
+
+                    //redirect to login page
+                    val intent = Intent(requireActivity(), LoginActivity::class.java)
+                    startActivity(intent)
+                    requireActivity().finish()
+                }
+
+                //dismiss if cancel button clicked
+                cancelBtn.setOnClickListener {
+                    dismiss()
+                }
+
                 ret = builder.create()
             }
 
@@ -104,11 +148,10 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
     }
 
     //show dialog fragment
-    private fun showMyDialogFragment(dialogType: Int, title: String) {
+    private fun showMyDialogFragment(dialogType: Int) {
         val myDialog = MyRunsDialogFragment()
         val bundle = Bundle().apply {
             putInt(DIALOG_KEY, dialogType)
-            putString("TITLE", title)
         }
         myDialog.arguments = bundle
         myDialog.show(parentFragmentManager, "my_dialog")

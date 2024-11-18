@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/yellow">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginHorizontal="20dp">
+
+        <!--profile photo-->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center">
+
+            <ImageView
+                android:id="@+id/profile_photo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:maxWidth="150dp"
+                android:maxHeight="175dp"
+                android:adjustViewBounds="true"
+                android:layout_margin="10dp"
+                android:src="@drawable/defaultprofile"
+                android:scaleType="centerCrop">
+            </ImageView>
+
+            <Button
+                android:id="@+id/btnChangePhoto"
+                android:backgroundTint="@color/bold_yellow"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:text="@string/edit_button"
+                android:textSize="18sp"
+                android:fontFamily="@font/titan_one"
+                />
+
+        </LinearLayout>
+
+        <!--first name-->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="90dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="#4A3109"
+                android:text="@string/first_name_header"
+                android:textSize="16sp"
+                android:fontFamily="@font/titan_one"/>
+
+            <EditText
+                android:id="@+id/edit_first_name"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:inputType="text"
+                android:textSize="16sp"
+                android:background="@drawable/edit_text_border"
+                android:hint="@string/first_name_hint"
+                android:paddingStart="16dp"
+                android:textColor="@color/dark_blue"
+                android:fontFamily="@font/dangrek_font"/>
+        </LinearLayout>
+
+        <!--last name-->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="90dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="#4A3109"
+                android:text="@string/last_name_header"
+                android:textSize="16sp"
+                android:fontFamily="@font/titan_one"/>
+
+            <EditText
+                android:id="@+id/edit_last_name"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:inputType="text"
+                android:textSize="16sp"
+                android:background="@drawable/edit_text_border"
+                android:hint="@string/last_name_hint"
+                android:paddingStart="16dp"
+                android:textColor="@color/dark_blue"
+                android:fontFamily="@font/dangrek_font"/>
+        </LinearLayout>
+
+        <!--email/phone-->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="90dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="#4A3109"
+                android:text="@string/e_mail_phone_header"
+                android:textSize="16sp"
+                android:fontFamily="@font/titan_one"/>
+
+            <EditText
+                android:id="@+id/edit_email_phone"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:inputType="text"
+                android:textSize="16sp"
+                android:background="@drawable/edit_text_border"
+                android:hint="@string/e_mail_phone_hint"
+                android:paddingStart="16dp"
+                android:textColor="@color/dark_blue"
+                android:fontFamily="@font/dangrek_font"/>
+        </LinearLayout>
+
+        <!--Date of Birth-->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="90dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="#4A3109"
+                android:text="@string/date_of_birth_header"
+                android:textSize="16sp"
+                android:fontFamily="@font/titan_one"/>
+
+            <EditText
+                android:id="@+id/edit_birth"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:inputType="text"
+                android:textSize="16sp"
+                android:background="@drawable/edit_text_border"
+                android:hint="@string/birth_hint"
+                android:paddingStart="16dp"
+                android:textColor="@color/dark_blue"
+                android:fontFamily="@font/dangrek_font"/>
+        </LinearLayout>
+
+        <!--country-->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="90dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="#4A3109"
+                android:text="@string/country_header"
+                android:textSize="16sp"
+                android:fontFamily="@font/titan_one"/>
+
+            <EditText
+                android:id="@+id/edit_country"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:inputType="text"
+                android:textSize="16sp"
+                android:background="@drawable/edit_text_border"
+                android:hint="@string/country_hint"
+                android:paddingStart="16dp"
+                android:textColor="@color/dark_blue"
+                android:fontFamily="@font/dangrek_font"/>
+        </LinearLayout>
+
+        <!--create account button-->
+        <Button
+            android:layout_gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="24dp"
+            android:padding="14dp"
+            android:id="@+id/create_acc_btn"
+            android:text="@string/create_account"
+            android:textSize="24sp"
+            android:fontFamily="@font/titan_one"
+            android:backgroundTint="@color/bold_yellow"/>
+
+    </LinearLayout>
+</ScrollView>

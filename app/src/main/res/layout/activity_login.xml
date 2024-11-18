@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/yellow"
+    android:gravity="center"
+    android:padding="16dp"
+    tools:context=".ui.account.LoginActivity">
+    
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="vertical">
+        
+        <ImageView
+            android:layout_width="160dp"
+            android:layout_height="160dp"
+            android:src="@drawable/app_icon"/>
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/username_header"
+            android:textSize="20sp"
+            android:background="@drawable/edit_text_border"
+            android:padding="18dp"
+            android:layout_marginVertical="16dp"
+            android:inputType="text"
+            android:id="@+id/username_input"
+            android:fontFamily="@font/dangrek_font"/>
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/password_hint"
+            android:textSize="20sp"
+            android:background="@drawable/edit_text_border"
+            android:padding="18dp"
+            android:inputType="textPassword"
+            android:id="@+id/password_input"
+            android:fontFamily="@font/dangrek_font"/>
+
+        <Button
+            android:id="@+id/login_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/login_button"
+            android:textSize="24sp"
+            android:fontFamily="@font/titan_one"
+            android:padding="14dp"
+            android:layout_margin="16dp"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/new_to_eggenda"
+                android:paddingEnd="4dp"
+                android:textSize="16sp"
+                android:fontFamily="@font/dangrek_font"/>
+
+            <TextView
+                android:id="@+id/create_account_link"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/create_account"
+                android:textSize="16sp"
+                android:textColor="@color/link"
+                android:fontFamily="@font/dangrek_font"/>
+        </LinearLayout>
+
+    </LinearLayout>
+</RelativeLayout>
