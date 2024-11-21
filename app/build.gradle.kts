@@ -60,6 +60,8 @@ dependencies {
     implementation(libs.androidx.activity)
     implementation(libs.firebase.crashlytics.buildtools)
     implementation(libs.gson)
+    implementation(libs.androidx.room.common)
+    implementation(libs.play.services.maps)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

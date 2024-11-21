@@ -17,6 +17,8 @@ gson = "2.11.0"
 preferenceKtx = "1.2.1"
 activity = "1.9.2"
 firebaseCrashlyticsBuildtools = "3.0.2"
+roomCommon = "2.6.1"
+playServicesMaps = "19.0.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -37,6 +39,8 @@ androidx-exifinterface = { group = "androidx.exifinterface", name = "exifinterfa
 androidx-preference-ktx = { group = "androidx.preference", name = "preference-ktx", version.ref = "preferenceKtx" }
 androidx-activity = { group = "androidx.activity", name = "activity", version.ref = "activity" }
 firebase-crashlytics-buildtools = { group = "com.google.firebase", name = "firebase-crashlytics-buildtools", version.ref = "firebaseCrashlyticsBuildtools" }
+androidx-room-common = { group = "androidx.room", name = "room-common", version.ref = "roomCommon" }
+play-services-maps = { group = "com.google.android.gms", name = "play-services-maps", version.ref = "playServicesMaps" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
