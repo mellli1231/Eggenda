@@ -3,6 +3,7 @@ package com.example.eggenda.ui.database
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
+import androidx.room.Update
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -21,4 +22,7 @@ interface EntryDatabaseDao {
 
     @Query("SELECT COUNT(id) FROM task_table")
     suspend fun getTaskCount(): Int
+
+    @Update
+    suspend fun updateTask(task: TaskEntry)
 }

@@ -24,7 +24,10 @@ data class TaskEntry(
     var details: String = "", // Task details (max 300 characters)
 
     @ColumnInfo(name = "attachment_path")
-    var attachmentPath: String = "" // File path for attachments (e.g., mp4, png, pdf)
+    var attachmentPath: String = "", // File path for attachments (e.g., mp4, png, pdf)
+
+    @ColumnInfo(name = "is_checked")
+    var isChecked: Boolean = false
 )
 
 /**

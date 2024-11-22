@@ -34,6 +34,7 @@ import com.example.eggenda.ui.database.EntryRepo
 import com.example.eggenda.ui.database.EntryViewModel
 import com.example.eggenda.ui.database.EntryViewModelFactory
 import com.example.eggenda.ui.task.ConfirmTasksActivity
+import com.example.eggenda.ui.task.TaskAdapter
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.flow.collectLatest
@@ -150,7 +151,7 @@ class HomeFragment : Fragment() {
         lifecycleScope.launch {
             EntryDatabase.getInstance(requireContext()).entryDatabaseDao.getAllTasks().collectLatest { tasks ->
                 val taskTitles = tasks.map { it.title }
-                val adapter = ArrayAdapter(requireContext(), R.layout.custom_list_item, R.id.taskItemText, taskTitles)
+                val adapter = TaskAdapter(requireContext(), tasks)
                 questListView.adapter = adapter
             }
         }
