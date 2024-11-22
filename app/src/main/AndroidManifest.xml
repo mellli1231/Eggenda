@@ -18,9 +18,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Eggenda"
         tools:targetApi="31">
-        <activity
-            android:name=".gamePlay.gameActivity2"
-            android:exported="false" />
+
         <activity
             android:name=".gamePlay.gameActivity"
             android:exported="false" />
@@ -43,12 +41,6 @@
             </intent-filter>
         </activity>
 
-        <activity
-            android:name=".gamePetChoose.GamePetChooseMainActivity"
-            android:exported="false"/>
-
-        <activity android:name=".gamePlay.gameActivity"
-            android:exported="false"/>
 
 
         <activity android:name=".ui.settings.ProfileActivity"/>
