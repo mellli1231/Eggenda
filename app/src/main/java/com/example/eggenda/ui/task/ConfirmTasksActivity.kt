@@ -49,8 +49,8 @@ class ConfirmTasksActivity : AppCompatActivity() {
     private fun loadTasks() {
         lifecycleScope.launch {
             EntryDatabase.getInstance(applicationContext).entryDatabaseDao.getAllTasks().collectLatest { tasks ->
-                val taskTitles = tasks.map(TaskEntry::title)
-                val adapter = ArrayAdapter(this@ConfirmTasksActivity, R.layout.custom_list_item, R.id.taskItemText, taskTitles)
+                // val taskTitles = tasks.map(TaskEntry::title)
+                val adapter = TaskAdapter(this@ConfirmTasksActivity, tasks)
                 taskListView.adapter = adapter
             }
         }
