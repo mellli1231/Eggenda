@@ -30,6 +30,7 @@
             android:padding="18dp"
             android:layout_marginVertical="16dp"
             android:inputType="text"
+            android:textColor="@color/dark_blue"
             android:id="@+id/username_input"
             android:fontFamily="@font/dangrek_font"/>
 
@@ -41,6 +42,7 @@
             android:background="@drawable/edit_text_border"
             android:padding="18dp"
             android:inputType="textPassword"
+            android:textColor="@color/dark_blue"
             android:id="@+id/password_input"
             android:fontFamily="@font/dangrek_font"/>
 
@@ -64,6 +66,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/new_to_eggenda"
+                android:textColor="#4A3109"
                 android:paddingEnd="4dp"
                 android:textSize="16sp"
                 android:fontFamily="@font/dangrek_font"/>

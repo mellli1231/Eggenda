@@ -167,6 +167,7 @@
             android:layout_height="0dp"
             android:layout_weight="1"
             android:divider="#4A310A"
+            android:textColor="@color/dark_blue"
             android:fontFamily="@font/titan_one"
             android:dividerHeight="1dp"
             />

@@ -16,17 +16,27 @@ import android.view.HapticFeedbackConstants
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
 import android.widget.Button
+import android.widget.ListView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import com.example.eggenda.R
 import com.example.eggenda.databinding.DialogHatchBinding
 import com.example.eggenda.databinding.FragmentHomeBinding
 import com.example.eggenda.gamePlay.gameActivity
+import com.example.eggenda.ui.database.EntryDatabase
+import com.example.eggenda.ui.database.EntryDatabaseDao
+import com.example.eggenda.ui.database.EntryRepo
+import com.example.eggenda.ui.database.EntryViewModel
+import com.example.eggenda.ui.database.EntryViewModelFactory
 import com.example.eggenda.ui.task.ConfirmTasksActivity
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import java.io.File
 import kotlin.random.Random
 
@@ -43,6 +53,12 @@ class HomeFragment : Fragment() {
 
     private val PET_OWNERSHIP_KEY = "pet_ownership"
     private val DEFAULT_PET_OWNERSHIP = arrayOf(0, 0, 0, 0, 0) // 5 pets, all initially unowned
+
+    private lateinit var database: EntryDatabase
+    private lateinit var databaseDao: EntryDatabaseDao
+    private lateinit var repo: EntryRepo
+    private lateinit var entryViewModel: EntryViewModel
+    private lateinit var viewModelFactory: EntryViewModelFactory
 
 
     @SuppressLint("SetTextI18n")
@@ -120,6 +136,17 @@ class HomeFragment : Fragment() {
         gotoGameButton.setOnClickListener {
             val intent = Intent(requireContext(), gameActivity::class.java)
             startActivity(intent)
+        }
+
+        val questListView: ListView = binding.questList
+
+        // Load tasks into quest board ListView
+        lifecycleScope.launch {
+            EntryDatabase.getInstance(requireContext()).entryDatabaseDao.getAllTasks().collectLatest { tasks ->
+                val taskTitles = tasks.map { it.title }
+                val adapter = ArrayAdapter(requireContext(), R.layout.custom_list_item, R.id.taskItemText, taskTitles)
+                questListView.adapter = adapter
+            }
         }
 
         return root

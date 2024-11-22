@@ -2,74 +2,71 @@ package com.example.eggenda.ui.task
 
 import android.annotation.SuppressLint
 import android.app.TimePickerDialog
+import android.content.Intent
 import android.os.Bundle
-import android.widget.Button
-import android.widget.EditText
-import android.widget.ImageView
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import com.example.eggenda.R
+import com.example.eggenda.ui.database.EntryDatabase
+import com.example.eggenda.ui.database.TaskEntry
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.util.Calendar
 
 class AddTaskActivity : AppCompatActivity() {
+
+    private lateinit var taskTitle: EditText
+    private lateinit var taskDetails: EditText
+    private lateinit var timeTextView: TextView
+    private var timeLimit: String = ""
 
     @SuppressLint("DefaultLocale")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_task)
 
-        // Back button setup
-        val backButton: Button = findViewById(R.id.back_button)
-        backButton.setOnClickListener {
-            finish() // Go back to ConfirmTaskActivity
-        }
+        taskTitle = findViewById(R.id.edit_task)
+        taskDetails = findViewById(R.id.edit_details)
+        timeTextView = findViewById(R.id.edit_time_limit)
 
-        // Task and Details EditText setup
-        val taskEditText: EditText = findViewById(R.id.edit_task)
-        val detailsEditText: EditText = findViewById(R.id.edit_details)
-
-        taskEditText.setOnClickListener {
-            taskEditText.isCursorVisible = true // Show cursor for editing
-        }
-
-        detailsEditText.setOnClickListener {
-            detailsEditText.isCursorVisible = true // Show cursor for editing
-        }
-
-        // Time Picker setup for Time Limit field
         val clockIcon: ImageView = findViewById(R.id.clock)
-        val timeText: TextView = findViewById(R.id.edit_time_limit)
+        val addTaskButton: Button = findViewById(R.id.add_task_btn)
+        val cancelButton: Button = findViewById(R.id.cancel_task_btn)
+
+        // Set up time picker
         clockIcon.setOnClickListener {
             val calendar = Calendar.getInstance()
             val hour = calendar.get(Calendar.HOUR_OF_DAY)
             val minute = calendar.get(Calendar.MINUTE)
 
-            val timePickerDialog = TimePickerDialog(this, { _, selectedHour, selectedMinute ->
-                val formattedTime = String.format("%02d:%02d:00", selectedHour, selectedMinute)
-                timeText.text = formattedTime
-            }, hour, minute, true)
-
-            timePickerDialog.show()
+            TimePickerDialog(this, { _, selectedHour, selectedMinute ->
+                timeLimit = String.format("%02d:%02d:00", selectedHour, selectedMinute)
+                timeTextView.text = timeLimit
+            }, hour, minute, true).show()
         }
 
-        // Add and Cancel buttons setup
-        val addTaskButton: Button = findViewById(R.id.add_task_btn)
-        val cancelTaskButton: Button = findViewById(R.id.cancel_task_btn)
-
-        val backToConfirmTask = {
-            finish() // Go back to ConfirmTaskActivity
-        }
-
+        // Save task
         addTaskButton.setOnClickListener {
-            val toast = Toast.makeText(this, "Task Added", Toast.LENGTH_SHORT)
-            toast.show()
-            backToConfirmTask()
+            val title = taskTitle.text.toString().trim()
+            val details = taskDetails.text.toString().trim()
+
+            if (title.isEmpty() || details.isEmpty() || timeLimit.isEmpty()) {
+                Toast.makeText(this, "Please fill all fields!", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            // Add task to database
+            val taskEntry = TaskEntry(title = title, timeLimit = timeLimit, details = details)
+            CoroutineScope(Dispatchers.IO).launch {
+                EntryDatabase.getInstance(applicationContext).entryDatabaseDao.insertTask(taskEntry)
+            }
+
+            Toast.makeText(this, "Task added successfully!", Toast.LENGTH_SHORT).show()
+            finish()
         }
-        cancelTaskButton.setOnClickListener {
-            val toast = Toast.makeText(this, "Cancelled", Toast.LENGTH_SHORT)
-            toast.show()
-            backToConfirmTask()
-        }
+
+        // Cancel and go back
+        cancelButton.setOnClickListener { finish() }
     }
 }

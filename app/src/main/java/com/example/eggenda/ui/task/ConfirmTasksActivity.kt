@@ -1,72 +1,58 @@
 package com.example.eggenda.ui.task
 
-import android.app.DatePickerDialog
 import android.content.Intent
 import android.os.Bundle
-import android.widget.Button
-import android.widget.ImageView
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import com.example.eggenda.R
-import java.util.Calendar
+import com.example.eggenda.ui.database.EntryDatabase
+import com.example.eggenda.ui.database.TaskEntry
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 class ConfirmTasksActivity : AppCompatActivity() {
+
+    private lateinit var taskListView: ListView
+    private val taskAdapter by lazy { ArrayAdapter<String>(this, android.R.layout.simple_list_item_1) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_confirm_tasks)
 
-        // Back button setup
-        val backButton: Button = findViewById(R.id.back_button)
-        backButton.setOnClickListener {
-            finish() // Go back to the previous activity (HomeFragment)
-        }
+        taskListView = findViewById(R.id.task_list)
+        taskListView.adapter = taskAdapter
 
-        // Date Picker setup
-        val calendarIcon: ImageView = findViewById(R.id.nq_calendar)
-        val dateText: TextView = findViewById(R.id.nq_date)
+        loadTasks()
 
-        calendarIcon.setOnClickListener {
-            // Show DatePickerDialog
-            val calendar = Calendar.getInstance()
-            val year = calendar.get(Calendar.YEAR)
-            val month = calendar.get(Calendar.MONTH)
-            val day = calendar.get(Calendar.DAY_OF_MONTH)
-
-            val datePickerDialog = DatePickerDialog(this, { _, selectedYear, selectedMonth, selectedDay ->
-                // Update dateText with selected date in Day/Month/Year format
-                val formattedDate = "$selectedDay/${selectedMonth + 1}/$selectedYear"
-                dateText.text = formattedDate
-            }, year, month, day)
-
-            datePickerDialog.show()
-        }
-
-        // Add task button
         val addTaskImage: ImageView = findViewById(R.id.add_task)
         addTaskImage.setOnClickListener {
-            val intent = Intent(this, AddTaskActivity::class.java)
-            startActivity(intent)
+            startActivity(Intent(this, AddTaskActivity::class.java))
         }
 
-        // Accept and Decline buttons setup
+        val backButton: Button = findViewById(R.id.back_button)
+        backButton.setOnClickListener { finish() }
+
         val acceptButton: Button = findViewById(R.id.accept_quest)
         val declineButton: Button = findViewById(R.id.decline_quest)
 
-        val backToHome = {
-            finish() // Go back to the previous activity (HomeFragment)
-        }
-
         acceptButton.setOnClickListener {
-            val toast = Toast.makeText(this, "Quest Accepted!", Toast.LENGTH_SHORT)
-            toast.show()
-            backToHome()
+            Toast.makeText(this, "Quest Accepted!", Toast.LENGTH_SHORT).show()
+            finish()
         }
         declineButton.setOnClickListener {
-            val toast = Toast.makeText(this, "Quest Declined!", Toast.LENGTH_SHORT)
-            toast.show()
-            backToHome()
+            Toast.makeText(this, "Quest Declined!", Toast.LENGTH_SHORT).show()
+            finish()
+        }
+    }
+
+    private fun loadTasks() {
+        lifecycleScope.launch {
+            EntryDatabase.getInstance(applicationContext).entryDatabaseDao.getAllTasks().collectLatest { tasks ->
+                val taskTitles = tasks.map(TaskEntry::title)
+                val adapter = ArrayAdapter(this@ConfirmTasksActivity, R.layout.custom_list_item, R.id.taskItemText, taskTitles)
+                taskListView.adapter = adapter
+            }
         }
     }
 }
