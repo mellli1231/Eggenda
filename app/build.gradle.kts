@@ -62,6 +62,7 @@ dependencies {
     implementation(libs.gson)
     implementation(libs.androidx.room.common)
     implementation(libs.play.services.maps)
+    implementation(libs.androidx.room.ktx)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
