@@ -5,14 +5,77 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".gamePlay.gameActivity"
+    android:fitsSystemWindows="true"
+    android:paddingBottom="?attr/actionBarSize"
     android:background="#FFEBCC">
+
+    <TextView
+        android:id="@+id/turnView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="Turn 1"
+        android:textSize="24sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <FrameLayout
+        android:id="@+id/bossFrame"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:background="@drawable/game_word_background"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.496"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/turnView">
+
+
+        <ImageView
+            android:id="@+id/bossView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:srcCompat="@drawable/game_enemy_goblin" />
+
+        <ImageView
+            android:id="@+id/effect"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </FrameLayout>
+
+    <FrameLayout
+        android:layout_width="300dp"
+        android:layout_height="30dp"
+        android:layout_marginTop="5dp"
+        android:background="@drawable/game_hp_bar_background"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/bossFrame">
+
+        <ImageView
+            android:id="@+id/hp_bar"
+            android:layout_width="300dp"
+            android:layout_height="30dp"
+            android:layout_gravity="start"
+            android:background="#FF0000" />
+
+        <TextView
+            android:id="@+id/hp_fraction"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="200/200"
+            android:textColor="#FFFFFF"
+            android:textStyle="bold" />
+
+    </FrameLayout>
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_begin="480dp" />
+        app:layout_constraintGuide_begin="412dp" />
 
     <TextView
         android:id="@+id/textView"
@@ -31,7 +94,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_begin="629dp" />
+        app:layout_constraintGuide_begin="542dp" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayout2"
@@ -73,151 +136,43 @@
             tools:spanCount="15" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <!--    <Button-->
-    <!--        android:id="@+id/resumeCoroutine"-->
-    <!--        android:layout_width="wrap_content"-->
-    <!--        android:layout_height="wrap_content"-->
-    <!--        android:layout_marginStart="160dp"-->
-    <!--        android:layout_marginEnd="160dp"-->
-    <!--        android:text="resumeCoroutine"-->
-    <!--        app:layout_constraintEnd_toEndOf="parent"-->
-    <!--        app:layout_constraintStart_toStartOf="parent"-->
-    <!--        app:layout_constraintTop_toBottomOf="@+id/constraintLayout" />-->
-
-    <!--    <Button-->
-    <!--        android:id="@+id/checkInfo"-->
-    <!--        android:layout_width="wrap_content"-->
-    <!--        android:layout_height="wrap_content"-->
-    <!--        android:layout_marginStart="160dp"-->
-    <!--        android:layout_marginEnd="160dp"-->
-    <!--        android:text="checkInfo"-->
-    <!--        app:layout_constraintEnd_toEndOf="parent"-->
-    <!--        app:layout_constraintStart_toStartOf="parent"-->
-    <!--        app:layout_constraintTop_toBottomOf="@+id/resumeCoroutine" />-->
-
-    <!--    <LinearLayout-->
-    <!--        android:layout_width="350dp"-->
-    <!--        android:layout_height="117dp"-->
-    <!--        android:layout_marginTop="24dp"-->
-    <!--        android:background="@drawable/word_background"-->
-    <!--        android:orientation="vertical"-->
-    <!--        app:layout_constraintEnd_toEndOf="parent"-->
-    <!--        app:layout_constraintStart_toStartOf="parent"-->
-    <!--        app:layout_constraintTop_toBottomOf="@+id/constraintLayout2">-->
-
-
-    <!--        <TextView-->
-    <!--            android:id="@+id/damageReportText"-->
-    <!--            android:layout_width="match_parent"-->
-    <!--            android:layout_height="wrap_content"-->
-    <!--            android:padding="10dp"-->
-    <!--            android:text=""-->
-    <!--            android:textColor="#EBDEDE"-->
-    <!--            android:textSize="16sp"-->
-    <!--            android:textStyle="bold" />-->
-    <!--    </LinearLayout>-->
-
-    <TextView
-        android:id="@+id/turnView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:text="Turn 1"
-        android:textSize="24sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
 
     <FrameLayout
-        android:id="@+id/frameLayout"
-        android:layout_width="220dp"
-        android:layout_height="220dp"
-        android:background="@drawable/game_word_background"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.496"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/turnView">
-
-
-        <ImageView
-            android:id="@+id/bossView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:srcCompat="@drawable/game_stage1" />
-
-        <ImageView
-            android:id="@+id/effect"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-    </FrameLayout>
-
-    <FrameLayout
-        android:layout_width="220dp"
+        android:id="@+id/hp_bar_player_BG"
+        android:layout_width="300dp"
         android:layout_height="30dp"
         android:background="@drawable/game_hp_bar_background"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/frameLayout">
+        app:layout_constraintTop_toBottomOf="@+id/constraintLayout">
 
         <ImageView
-            android:id="@+id/hp_bar"
-            android:layout_width="220dp"
+            android:id="@+id/hp_bar_player"
+            android:layout_width="300dp"
             android:layout_height="30dp"
             android:layout_gravity="start"
-            android:background="#FF0000" />
+            android:background="#125F00" />
 
         <TextView
-            android:id="@+id/hp_fraction"
+            android:id="@+id/hp_fraction_player"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="200/200"
+            android:text="100/100"
             android:textColor="#FFFFFF"
             android:textStyle="bold" />
 
-
     </FrameLayout>
 
-    <!--    <LinearLayout-->
-    <!--        android:layout_width="wrap_content"-->
-    <!--        android:layout_height="wrap_content"-->
-    <!--        android:layout_marginTop="50dp"-->
-    <!--        android:background="@drawable/word_background"-->
-    <!--        android:orientation="horizontal"-->
-    <!--        app:layout_constraintEnd_toEndOf="parent"-->
-    <!--        app:layout_constraintStart_toStartOf="parent"-->
-    <!--        app:layout_constraintTop_toTopOf="parent">-->
-
-    <!--        <TextView-->
-    <!--            android:id="@+id/fireCount"-->
-    <!--            android:layout_width="wrap_content"-->
-    <!--            android:layout_height="wrap_content"-->
-    <!--            android:padding="5dp"-->
-    <!--            android:text="0"-->
-    <!--            android:textColor="#F80000"-->
-    <!--            android:textSize="50sp"-->
-    <!--            android:textStyle="bold" />-->
-
-    <!--        <TextView-->
-    <!--            android:id="@+id/waterCount"-->
-    <!--            android:layout_width="wrap_content"-->
-    <!--            android:layout_height="wrap_content"-->
-    <!--            android:padding="5dp"-->
-    <!--            android:text="0"-->
-    <!--            android:textColor="#0036F8"-->
-    <!--            android:textSize="50sp"-->
-    <!--            android:textStyle="bold" />-->
-
-    <!--        <TextView-->
-    <!--            android:id="@+id/forestCount"-->
-    <!--            android:layout_width="wrap_content"-->
-    <!--            android:layout_height="wrap_content"-->
-    <!--            android:padding="5dp"-->
-    <!--            android:text="0"-->
-    <!--            android:textColor="#00F825"-->
-    <!--            android:textSize="50sp"-->
-    <!--            android:textStyle="bold" />-->
-    <!--    </LinearLayout>-->
+    <Button
+        android:id="@+id/temp_restart"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="11dp"
+        android:text="Temp\nRestart"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

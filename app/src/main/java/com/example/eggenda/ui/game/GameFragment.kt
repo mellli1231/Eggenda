@@ -12,6 +12,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.example.eggenda.R
 import com.example.eggenda.databinding.FragmentGalleryBinding
 import com.example.eggenda.databinding.FragmentGameBinding
+import com.example.eggenda.gameMonsterChoose.GameMonsterChooseMainActivity
 import com.example.eggenda.gamePetChoose.GamePetChooseMainActivity
 import com.example.eggenda.ui.gallery.GalleryViewModel
 
@@ -42,7 +43,7 @@ class GameFragment : Fragment(R.layout.fragment_game) {
 //        val gameStartButton: Button = view?.findViewById(R.id.game_start_frag_btn) ?:
         binding.gameStartFragBtn.setOnClickListener {
             //use intent to goto another activity
-            val intent = Intent(requireContext(),GamePetChooseMainActivity::class.java )
+            val intent = Intent(requireContext(),GameMonsterChooseMainActivity::class.java )
             startActivity(intent)
         }
         return root

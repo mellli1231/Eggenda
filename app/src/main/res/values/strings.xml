@@ -67,6 +67,14 @@
     <string name="password_empty">Password Empty</string>
     <string name="passwords_do_not_match">Passwords do not match</string>
 
+
+    <string name="choose_attack_type_description">Attack Type</string>
+    <string name="atk_type_stay">Stay</string>
+    <string name="atk_type_return">Return</string>
+    <string name="atk_type_bounce">Bounce</string>
+
+    <string name="atk_count_des">Count</string>
+
     <string-array name="language_options">
         <item>English</item>
         <item>Chinese</item>

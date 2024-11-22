@@ -10,7 +10,8 @@ import com.example.eggenda.R
 
 class deckAdapter(
     private val itemCount: Int,
-    private val onItemClick: (position: Int) -> Unit
+    private val onItemClick: (position: Int) -> Unit,
+    private val onItemLongClick: (position: Int) -> Unit
 ) : RecyclerView.Adapter<deckAdapter.ViewHolder>() {
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -20,6 +21,10 @@ class deckAdapter(
         init {
             itemView.setOnClickListener {
                 onItemClick(adapterPosition)
+            }
+            itemView.setOnLongClickListener{
+                onItemLongClick(adapterPosition)
+                true
             }
         }
     }

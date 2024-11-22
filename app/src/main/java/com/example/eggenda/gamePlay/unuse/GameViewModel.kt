@@ -1,9 +1,10 @@
-package com.example.eggenda.gamePlay
+package com.example.eggenda.gamePlay.unuse
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.delay
+import com.example.eggenda.gamePlay.dict
+import com.example.eggenda.gamePlay.petStatus
 import kotlinx.coroutines.launch
 
 
@@ -12,7 +13,7 @@ class gameViewModel : ViewModel(){
     private val _allowPick = MutableLiveData<Boolean>()
     private val _forceReturn = MutableLiveData<Boolean>()
     private val _chosenPet = MutableLiveData<IntArray>()
-    private val _petStatus = MutableLiveData<Array<petStatus?>>()
+    val _petStatus = MutableLiveData<Array<petStatus?>>()
 
 
     private val _deckStatus = MutableLiveData<IntArray>()
@@ -29,32 +30,28 @@ class gameViewModel : ViewModel(){
 
 
     fun init(newCurrentBossHp: Int, initAllowPick:Int, initChosenPet: IntArray, newPetStatus: Array<petStatus?>, initBoard:IntArray, gameObj:String){
-        initTurn()
         initDamageDealt()
         updateCurrentBossHp(newCurrentBossHp)
         updateAllowPick(true)
         updateForceReturn(false)
-        updateChosenPet(initChosenPet)
-        updatePetStatus(newPetStatus)
-        updateDeckStatus(IntArray(5){dict.hasPet})
+        initPetStatus(newPetStatus)
+        updateDeckStatus(IntArray(5){ dict.hasPet })
         updateBoardStatus(initBoard)
         updateGameMessage(gameObj)
     }
 
-    val turn: LiveData<Int> get() = _turn
-    fun initTurn(){
+    private val turn: LiveData<Int> get() = _turn
+    fun updateTurn(newTurn: Int) {
         viewModelScope.launch {
-            _turn.value = 0
+            _turn.value = newTurn
         }
     }
-    fun updateTurn() {
-        viewModelScope.launch {
-            _turn.value = _turn.value?.plus(1)
-        }
+
+    fun getTurn():Int{
+        return _turn.value!!
     }
 
     val gameMessage: LiveData<String> get() = _gameMessage
-
     fun updateGameMessage(newGameMessage:String) {
         viewModelScope.launch {
             _gameMessage.value = newGameMessage
@@ -125,22 +122,17 @@ class gameViewModel : ViewModel(){
         }
     }
 
-
-    val chosenPet: LiveData<IntArray> get() = _chosenPet
-    fun updateChosenPet(newChosenPet: IntArray) {
-        viewModelScope.launch {
-            _chosenPet.value = newChosenPet
-        }
-    }
-    fun getChosenPet():IntArray{
-        return _chosenPet.value!!
-    }
-
     private val petStatus: LiveData<Array<petStatus?>> get() = _petStatus
 
 
     fun getPetStatus():Array<petStatus?>{
-        return _petStatus.value!!
+        return _petStatus.value!!.copyOf()
+    }
+
+    fun initPetStatus(newPetStatus: Array<petStatus?>){
+        viewModelScope.launch {
+            _petStatus.value = newPetStatus.copyOf()
+        }
     }
 
     fun updatePetStatus(newPetStatus: Array<petStatus?>){

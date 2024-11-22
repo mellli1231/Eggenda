@@ -3,25 +3,35 @@ package com.example.eggenda.gamePlay
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.eggenda.R
+import org.w3c.dom.Text
 
 class boardAdapter(
     private val itemCount: Int,
-    private val onItemClick: (position: Int) -> Unit
+    private val onItemClick: (position: Int) -> Unit,
+    private val onItemLongClick: (position: Int) -> Unit
 ) : RecyclerView.Adapter<boardAdapter.ViewHolder>() {
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        val masterFrame: FrameLayout = itemView.findViewById(R.id.masterFrame)
         val imageView: ImageView = itemView.findViewById(R.id.imageView)
-        val countView: TextView = itemView.findViewById(R.id.attackCount)
         val elementFrame: ImageView = itemView.findViewById(R.id.elementFrame)
         val countFrame: ImageView = itemView.findViewById(R.id.countFrame)
+        val countView: TextView = itemView.findViewById(R.id.attackCount)
+
+
 
         init {
             itemView.setOnClickListener {
                 onItemClick(adapterPosition)
+            }
+            itemView.setOnLongClickListener {
+                onItemLongClick(adapterPosition)
+                true
             }
 
         }

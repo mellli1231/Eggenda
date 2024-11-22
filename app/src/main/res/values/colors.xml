@@ -11,6 +11,13 @@
     <color name="yellow">#FFEBCC</color>
     <color name="dark_blue">#1B1F31</color>
     <color name="enable_color">#FFB554</color>
+    <color name="disabled_color">#DFD7D7</color>
+    <color name="gold_rare">#EEFFDB59</color>
+    <color name="silver_rare">#C0C0C0</color>
+    <color name="bronze_rare">#B08D57</color>
+    <color name="fire">#EEFF5959</color>
+    <color name="water">#EE66A0FF</color>
+    <color name="forest">#EE87FFAB</color>
     <color name="disabled_color">#A0A0A0</color>
     <color name="link">#1f9acf</color>
     <color name="red">#FD2222</color>

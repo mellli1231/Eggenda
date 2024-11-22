@@ -5,63 +5,124 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/yellow"
+    android:fitsSystemWindows="true"
     tools:context=".gamePetChoose.GamePetChooseMainActivity">
 
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline4"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_begin="295dp" />
-
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/game_characterchoose_recyclerView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintBottom_toTopOf="@+id/guideline4"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.517"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/guideline4"
-        app:layout_constraintVertical_bias="0.589">
-
-    </androidx.recyclerview.widget.RecyclerView>
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/constraintLayout"
-        android:layout_width="wrap_content"
+        android:id="@+id/monster_constraint_layout"
+        android:layout_width="300dp"
+        android:layout_height="100dp"
+        android:background="@color/disabled_color"
+        app:layout_constraintBottom_toTopOf="@+id/monsterHorLine"
+        app:layout_constraintEnd_toStartOf="@+id/chooseVerLine"
+        app:layout_constraintStart_toStartOf="@+id/chooseVerLine"
+        app:layout_constraintTop_toTopOf="@+id/monsterHorLine">
+
+
+        <TextView
+            android:id="@+id/game_pet_choose_monseter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Innocent Sapling"
+            android:textSize="20dp"
+            app:layout_constraintBottom_toTopOf="@+id/monsterBoxHorLine"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.185"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/monsterBoxHorLine"
+            app:layout_constraintVertical_bias="0.481" />
+
+        <ImageView
+            android:id="@+id/game_pet_choose_monster_image"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:src="@drawable/game_enemy_sapling"
+            app:layout_constraintBottom_toTopOf="@+id/monsterBoxHorLine"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/game_pet_choose_monseter"
+            app:layout_constraintTop_toTopOf="@+id/monsterBoxHorLine" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/monsterBoxHorLine"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_begin="50dp" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <ImageView
+        android:id="@+id/game_pet_choose_image"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        app:layout_constraintBottom_toTopOf="@+id/infoHorLine"
+        app:layout_constraintEnd_toStartOf="@+id/chooseVerLine"
+        app:layout_constraintStart_toStartOf="@+id/chooseVerLine"
+        app:layout_constraintTop_toTopOf="@+id/infoHorLine"
+        app:layout_constraintVertical_bias="0.413"
+        app:srcCompat="@drawable/game_choose_nth_3" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toTopOf="@+id/guideline2"
+        android:background="@color/disabled_color"
+        app:layout_constraintBottom_toTopOf="@+id/chooseBoxHorLine"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.492"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/guideline2"
-        app:layout_constraintVertical_bias="0.147">
+        app:layout_constraintTop_toTopOf="@+id/chooseBoxHorLine">
 
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/game_character_selectedList"
+            android:id="@+id/game_characterchoose_recyclerView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.301">
+            tools:spanCount="15">
 
         </androidx.recyclerview.widget.RecyclerView>
 
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/guideline"
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Pets to fight"
+        android:textSize="20dp"
+        app:layout_constraintBottom_toTopOf="@+id/guideline18"
+        app:layout_constraintEnd_toStartOf="@+id/chooseVerLine"
+        app:layout_constraintStart_toStartOf="@+id/chooseVerLine"
+        app:layout_constraintTop_toTopOf="@+id/guideline18" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintLayout4"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:background="@color/disabled_color"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/game_character_selectedList"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:padding="8dp"
-            app:layout_constraintGuide_begin="247dp" />
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.498"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:spanCount="15">
+
+
+        </androidx.recyclerview.widget.RecyclerView>
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
@@ -78,14 +139,51 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/constraintLayout4"
+        app:layout_constraintVertical_bias="1.0" />
 
     <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline2"
+        android:id="@+id/infoHorLine"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_begin="578dp" />
+        app:layout_constraintGuide_begin="235dp" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/chooseVerLine"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_begin="205dp" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/chooseBoxHorLine"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_begin="420dp" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/selectBoxHHorLine"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_begin="579dp" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/monsterHorLine"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_begin="92dp" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline18"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_begin="553dp" />
 
     <!--    <TextView-->
     <!--        android:layout_width="wrap_content"-->
@@ -99,7 +197,6 @@
     <!--        app:layout_constraintStart_toStartOf="parent"-->
     <!--        app:layout_constraintTop_toTopOf="@+id/constraintLayout"-->
     <!--        app:layout_constraintVertical_bias="1.0" />-->
-
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

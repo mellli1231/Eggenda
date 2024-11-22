@@ -19,8 +19,18 @@
         android:theme="@style/Theme.Eggenda"
         tools:targetApi="31">
         <activity
+            android:name=".gamePlay.gameActivity2"
+            android:exported="false" />
+        <activity
             android:name=".gamePlay.gameActivity"
             android:exported="false" />
+        <activity
+            android:name=".gamePetChoose.GamePetChooseMainActivity"
+            android:exported="false"/>
+        <activity
+            android:name=".gameMonsterChoose.GameMonsterChooseMainActivity"
+            android:exported="false"/>
+
         <activity
             android:name=".MainActivity"
             android:exported="true"

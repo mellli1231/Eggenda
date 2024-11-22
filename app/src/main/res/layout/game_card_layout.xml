@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="350dp"
+    android:layout_height="550dp"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:id="@+id/dialog_root_layout">
+
+    <View
+        android:id="@+id/dailgo_background_view"
+        android:layout_width="320dp"
+        android:layout_height="30dp"
+        android:background="@color/disabled_color"
+        android:padding="3dp"
+        app:layout_constraintBottom_toTopOf="@+id/titleHorLine"
+        app:layout_constraintEnd_toStartOf="@+id/card_virtical_line"
+        app:layout_constraintHorizontal_bias="0.425"
+        app:layout_constraintStart_toStartOf="@+id/card_virtical_line"
+        app:layout_constraintTop_toTopOf="@+id/titleHorLine"
+        app:layout_constraintVertical_bias="0.485" />
+
+    <TextView
+        android:id="@+id/card_petName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/titan_one"
+        android:text="Shy Raccoon"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="@+id/dailgo_background_view"
+        app:layout_constraintEnd_toEndOf="@+id/dailgo_background_view"
+        app:layout_constraintStart_toStartOf="@+id/dailgo_background_view"
+        app:layout_constraintTop_toTopOf="@+id/dailgo_background_view" />
+
+    <TextView
+        android:id="@+id/card_petId"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/titan_one"
+        android:text="004"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="@+id/dailgo_background_view"
+        app:layout_constraintEnd_toStartOf="@+id/card_petName"
+        app:layout_constraintStart_toStartOf="@+id/dailgo_background_view"
+        app:layout_constraintTop_toTopOf="@+id/dailgo_background_view" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/card_image_line"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_end="402dp" />
+
+    <ImageView
+        android:id="@+id/card_pet_bg"
+        android:layout_width="310dp"
+        android:layout_height="190dp"
+        app:layout_constraintBottom_toTopOf="@+id/card_image_line"
+        app:layout_constraintEnd_toStartOf="@+id/card_virtical_line"
+        app:layout_constraintStart_toStartOf="@+id/card_virtical_line"
+        app:layout_constraintTop_toTopOf="@+id/card_image_line"
+        app:layout_constraintHorizontal_bias="0.464"
+        app:layout_constraintVertical_bias="0.526"
+        app:srcCompat="@drawable/a_card_bg" />
+
+    <ImageView
+        android:id="@+id/card_pet_image"
+        android:layout_width="170dp"
+        android:layout_height="170dp"
+        app:layout_constraintBottom_toTopOf="@+id/card_image_line"
+        app:layout_constraintEnd_toEndOf="@+id/card_pet_bg"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/card_image_line"
+        app:srcCompat="@drawable/pet_shy_raccoon_large" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/titan_one"
+        android:text="Artist : Nelson Fang"
+        android:textSize="15dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.093"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/descConsLay"
+        app:layout_constraintVertical_bias="0.515" />
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/descConsLay"
+        android:layout_width="320dp"
+        android:layout_height="260dp"
+        android:orientation="vertical"
+        android:background="@color/disabled_color"
+        app:layout_constraintBottom_toTopOf="@+id/descriptionBox_line"
+        app:layout_constraintEnd_toStartOf="@+id/card_virtical_line"
+        app:layout_constraintHorizontal_bias="0.581"
+        app:layout_constraintStart_toStartOf="@+id/card_virtical_line"
+        app:layout_constraintTop_toTopOf="@+id/descriptionBox_line"
+        app:layout_constraintVertical_bias="0.458">
+
+        <TextView
+            android:id="@+id/dialog_petSkill_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/titan_one"
+            android:padding="5dp"
+            android:text="Skill Name"
+            android:textSize="17sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toTopOf="@+id/descHorLine"
+            app:layout_constraintEnd_toStartOf="@+id/descVerLine"
+            app:layout_constraintHorizontal_bias="0.528"
+            app:layout_constraintStart_toStartOf="@+id/descVerLine"
+            app:layout_constraintTop_toTopOf="@+id/descHorLine"
+            app:layout_constraintVertical_bias="0.478" />
+
+
+        <TextView
+            android:id="@+id/dialog_skillCondition"
+            android:layout_width="290dp"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/titan_one"
+            android:padding="5dp"
+            android:text="Deal 100 water damage\non the 5th turn\nwhen this unit is placed on the board"
+            android:textSize="14.5sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/dialog_petSkill_name" />
+
+        <TextView
+            android:id="@+id/dialog_attak_type_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/titan_one"
+            android:padding="5dp"
+            android:text="Attack Type"
+            android:textSize="17sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toStartOf="@+id/descVerLine"
+            app:layout_constraintHorizontal_bias="0.288"
+            app:layout_constraintStart_toStartOf="@+id/descVerLine"
+            app:layout_constraintTop_toBottomOf="@+id/dialog_skillCondition" />
+
+        <TextView
+            android:id="@+id/dialog_attackType"
+            android:layout_width="290dp"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/titan_one"
+            android:padding="5dp"
+            android:text="Stay"
+            android:textSize="14.5dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/dialog_attak_type_title"/>
+
+        <TextView
+            android:id="@+id/dialog_count_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/titan_one"
+            android:padding="5dp"
+            android:text="Count"
+            android:textStyle="bold"
+            android:textSize="17sp"
+            app:layout_constraintEnd_toStartOf="@+id/descVerLine"
+            app:layout_constraintStart_toStartOf="@+id/descVerLine"
+            app:layout_constraintTop_toBottomOf="@+id/dialog_attackType"/>
+
+        <TextView
+            android:id="@+id/dialog_count"
+            android:layout_width="290dp"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/titan_one"
+            android:text="5 turns make an attack"
+            android:textSize="14.5dp"
+            android:padding="5dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.533"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/dialog_count_title"/>
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/descVerLine"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_begin="62dp" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/descHorLine"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_begin="16dp" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/card_virtical_line"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_end="175dp" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/titleHorLine"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.06" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/descriptionBox_line"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_end="170dp" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+
+

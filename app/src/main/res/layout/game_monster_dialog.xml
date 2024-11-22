@@ -1,0 +1,329 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="350dp"
+    android:layout_height="550dp"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:id="@+id/monster_dialog_root_layout">
+
+    <View
+        android:id="@+id/monster_dailog_background_view"
+        android:layout_width="320dp"
+        android:layout_height="30dp"
+        android:background="@color/disabled_color"
+        android:padding="3dp"
+        app:layout_constraintBottom_toTopOf="@+id/titleHorLine"
+        app:layout_constraintEnd_toStartOf="@+id/card_virtical_line"
+        app:layout_constraintHorizontal_bias="0.485"
+        app:layout_constraintStart_toStartOf="@+id/card_virtical_line"
+        app:layout_constraintTop_toTopOf="@+id/titleHorLine" />
+
+    <TextView
+        android:id="@+id/monster_card_petName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/titan_one"
+        android:text="Angry Goblin"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="@+id/monster_dailog_background_view"
+        app:layout_constraintEnd_toEndOf="@+id/monster_dailog_background_view"
+        app:layout_constraintStart_toStartOf="@+id/monster_dailog_background_view"
+        app:layout_constraintTop_toTopOf="@+id/monster_dailog_background_view" />
+
+    <TextView
+        android:id="@+id/monster_card_petId"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/titan_one"
+        android:text="S1"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="@+id/monster_dailog_background_view"
+        app:layout_constraintEnd_toStartOf="@+id/monster_card_petName"
+        app:layout_constraintStart_toStartOf="@+id/monster_dailog_background_view"
+        app:layout_constraintTop_toTopOf="@+id/monster_dailog_background_view" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/card_image_line"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_end="402dp" />
+
+    <ImageView
+        android:id="@+id/monster_card_pet_bg"
+        android:layout_width="310dp"
+        android:layout_height="160dp"
+        app:layout_constraintBottom_toTopOf="@+id/card_image_line"
+        app:layout_constraintEnd_toStartOf="@+id/card_virtical_line"
+        app:layout_constraintStart_toStartOf="@+id/card_virtical_line"
+        app:layout_constraintTop_toTopOf="@+id/card_image_line"
+        app:layout_constraintVertical_bias="0.519" />
+
+
+    <ImageView
+        android:id="@+id/monster_card_pet_image"
+        android:layout_width="190dp"
+        android:layout_height="190dp"
+        app:layout_constraintBottom_toTopOf="@+id/card_image_line"
+        app:layout_constraintEnd_toEndOf="@+id/monster_card_pet_bg"
+        app:layout_constraintHorizontal_bias="0.553"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/card_image_line"
+        app:srcCompat="@drawable/game_enemy_goblin" />
+
+<!--    <TextView-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:fontFamily="@font/titan_one"-->
+<!--        android:text="Artist : Nelson Fang"-->
+<!--        android:textSize="12dp"-->
+<!--        app:layout_constraintBottom_toBottomOf="parent"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintHorizontal_bias="0.093"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toBottomOf="@+id/descConsLay"-->
+<!--        app:layout_constraintVertical_bias="0.515" />-->
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/descConsLay"
+        android:layout_width="320dp"
+        android:layout_height="275dp"
+        android:background="@color/disabled_color"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toTopOf="@+id/descriptionBox_line"
+        app:layout_constraintEnd_toStartOf="@+id/card_virtical_line"
+        app:layout_constraintHorizontal_bias="0.581"
+        app:layout_constraintStart_toStartOf="@+id/card_virtical_line"
+        app:layout_constraintTop_toTopOf="@+id/descriptionBox_line"
+        app:layout_constraintVertical_bias="0.458">
+
+
+        <TextView
+            android:id="@+id/monster_dialog_petSkill_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/titan_one"
+            android:padding="5dp"
+            android:text="Stage Description"
+            android:textSize="17sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toStartOf="@+id/descVerLine"
+            app:layout_constraintHorizontal_bias="0.528"
+            app:layout_constraintStart_toStartOf="@+id/descVerLine"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
+        <TextView
+            android:id="@+id/monster_dialog_skillDescription"
+            android:layout_width="290dp"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/titan_one"
+            android:padding="5dp"
+            android:text="Goblin will smash you harder and harder until you die!!"
+            android:textSize="13.5sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="@+id/descVerLine"
+            app:layout_constraintTop_toBottomOf="@+id/monster_dialog_petSkill_name" />
+
+        <TextView
+            android:id="@+id/monster_dialog_accept_elements"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/titan_one"
+            android:padding="5dp"
+            android:text="Accept Elements"
+            android:textSize="17sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toStartOf="@+id/descVerLine"
+            app:layout_constraintStart_toStartOf="@+id/descVerLine"
+            app:layout_constraintTop_toBottomOf="@+id/monster_dialog_skillDescription" />
+
+
+        <TextView
+            android:id="@+id/monster_dialog_accept_elements_description"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/titan_one"
+            android:padding="5dp"
+            android:text="Fireeeeeeee"
+            android:textSize="13.5sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="@+id/descVerLine"
+            app:layout_constraintTop_toBottomOf="@+id/monster_dialog_accept_elements" />
+
+        <TextView
+            android:id="@+id/monster_dialog_dmg_req"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:fontFamily="@font/titan_one"
+            android:padding="3dp"
+            android:text="HP♡"
+            android:textSize="17sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toTopOf="@+id/upperHorLine"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/upperHorLine"
+            app:layout_constraintVertical_bias="0.483" />
+
+        <TextView
+            android:id="@+id/monster_dialog_dmg_amt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:fontFamily="@font/titan_one"
+            android:padding="2dp"
+            android:text="240 hp"
+            android:textSize="17.5sp"
+            app:layout_constraintBottom_toTopOf="@+id/lowerHorLine"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/lowerHorLine"
+            app:layout_constraintVertical_bias="0.375" />
+
+        <TextView
+            android:id="@+id/monster_dialog_fight_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/titan_one"
+            android:padding="5dp"
+            android:text="Stage Objective"
+            android:textSize="17sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toStartOf="@+id/descVerLine"
+            app:layout_constraintHorizontal_bias="0.143"
+            app:layout_constraintStart_toStartOf="@+id/descVerLine"
+            app:layout_constraintTop_toBottomOf="@+id/monster_dialog_accept_elements_description" />
+
+
+        <TextView
+            android:id="@+id/monster_dialog_fight_obj"
+            android:layout_width="290dp"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/titan_one"
+            android:padding="2dp"
+            android:text="No Damage Restriction + BOSS will HIT YOU"
+            android:textSize="13.5sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="@+id/descVerLine"
+            app:layout_constraintTop_toBottomOf="@+id/monster_dialog_fight_title" />
+
+
+        <TextView
+            android:id="@+id/monster_dialog_max_turn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="40dp"
+            android:fontFamily="@font/titan_one"
+            android:padding="3dp"
+            android:text="Max Turn"
+            android:textSize="17sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toTopOf="@+id/upperHorLine"
+            app:layout_constraintStart_toEndOf="@+id/monster_dialog_dmg_req"
+            app:layout_constraintTop_toTopOf="@+id/upperHorLine"
+            app:layout_constraintVertical_bias="0.423" />
+
+        <TextView
+            android:id="@+id/monster_dialog_max_turn_amt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/titan_one"
+            android:padding="5dp"
+            android:text="10 turns"
+            android:textSize="17.5sp"
+            app:layout_constraintBottom_toTopOf="@+id/lowerHorLine"
+            app:layout_constraintEnd_toStartOf="@+id/monster_dialog_deck_size_amt"
+            app:layout_constraintHorizontal_bias="0.514"
+            app:layout_constraintStart_toEndOf="@+id/monster_dialog_dmg_amt"
+            app:layout_constraintTop_toTopOf="@+id/lowerHorLine"
+            app:layout_constraintVertical_bias="0.533" />
+
+        <TextView
+            android:id="@+id/monster_dialog_deck_size"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="24dp"
+            android:fontFamily="@font/titan_one"
+            android:padding="5dp"
+            android:text="Pets"
+            android:textSize="17sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toTopOf="@+id/upperHorLine"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.85"
+            app:layout_constraintStart_toEndOf="@+id/monster_dialog_max_turn"
+            app:layout_constraintTop_toTopOf="@+id/upperHorLine" />
+
+        <TextView
+            android:id="@+id/monster_dialog_deck_size_amt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:fontFamily="@font/titan_one"
+            android:padding="5dp"
+            android:text="4 pets"
+            android:textSize="17.5sp"
+            app:layout_constraintBottom_toTopOf="@+id/lowerHorLine"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.906"
+            app:layout_constraintStart_toStartOf="@+id/descVerLine"
+            app:layout_constraintTop_toBottomOf="@+id/monster_dialog_deck_size"
+            app:layout_constraintTop_toTopOf="@+id/lowerHorLine"
+            app:layout_constraintVertical_bias="0.642" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/descVerLine"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_begin="28dp" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/lowerHorLine"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_end="37dp" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/upperHorLine"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_begin="210dp" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/card_virtical_line"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_end="175dp" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/titleHorLine"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_begin="30dp" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/descriptionBox_line"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_end="165dp" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+
+

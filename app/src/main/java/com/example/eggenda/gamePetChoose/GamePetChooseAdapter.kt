@@ -6,101 +6,80 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.eggenda.R
-
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
+import com.example.eggenda.gamePlay.petInfo2
 
 
-class GamePetChooseAdapter(private var characterList:List<Int>,
-                           private val selectedImages: MutableList<Int?>,
+class GamePetChooseAdapter(private var characterList: IntArray,
+                           private val selectedPetsID: MutableList<Int?>,
+                           private val sharedPreferenceManager: SharedPreferenceManager,
                            private val context: Context,
                            private val onImageSelected: (Int) -> Unit,
-                           private val onImageDeselected: (Int) -> Unit
+                           private val onImageDeselected: (Int) -> Unit,
+                           private val onLongClick: (Int) -> Unit
 ) : RecyclerView.Adapter<GamePetChooseAdapter.ViewHolder>(){
 
     //gson list about the status of the pets
-    private val ownedPetsListSp = context.getSharedPreferences("Pets_status", Context.MODE_PRIVATE)
-    private val ownedPetsJson = ownedPetsListSp.getString("owned_pets_key", "[]") ?: "[]"
-    private val ownedPets: List<Boolean> = Gson().fromJson(ownedPetsJson, object : TypeToken<List<Boolean>>() {}.type) ?: listOf()
+    private val ownedPetsTemp = sharedPreferenceManager.getPetOwnership()   //ArrayList <Int>
+    private val ownedPets : IntArray = ownedPetsTemp.toIntArray()           //change it to Int Array
 
-    //filter oyt the unlocked character list
+    private var temp : Int = 0
+
+    //filter out the unlocked character list
     private var filteredPetsList = characterList.filterIndexed { index, _->
-        index < ownedPets.size && ownedPets[index]
-    }
-
+        index < ownedPets.size && ownedPets[index] == 1
+    } .also { Log.d("FilteredPets", "filteredPetsList size: ${it.size}") }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.game_item_frame, parent,false)
-
         return ViewHolder(view)
     }
 
-//    override fun getItemCount(): Int = filteredPetsList.size
-override fun getItemCount(): Int = 5
+    //hello
+
+    override fun getItemCount(): Int {return filteredPetsList.size}
 
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         Log.d("GamePetChooseAdapter", "Binding position: $position")
-        holder.bind(filteredPetsList[position])
-
-//        val temp = characterList[position]
-
-//        update the selection state and display the label index into the selected image
-        holder.imageView.isSelected = selectedImages.contains(filteredPetsList[position])
-
-        Log.d("Choosing Adpater", "position: $position")
-
-        //setting the number pads label
-        val labelIndex = selectedImages.indexOf(position)
-
-        Log.d("Choosing Adpater", "label: index: $labelIndex")
-
-
-//        //do not let the pets be choosable if the pets are not unlocked
-//        if(position < ownedPets.size && !ownedPets[position]){
-//            holder.grey_layer.visibility = View.VISIBLE
-//            holder.imageView.isEnabled = false      //to let the photo be unclikable
-//        }
-//        else {
-//            holder.grey_layer.visibility = View.GONE            //to let the photo be normal
-//            holder.imageView.isEnabled = true       //to let the photo be clikable
-//
-//        }
-
-        //if the pet here is not yet getable, then just let it out of the list, otherwise let it stays at the list
+        val petInfo = petInfo2()
+        val petId = petInfo.getPetInfoById(filteredPetsList[position])?.id!!
+        petId?.let { holder.bind(it) }
     }
 
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val imageView: ImageView = itemView.findViewById(R.id.imageView)
-//        val grey_layer: View = itemView.findViewById(R.id.gray_layer)
-//        val textViewLabel : TextView = itemView.findViewById(R.id.textViewLabel)
+        val petInfo  =  petInfo2()
+        val petInfoID = temp
 
-        fun bind(photoResId: Int) {
-            imageView.setImageResource(photoResId) // Set the image resource
+        fun bind(petID: Int) {
+            imageView.setImageResource(petInfo.getPetInfoById(petID)?.imageId!!)     // Set the image resource
+
             // Set click listener on the item
             itemView.setOnClickListener {
+                //unselect it if the photos has already being chosen
+                if (selectedPetsID.contains(petID)) { onImageDeselected(petID)      //return pet info id
+                } else { onImageSelected(petID) }                                   //select if the image has not been selected
+            } //end of onclicklistener
 
-//               if(imageView.isEnabled){     //check if the photo is enabled
-                if(selectedImages.contains(photoResId)){
-                    onImageDeselected(photoResId)
-
-                } else {
-                    onImageSelected(photoResId)
-
-                }
-//               }
+            //trigger the long-click logic for showing details
+            itemView.setOnLongClickListener {
+                val petInfoID = temp
+                onLongClick(petID)
+                true
             }
-        }
-
+        } //end of bind funciton
     }
 
-    fun updateImages(newImages: List<Int>) {
+
+    fun updatePetsChoose(newImages: IntArray) {
         characterList = newImages
+        filteredPetsList = characterList.filterIndexed { index, _ ->
+            index < ownedPets.size && ownedPets[index] == 1
+        }
         notifyDataSetChanged()
     }
 
