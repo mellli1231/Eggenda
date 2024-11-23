@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Define the TextAppearance style for menu items -->
+    <style name="NavMenuTextAppearance">
+        <item name="android:fontFamily">@font/titan_one</item>
+        <item name="android:textColor">@color/brown</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:paddingLeft">0dp</item>
+    </style>
+</resources>

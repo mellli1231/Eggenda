@@ -18,7 +18,7 @@
             android:text="@string/create_an_account"
             android:textSize="30sp"
             android:fontFamily="@font/titan_one"
-            android:textColor="#4A3109"
+            android:textColor="@color/brown"
             android:paddingBottom="24dp"/>
 
         <!--username-->
@@ -30,7 +30,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="#4A3109"
+                android:textColor="@color/brown"
                 android:text="@string/username_header"
                 android:textSize="16sp"
                 android:fontFamily="@font/titan_one"
@@ -47,6 +47,16 @@
                 android:paddingStart="16dp"
                 android:textColor="@color/dark_blue"
                 android:fontFamily="@font/dangrek_font"/>
+
+            <TextView
+                android:id="@+id/username_error"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                android:textColor="@color/red"
+                android:fontFamily="@font/dangrek_font"
+                android:paddingStart="8dp"
+                android:textSize="15sp"/>
         </LinearLayout>
 
         <!--password-->
@@ -58,7 +68,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="#4A3109"
+                android:textColor="@color/brown"
                 android:text="@string/password_hint"
                 android:textSize="16sp"
                 android:fontFamily="@font/titan_one"/>
@@ -95,7 +105,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="#4A3109"
+            android:textColor="@color/brown"
             android:text="@string/confirm_password"
             android:textSize="16sp"
             android:fontFamily="@font/titan_one"/>

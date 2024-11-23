@@ -13,12 +13,24 @@ import android.view.View
 import android.widget.Button
 import android.widget.Toast
 import androidx.fragment.app.DialogFragment
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.PreferenceManager
 import com.example.eggenda.LocaleHelper
 import com.example.eggenda.R
+import com.example.eggenda.UserPref
 import com.example.eggenda.ui.account.LoginActivity
+import com.example.eggenda.ui.database.userDatabase.UserDatabase
+import com.example.eggenda.ui.database.userDatabase.UserDatabaseDao
+import com.example.eggenda.ui.database.userDatabase.UserRepository
+import com.example.eggenda.ui.database.userDatabase.UserViewModel
+import com.example.eggenda.ui.database.userDatabase.UserViewModelFactory
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedPreferenceChangeListener{
     companion object {
@@ -29,6 +41,12 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
     private lateinit var sharedPreferences: SharedPreferences
     private lateinit var editor: Editor
 
+    private lateinit var database: UserDatabase
+    private lateinit var databaseDao: UserDatabaseDao
+    private lateinit var userViewModel: UserViewModel
+    private lateinit var repository: UserRepository
+    private lateinit var userViewModelFactory: UserViewModelFactory
+
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         //load UI
         setPreferencesFromResource(R.xml.preference, rootKey)
@@ -36,6 +54,14 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
         //initialize sharedPreference
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(requireContext())
         editor = sharedPreferences.edit()
+
+        //initialize database and operations
+        database = UserDatabase.getInstance(requireActivity())
+        databaseDao = database.userDatabaseDao
+        repository = UserRepository(databaseDao)
+        userViewModelFactory = UserViewModelFactory(repository)
+        userViewModel = ViewModelProvider(this, userViewModelFactory).get(UserViewModel::class.java)
+
 
         //get user profile bar
         val profilePref: Preference? = findPreference("user_profile")
@@ -79,6 +105,18 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
 
             true
         }
+
+        val deleteAll: Preference? = findPreference("deleteAll")
+        deleteAll?.setOnPreferenceClickListener {
+            println("deleting all users from database")
+            viewLifecycleOwner.lifecycleScope.launch {
+                repository.deleteAll()
+                Toast.makeText(requireContext(), "Deleted all users", Toast.LENGTH_SHORT).show()
+
+            }
+
+            true
+        }
     }
 
     class MyRunsDialogFragment : DialogFragment(), DialogInterface.OnClickListener {
@@ -111,8 +149,9 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
                 //get sharedPreferences for account
                 val logoutBtn: Button = view.findViewById(R.id.logout_button)
                 val cancelBtn: Button = view.findViewById(R.id.cancel_button)
+                val id = UserPref.getId(requireContext())
                 val sharedPreferences : SharedPreferences =
-                    requireActivity().getSharedPreferences("account", Context.MODE_PRIVATE)
+                    requireActivity().getSharedPreferences("user_${id}", Context.MODE_PRIVATE)
 
                 //if confirm logout
                 logoutBtn.setOnClickListener {
@@ -122,6 +161,7 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
 
                     Toast.makeText(requireActivity(), "Logging Out", Toast.LENGTH_SHORT).show()
 
+                    println("logging out id: ${id}")
                     //redirect to login page
                     val intent = Intent(requireActivity(), LoginActivity::class.java)
                     startActivity(intent)

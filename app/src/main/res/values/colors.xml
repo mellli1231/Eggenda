@@ -22,4 +22,5 @@
     <color name="red">#FD2222</color>
     <color name="strike_through_color">@color/bold_yellow</color> <!-- Red for strike-through -->
     <color name="normal_text_color">#FF0000</color>    <!-- Black for normal text -->
+    <color name="brown">#4A310A</color>
 </resources>

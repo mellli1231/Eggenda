@@ -11,7 +11,6 @@ import android.os.Handler
 import android.os.Looper
 import android.os.VibrationEffect
 import android.os.Vibrator
-import android.util.Log
 import android.view.HapticFeedbackConstants
 import android.view.LayoutInflater
 import android.view.View
@@ -19,20 +18,21 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.ListView
-import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.example.eggenda.R
+import com.example.eggenda.UserPref
 import com.example.eggenda.databinding.DialogHatchBinding
 import com.example.eggenda.databinding.FragmentHomeBinding
 import com.example.eggenda.gamePetChoose.SharedPreferenceManager
 import com.example.eggenda.gamePlay.gameActivity
-import com.example.eggenda.ui.database.EntryDatabase
-import com.example.eggenda.ui.database.EntryDatabaseDao
-import com.example.eggenda.ui.database.EntryRepo
-import com.example.eggenda.ui.database.EntryViewModel
-import com.example.eggenda.ui.database.EntryViewModelFactory
+import com.example.eggenda.ui.database.entryDatabase.EntryDatabase
+import com.example.eggenda.ui.database.entryDatabase.EntryDatabaseDao
+import com.example.eggenda.ui.database.entryDatabase.EntryRepo
+import com.example.eggenda.ui.database.entryDatabase.EntryViewModel
+import com.example.eggenda.ui.database.entryDatabase.EntryViewModelFactory
 import com.example.eggenda.ui.task.ConfirmTasksActivity
 import com.example.eggenda.ui.task.TaskAdapter
 import com.google.gson.Gson
@@ -40,7 +40,6 @@ import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import java.io.File
-import kotlin.random.Random
 
 class HomeFragment : Fragment() {
 
@@ -77,13 +76,14 @@ class HomeFragment : Fragment() {
         val petOwnership = loadPetOwnership()
 //        sharedPreferenceManager = SharedPreferenceManager(requireContext())
 
-
-        //display username
-        val sharedPreferences = requireContext().getSharedPreferences("account", Context.MODE_PRIVATE)
-        val username = sharedPreferences.getString("username", "John Smith")
-        binding.displayName.text=username
+        //get username and id
+        val user = UserPref.getUsername(requireContext())
+        val id = UserPref.getId(requireContext())
+        println("user: ${user}, id: ${id}")
 
         //load profile picture
+        val sharedPreferences = requireContext().getSharedPreferences("user_${id}", Context.MODE_PRIVATE)
+        binding.displayName.text=user //set username
         val profileImgPath = sharedPreferences.getString("profileImagePath", null)
         if (profileImgPath != null) { //if profile pic exists, set
             val ogFile = File(profileImgPath)

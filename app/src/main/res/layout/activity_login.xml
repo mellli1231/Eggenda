@@ -32,7 +32,17 @@
             android:inputType="text"
             android:textColor="@color/dark_blue"
             android:id="@+id/username_input"
-            android:fontFamily="@font/dangrek_font"/>
+            android:fontFamily="@font/dangrek_font" />
+
+        <TextView
+            android:id="@+id/username_error"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:textColor="@color/red"
+            android:fontFamily="@font/dangrek_font"
+            android:paddingStart="8dp"
+            android:textSize="15sp"/>
 
         <EditText
             android:layout_width="match_parent"
@@ -44,7 +54,18 @@
             android:inputType="textPassword"
             android:textColor="@color/dark_blue"
             android:id="@+id/password_input"
-            android:fontFamily="@font/dangrek_font"/>
+            android:fontFamily="@font/dangrek_font"
+            android:layout_marginTop="8dp"/>
+
+        <TextView
+            android:id="@+id/password_error"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:textColor="@color/red"
+            android:fontFamily="@font/dangrek_font"
+            android:paddingStart="8dp"
+            android:textSize="15sp"/>
 
         <Button
             android:id="@+id/login_btn"

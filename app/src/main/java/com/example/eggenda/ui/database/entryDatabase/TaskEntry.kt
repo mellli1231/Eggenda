@@ -1,4 +1,4 @@
-package com.example.eggenda.ui.database
+package com.example.eggenda.ui.database.entryDatabase
 
 import androidx.room.*
 import androidx.room.TypeConverters

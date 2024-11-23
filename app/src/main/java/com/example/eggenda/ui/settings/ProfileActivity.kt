@@ -17,6 +17,7 @@ import android.view.View
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
+import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
@@ -27,7 +28,16 @@ import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.eggenda.MyViewModel
 import com.example.eggenda.R
+import com.example.eggenda.UserPref
 import com.example.eggenda.Util
+import com.example.eggenda.ui.database.userDatabase.UserDatabase
+import com.example.eggenda.ui.database.userDatabase.UserDatabaseDao
+import com.example.eggenda.ui.database.userDatabase.UserRepository
+import com.example.eggenda.ui.database.userDatabase.UserViewModel
+import com.example.eggenda.ui.database.userDatabase.UserViewModelFactory
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.io.File
 
 class ProfileActivity: AppCompatActivity() {
@@ -44,6 +54,7 @@ class ProfileActivity: AppCompatActivity() {
     private lateinit var country: EditText
     private lateinit var saveProfile: Button
     private lateinit var cancelProfile: Button
+    private lateinit var usernameError: TextView
 
     private lateinit var imageView: ImageView
     private lateinit var button: Button
@@ -60,6 +71,14 @@ class ProfileActivity: AppCompatActivity() {
     private lateinit var sharedPreferences: SharedPreferences
     private lateinit var galleryResult: ActivityResultLauncher<Intent>
 
+    private var ogUser: String? = ""
+    private var id: Long?= 0
+    private lateinit var database: UserDatabase
+    private lateinit var databaseDao: UserDatabaseDao
+    private lateinit var userViewModel: UserViewModel
+    private lateinit var repository: UserRepository
+    private lateinit var userViewModelFactory: UserViewModelFactory
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.profile)
@@ -75,7 +94,19 @@ class ProfileActivity: AppCompatActivity() {
         button = findViewById(R.id.btnChangePhoto)
         saveProfile = findViewById(R.id.save_profile)
         cancelProfile = findViewById(R.id.cancel_profile)
-        sharedPreferences = getSharedPreferences("account", MODE_PRIVATE)
+        usernameError = findViewById(R.id.username_error)
+
+        //get user data
+        ogUser = UserPref.getUsername(this)
+        id = UserPref.getId(this)
+        sharedPreferences = getSharedPreferences("user_${id}", MODE_PRIVATE)
+
+        //initialize database and operations
+        database = UserDatabase.getInstance(this)
+        databaseDao = database.userDatabaseDao
+        repository = UserRepository(databaseDao)
+        userViewModelFactory = UserViewModelFactory(repository)
+        userViewModel = ViewModelProvider(this, userViewModelFactory).get(UserViewModel::class.java)
 
         //retrieve saved data on startup
         loadProfile()
@@ -151,10 +182,18 @@ class ProfileActivity: AppCompatActivity() {
 
         //save button feature
         saveProfile.setOnClickListener {
-            saveProfile()
-            println("profile saved")
-            Toast.makeText(this, "Saved", Toast.LENGTH_SHORT).show()
-            finish()
+            //only save if username is not empty
+            if(userName.text.toString().isNotEmpty()) {
+                saveProfile()
+                println("profile saved")
+                Toast.makeText(this, "Saved", Toast.LENGTH_SHORT).show()
+                finish()
+            } else {
+                usernameError.text = getString(R.string.username_is_empty)
+                usernameError.visibility = View.VISIBLE
+                userName.setBackgroundResource(R.drawable.error_text_border)
+                println("username is empty")
+            }
         }
 
         //cancel button feature
@@ -313,5 +352,13 @@ class ProfileActivity: AppCompatActivity() {
         editor.putString("country", country2)
         editor.putString("profileImagePath", profileImagePath)
         editor.apply()
+
+        //update singleton
+        UserPref.updateUsername(this, username)
+
+        //update database
+        CoroutineScope(Dispatchers.IO).launch {
+            ogUser?.let { repository.updateUsername(username, it) }
+        }
     }
 }

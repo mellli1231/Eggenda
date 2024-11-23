@@ -2,13 +2,12 @@ package com.example.eggenda.ui.task
 
 import android.annotation.SuppressLint
 import android.app.TimePickerDialog
-import android.content.Intent
 import android.os.Bundle
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import com.example.eggenda.R
-import com.example.eggenda.ui.database.EntryDatabase
-import com.example.eggenda.ui.database.TaskEntry
+import com.example.eggenda.ui.database.entryDatabase.EntryDatabase
+import com.example.eggenda.ui.database.entryDatabase.TaskEntry
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
