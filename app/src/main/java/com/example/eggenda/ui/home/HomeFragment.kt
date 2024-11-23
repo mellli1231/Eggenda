@@ -150,7 +150,7 @@ class HomeFragment : Fragment() {
         // Load tasks into quest board ListView
         lifecycleScope.launch {
             EntryDatabase.getInstance(requireContext()).entryDatabaseDao.getAllTasks().collectLatest { tasks ->
-                val taskTitles = tasks.map { it.title }
+                // val taskTitles = tasks.map { it.title }
                 val adapter = TaskAdapter(requireContext(), tasks)
                 questListView.adapter = adapter
             }

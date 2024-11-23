@@ -56,8 +56,21 @@ class AddTaskActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
+            // Calculate endTime
+            val now = Calendar.getInstance()
+            val selectedTime = Calendar.getInstance()
+            selectedTime.set(Calendar.HOUR_OF_DAY, timeLimit.split(":")[0].toInt())
+            selectedTime.set(Calendar.MINUTE, timeLimit.split(":")[1].toInt())
+            selectedTime.set(Calendar.SECOND, 0)
+
+            // Adjust for the next day if the selected time is earlier than the current time
+            if (selectedTime.before(now)) {
+                selectedTime.add(Calendar.DAY_OF_YEAR, 1)
+            }
+            val endTime = selectedTime.timeInMillis
+
             // Add task to database
-            val taskEntry = TaskEntry(title = title, timeLimit = timeLimit, details = details)
+            val taskEntry = TaskEntry(title = title, timeLimit = timeLimit, details = details, endTime = endTime)
             CoroutineScope(Dispatchers.IO).launch {
                 EntryDatabase.getInstance(applicationContext).entryDatabaseDao.insertTask(taskEntry)
             }

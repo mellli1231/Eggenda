@@ -74,6 +74,7 @@
     <string name="atk_type_bounce">Bounce</string>
 
     <string name="atk_count_des">Count</string>
+    <string name="expired">Expired</string>
 
     <string-array name="language_options">
         <item>English</item>

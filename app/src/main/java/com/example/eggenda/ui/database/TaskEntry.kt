@@ -26,6 +26,12 @@ data class TaskEntry(
     @ColumnInfo(name = "attachment_path")
     var attachmentPath: String = "", // File path for attachments (e.g., mp4, png, pdf)
 
+    @ColumnInfo(name = "end_time")
+    var endTime: Long = 0L,
+
+    @ColumnInfo(name = "remaining_time")
+    var remainingTime: Long = 0L, // Remaining time when paused
+
     @ColumnInfo(name = "is_checked")
     var isChecked: Boolean = false
 )

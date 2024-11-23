@@ -15,6 +15,16 @@
         android:textColor="@color/bold_yellow"
         android:fontFamily="@font/titan_one" />
 
+    <TextView
+        android:id="@+id/remainingTimeText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:textSize="14sp"
+        android:paddingStart="8dp"
+        android:paddingEnd="8dp"
+        android:textColor="@color/bold_yellow" />
+
     <CheckBox
         android:id="@+id/taskCheckBox"
         android:layout_width="wrap_content"
