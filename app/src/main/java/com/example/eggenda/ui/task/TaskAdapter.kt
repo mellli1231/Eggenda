@@ -11,8 +11,8 @@ import android.widget.ArrayAdapter
 import android.widget.CheckBox
 import android.widget.TextView
 import com.example.eggenda.R
-import com.example.eggenda.ui.database.EntryDatabase
-import com.example.eggenda.ui.database.TaskEntry
+import com.example.eggenda.ui.database.entryDatabase.EntryDatabase
+import com.example.eggenda.ui.database.entryDatabase.TaskEntry
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
