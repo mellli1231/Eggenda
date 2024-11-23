@@ -6,8 +6,8 @@ import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.example.eggenda.R
-import com.example.eggenda.ui.database.EntryDatabase
-import com.example.eggenda.ui.database.TaskEntry
+import com.example.eggenda.ui.database.entryDatabase.EntryDatabase
+import com.example.eggenda.ui.database.entryDatabase.TaskEntry
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 

@@ -66,6 +66,12 @@
     <string name="create_an_account">Create An Account</string>
     <string name="password_empty">Password Empty</string>
     <string name="passwords_do_not_match">Passwords do not match</string>
+    <string name="username_already_exists">Username already exists</string>
+    <string name="quests">Quests</string>
+    <string name="eggs">Eggs</string>
+    <string name="pets">Pets</string>
+    <string name="character">Character</string>
+    <string name="points">Points</string>
 
 
     <string name="choose_attack_type_description">Attack Type</string>
@@ -74,6 +80,9 @@
     <string name="atk_type_bounce">Bounce</string>
 
     <string name="atk_count_des">Count</string>
+    <string name="incorrect_password">Incorrect password</string>
+    <string name="user_doesn_t_exist">User doesn\'t exist</string>
+    <string name="username_is_empty">Username is Empty</string>
 
     <string-array name="language_options">
         <item>English</item>

@@ -69,6 +69,17 @@
                 android:paddingStart="16dp"
                 android:textColor="@color/dark_blue"
                 android:fontFamily="@font/dangrek_font"/>
+
+            <TextView
+                android:id="@+id/username_error"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                android:textColor="@color/red"
+                android:fontFamily="@font/dangrek_font"
+                android:paddingStart="8dp"
+                android:textSize="15sp"/>
+
         </LinearLayout>
 
         <!--first name-->

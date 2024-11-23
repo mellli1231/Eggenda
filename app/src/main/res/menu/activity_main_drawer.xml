@@ -3,26 +3,62 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:showIn="navigation_view">
 
+    <!--main stuff-->
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/nav_home"
             android:icon="@drawable/ic_menu_camera"
             android:title="@string/menu_home" />
-        <item
-            android:id="@+id/nav_gallery"
-            android:icon="@drawable/ic_menu_gallery"
-            android:title="@string/menu_gallery" />
-        <item
-            android:id="@+id/nav_slideshow"
-            android:icon="@drawable/ic_menu_slideshow"
-            android:title="@string/menu_slideshow" />
-
-        <item
-            android:id="@+id/settings"
-            android:title="@string/settings_title"/>
 
         <item
             android:id="@+id/nav_game"
             android:title="@string/game_label"/>
+
     </group>
+
+    <!--customization-->
+    <group android:checkableBehavior="single">
+        <item
+            android:title="Customization"
+            android:enabled="false" />
+        <item
+            android:id="@+id/nav_eggs"
+            android:title="@string/eggs"/>
+
+        <item
+            android:id="@+id/nav_pets"
+            android:title="@string/pets"/>
+
+        <item
+            android:id="@+id/nav_character"
+            android:title="@string/character"/>
+
+
+    </group>
+
+    <!--points-->
+    <group android:checkableBehavior="single">
+        <item
+            android:title="@string/points"
+            android:enabled="false" />
+        <item
+            android:id="@+id/nav_quests"
+            android:title="@string/quests" />
+    </group>
+
+    <!--showcase-->
+    <group android:checkableBehavior="single">
+        <item
+            android:title="Showcase"
+            android:enabled="false" />
+        <item
+            android:id="@+id/nav_gallery"
+            android:icon="@drawable/ic_menu_gallery"
+            android:title="@string/menu_gallery" />
+
+        <item
+            android:id="@+id/nav_settings"
+            android:title="@string/settings_title"/>
+    </group>
+
 </menu>

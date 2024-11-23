@@ -25,10 +25,13 @@ import androidx.appcompat.app.AppCompatActivity.MODE_PRIVATE
 import androidx.core.content.FileProvider
 import androidx.exifinterface.media.ExifInterface
 import androidx.fragment.app.DialogFragment
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.room.InvalidationTracker
 import com.example.eggenda.MainActivity
 import com.example.eggenda.MyViewModel
 import com.example.eggenda.R
+import com.example.eggenda.UserPref
 import com.example.eggenda.Util
 import com.example.eggenda.ui.settings.ProfileActivity
 import java.io.File
@@ -74,7 +77,12 @@ class CreateProfileActivity: AppCompatActivity() {
         imageView = findViewById(R.id.profile_photo)
         button = findViewById(R.id.btnChangePhoto)
         createAccBtn = findViewById(R.id.create_acc_btn)
-        sharedPreferences = getSharedPreferences("account", MODE_PRIVATE)
+
+        //get correlating user
+
+        val id = UserPref.getId(this)
+        sharedPreferences = getSharedPreferences("user_${id}", MODE_PRIVATE) //info for user
+        println("editing user id: $id")
 
         //Profile Photo setup
         Util.checkPermissions(this)
@@ -226,7 +234,8 @@ class CreateProfileActivity: AppCompatActivity() {
 
     //function to save profile settings
     private fun createProfile() {
-        //extract inputted data
+        //extract inputted data and username
+        val username = UserPref.getUsername(this)
         val first = firstName.text.toString()
         val last = lastName.text.toString()
         val ep = emailPhone.text.toString()
@@ -240,6 +249,7 @@ class CreateProfileActivity: AppCompatActivity() {
         }
 
         //log profile values
+        println("username: $username")
         println("first name: $first")
         println("last name: $last")
         println("email/phone: $ep")
@@ -248,6 +258,7 @@ class CreateProfileActivity: AppCompatActivity() {
 
         //save changes
         val editor = sharedPreferences.edit()
+        editor.putString("username", username)
         editor.putString("firstName", first)
         editor.putString("lastName", last)
         editor.putString("emailPhone", ep)
@@ -257,4 +268,6 @@ class CreateProfileActivity: AppCompatActivity() {
         editor.putBoolean("isLoggedIn", true) //login
         editor.apply()
     }
+
+
 }

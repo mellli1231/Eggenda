@@ -1,4 +1,4 @@
-package com.example.eggenda.ui.database
+package com.example.eggenda.ui.database.entryDatabase
 
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.Flow
