@@ -60,7 +60,7 @@ class GalleryFragment : Fragment() {
 
         //initialize pets array that has in the code in int array
         //here should take it from pet info class
-        allPetsArrayID = intArrayOf(0,1,2,3,4)
+        allPetsArrayID = intArrayOf(0,1,2,3,4,5,6,7,8,9)
 
         //initalized classes and views
         characterRecyclerView = root.findViewById(R.id.gallery_characterchoose_recyclerView)
