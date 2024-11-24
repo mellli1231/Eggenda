@@ -1,5 +1,6 @@
 package com.example.eggenda.ui.settings
 
+
 import android.app.Activity
 import android.app.AlertDialog
 import android.app.Dialog
@@ -35,16 +36,20 @@ import com.example.eggenda.ui.database.userDatabase.UserDatabaseDao
 import com.example.eggenda.ui.database.userDatabase.UserRepository
 import com.example.eggenda.ui.database.userDatabase.UserViewModel
 import com.example.eggenda.ui.database.userDatabase.UserViewModelFactory
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.io.File
+
 
 class ProfileActivity: AppCompatActivity() {
     companion object {
         const val DIALOG_KEY = "dialog"
         const val PHOTO_DIALOG = 4
     }
+
 
     private lateinit var userName: EditText
     private lateinit var firstName: EditText
@@ -55,6 +60,7 @@ class ProfileActivity: AppCompatActivity() {
     private lateinit var saveProfile: Button
     private lateinit var cancelProfile: Button
     private lateinit var usernameError: TextView
+
 
     private lateinit var imageView: ImageView
     private lateinit var button: Button
@@ -71,17 +77,21 @@ class ProfileActivity: AppCompatActivity() {
     private lateinit var sharedPreferences: SharedPreferences
     private lateinit var galleryResult: ActivityResultLauncher<Intent>
 
+
     private var ogUser: String? = ""
-    private var id: Long?= 0
+    private var id: String? = ""
     private lateinit var database: UserDatabase
     private lateinit var databaseDao: UserDatabaseDao
     private lateinit var userViewModel: UserViewModel
     private lateinit var repository: UserRepository
     private lateinit var userViewModelFactory: UserViewModelFactory
+    private lateinit var FBdatabase: FirebaseDatabase
+    private lateinit var myRef: DatabaseReference
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.profile)
+
 
         //initialize variables
         userName = findViewById(R.id.edit_username)
@@ -96,36 +106,46 @@ class ProfileActivity: AppCompatActivity() {
         cancelProfile = findViewById(R.id.cancel_profile)
         usernameError = findViewById(R.id.username_error)
 
+
         //get user data
         ogUser = UserPref.getUsername(this)
         id = UserPref.getId(this)
         sharedPreferences = getSharedPreferences("user_${id}", MODE_PRIVATE)
 
+
         //initialize database and operations
+        FBdatabase = FirebaseDatabase.getInstance()
+        myRef = FBdatabase.reference.child("users")
         database = UserDatabase.getInstance(this)
         databaseDao = database.userDatabaseDao
         repository = UserRepository(databaseDao)
         userViewModelFactory = UserViewModelFactory(repository)
         userViewModel = ViewModelProvider(this, userViewModelFactory).get(UserViewModel::class.java)
 
+
         //retrieve saved data on startup
         loadProfile()
         println("profile successfully loaded onto screen")
 
+
         //Profile Photo setup
         Util.checkPermissions(this)
+
 
         tempImgFile = File(getExternalFilesDir(null), tempImgFileName)
         tempImgUri = FileProvider.getUriForFile(this, "com.example.eggenda", tempImgFile)
 
+
         profileImgFile = File(getExternalFilesDir(null), imgFileName)
         imgUri = FileProvider.getUriForFile(this, "com.example.eggenda", profileImgFile)
+
 
         //implement button prompting camera
         button.setOnClickListener() {
             println("change profile photo button clicked")
             showMyDialogFragment(PHOTO_DIALOG, "Pick Profile Picture")
         }
+
 
         //initialize gallery activity result
         galleryResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
@@ -146,6 +166,7 @@ class ProfileActivity: AppCompatActivity() {
             }
         }
 
+
         //initialize gallery activity result
         cameraResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
             if (result.resultCode == Activity.RESULT_OK) {
@@ -155,6 +176,7 @@ class ProfileActivity: AppCompatActivity() {
                 val orientation = exifInterface.getAttributeInt(ExifInterface.TAG_ORIENTATION, 1)
                 val bitmap = Util.getBitmap(this, tempImgUri)
                 println("orientation: $orientation")
+
 
                 //rotate when needed
                 val matrix = Matrix()
@@ -173,12 +195,14 @@ class ProfileActivity: AppCompatActivity() {
             }
         }
 
+
         //
         myViewModel = ViewModelProvider(this).get(MyViewModel::class.java)
         myViewModel.userImage.observe(this) {
             imageView.setImageBitmap(it)
             println("new photo set to view")
         }
+
 
         //save button feature
         saveProfile.setOnClickListener {
@@ -196,6 +220,7 @@ class ProfileActivity: AppCompatActivity() {
             }
         }
 
+
         //cancel button feature
         cancelProfile.setOnClickListener {
             //don't save any changes
@@ -203,6 +228,7 @@ class ProfileActivity: AppCompatActivity() {
             finish()
         }
     }
+
 
     class MyRunsDialogFragment : DialogFragment(), DialogInterface.OnClickListener {
         override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -213,6 +239,7 @@ class ProfileActivity: AppCompatActivity() {
             val title = bundle?.getString("TITLE") ?: "My Title"
             val builder = AlertDialog.Builder(requireActivity())
 
+
             if(dialogId == PHOTO_DIALOG) {
                 val view: View = requireActivity().layoutInflater.inflate(
                     R.layout.dialog_photo,
@@ -221,15 +248,18 @@ class ProfileActivity: AppCompatActivity() {
                 builder.setView(view)
                 builder.setTitle(title)
 
+
                 //get buttons
                 val galleryBtn : Button = view.findViewById(R.id.chooseGallery)
                 val photoBtn : Button = view.findViewById(R.id.choosePhoto)
+
 
                 //open gallery if button pressed
                 galleryBtn.setOnClickListener{
                     (activity as? ProfileActivity)?.openGallery()
                     dismiss()
                 }
+
 
                 //open camera if button pressed
                 photoBtn.setOnClickListener{
@@ -240,6 +270,7 @@ class ProfileActivity: AppCompatActivity() {
             }
             return ret
         }
+
 
         //function when buttons are clicked
         override fun onClick(dialog: DialogInterface, item: Int) {
@@ -254,6 +285,7 @@ class ProfileActivity: AppCompatActivity() {
         }
     }
 
+
     //show dialog fragment
     private fun showMyDialogFragment(dialogType: Int, title: String) {
         val myDialog = MyRunsDialogFragment()
@@ -265,12 +297,14 @@ class ProfileActivity: AppCompatActivity() {
         myDialog.show(supportFragmentManager, "my_dialog")
     }
 
+
     //function to open gallery and call activity result to display photo
     fun openGallery() {
         val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
         galleryResult.launch(intent)
         println("gallery opened")
     }
+
 
     //function to open camera and take photo then call activity result to display photo
     fun takePhoto() {
@@ -280,6 +314,7 @@ class ProfileActivity: AppCompatActivity() {
         println("camera launched")
     }
 
+
     //function to set profile photo onto screen
     private fun setProfilePhoto(bitmap: Bitmap) {
         println("set profile photo")
@@ -288,9 +323,11 @@ class ProfileActivity: AppCompatActivity() {
         imageView.setImageBitmap(bitmap)
     }
 
+
     //function to load saved profile to screen
     private fun loadProfile() {
         profileImagePath = sharedPreferences.getString("profileImagePath", null)
+
 
         //load saved data
         if (profileImagePath != null) {
@@ -301,6 +338,7 @@ class ProfileActivity: AppCompatActivity() {
             }
         }
 
+
         //get saved data
         val savedUsername = sharedPreferences.getString("username", "")
         val savedfirstName = sharedPreferences.getString("firstName", "")
@@ -308,6 +346,7 @@ class ProfileActivity: AppCompatActivity() {
         val savedEmailPhone = sharedPreferences.getString("emailPhone", "")
         val savedBirth = sharedPreferences.getString("dateBirth", "")
         val savedCountry = sharedPreferences.getString("country", "")
+
 
         //load data onto screen
         userName.setText(savedUsername)
@@ -317,6 +356,7 @@ class ProfileActivity: AppCompatActivity() {
         dateBirth.setText(savedBirth)
         country.setText(savedCountry)
     }
+
 
     //function to save profile settings
     private fun saveProfile() {
@@ -328,11 +368,17 @@ class ProfileActivity: AppCompatActivity() {
         val birth = dateBirth.text.toString()
         val country2 = country.text.toString()
 
+
+        if (username.isEmpty()) {
+            Toast.makeText(this, "Please fill in all fields", Toast.LENGTH_SHORT).show()
+            return
+        }
         //only update file path if a photo was taken
         if(isPhotoChange) {
             tempImgFile.copyTo(profileImgFile, overwrite = true)
             profileImagePath = profileImgFile.path
         }
+
 
         //log profile values
         println("username: $username")
@@ -341,6 +387,7 @@ class ProfileActivity: AppCompatActivity() {
         println("email/phone: $ep")
         println("date of birth: $birth")
         println("country: $country2")
+
 
         //save changes
         val editor = sharedPreferences.edit()
@@ -358,7 +405,31 @@ class ProfileActivity: AppCompatActivity() {
 
         //update database
         CoroutineScope(Dispatchers.IO).launch {
-            ogUser?.let { repository.updateUsername(username, it) }
+            id?.let { repository.updateUsername(username, it)}
         }
+
+        id?.let { userId ->
+            val userRef = myRef.child("users").child(userId)  // Reference to the specific user node
+
+            // Create a user object with the updated username (and keep other fields the same)
+            val updatedUser = mapOf(
+                "id" to userId,
+                "username" to username,  // Updated username
+                "password" to UserPref.getPassword(this), // Ensure you are not changing the password unless intended
+                "points" to UserPref.getPoints(this) // Retain the existing points
+            )
+
+            // Set the updated user data
+            userRef.setValue(updatedUser).addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    println("User updated successfully in Firebase.")
+                    Toast.makeText(this, "Username updated successfully", Toast.LENGTH_SHORT).show()
+                } else {
+                    println("Failed to update user: ${task.exception?.message}")
+                    Toast.makeText(this, "Failed to update user", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+
     }
 }

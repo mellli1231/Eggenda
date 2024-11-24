@@ -27,6 +27,8 @@ import com.example.eggenda.ui.database.userDatabase.UserDatabaseDao
 import com.example.eggenda.ui.database.userDatabase.UserRepository
 import com.example.eggenda.ui.database.userDatabase.UserViewModel
 import com.example.eggenda.ui.database.userDatabase.UserViewModelFactory
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -46,6 +48,8 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
     private lateinit var userViewModel: UserViewModel
     private lateinit var repository: UserRepository
     private lateinit var userViewModelFactory: UserViewModelFactory
+    private lateinit var FBdatabase: FirebaseDatabase
+    private lateinit var myRef: DatabaseReference
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         //load UI
@@ -56,6 +60,8 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
         editor = sharedPreferences.edit()
 
         //initialize database and operations
+        FBdatabase = FirebaseDatabase.getInstance()
+        myRef = FBdatabase.reference.child("users")
         database = UserDatabase.getInstance(requireActivity())
         databaseDao = database.userDatabaseDao
         repository = UserRepository(databaseDao)
@@ -108,13 +114,25 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
 
         val deleteAll: Preference? = findPreference("deleteAll")
         deleteAll?.setOnPreferenceClickListener {
-            println("deleting all users from database")
+            println("Deleting all users from database")
             viewLifecycleOwner.lifecycleScope.launch {
-                repository.deleteAll()
-                Toast.makeText(requireContext(), "Deleted all users", Toast.LENGTH_SHORT).show()
+                try {
+                    repository.deleteAll()
 
+                    myRef.child("users").removeValue().addOnCompleteListener { task ->
+                        if (task.isSuccessful) {
+                            println("All users have been deleted successfully from Firebase.")
+                            Toast.makeText(requireContext(), "Deleted all users", Toast.LENGTH_SHORT).show()
+                        } else {
+                            println("Failed to delete users from Firebase: ${task.exception?.message}")
+                            Toast.makeText(requireContext(), "Failed to delete from Firebase", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                } catch (e: Exception) {
+                    println("Error deleting users from Room database: ${e.message}")
+                    Toast.makeText(requireContext(), "Error deleting local data", Toast.LENGTH_SHORT).show()
+                }
             }
-
             true
         }
     }

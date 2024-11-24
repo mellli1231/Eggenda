@@ -1,5 +1,6 @@
 package com.example.eggenda.ui.database.userDatabase
 
+
 import android.view.View
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
@@ -9,12 +10,14 @@ import androidx.lifecycle.asLiveData
 class UserViewModel(private val repository: UserRepository): ViewModel() {
     val allUsersLiveData: LiveData<List<User>> = repository.allUsers.asLiveData()
 
-    suspend fun insert(user: User): Long {
-        return repository.insert(user)
+    suspend fun insert(user: User) {
+        repository.insert(user)
     }
 
-    suspend fun deleteAll() {
-        repository.deleteAll()
+    fun deleteAll(){
+        val entryList = allUsersLiveData.value
+        if (!entryList.isNullOrEmpty())
+            repository.deleteAll()
     }
 
     fun getUser(user: String): User? {
@@ -25,12 +28,8 @@ class UserViewModel(private val repository: UserRepository): ViewModel() {
         repository.updatePoints(username, points)
     }
 
-    fun updateUsername(newUsername: String, oldUsername: String) {
-        repository.updateUsername(newUsername, oldUsername)
-    }
-
-    suspend fun userExists(username: String): Boolean {
-        return repository.userExists(username)
+    suspend fun updateUsername(newUsername: String, id: String) {
+        repository.updateUsername(newUsername, id)
     }
 }
 

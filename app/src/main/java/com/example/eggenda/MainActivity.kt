@@ -15,6 +15,8 @@ import androidx.drawerlayout.widget.DrawerLayout
 import androidx.appcompat.app.AppCompatActivity
 import com.example.eggenda.databinding.ActivityMainBinding
 import com.example.eggenda.ui.account.LoginActivity
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
 import java.util.Locale
 
 class MainActivity : AppCompatActivity() {
@@ -26,7 +28,8 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         //start login page if user is not logged in
-        val sharedPreferences = getSharedPreferences("account", MODE_PRIVATE)
+        val id = UserPref.getId(this)
+        val sharedPreferences = getSharedPreferences("user_${id}", MODE_PRIVATE)
         val isLoggedIn = sharedPreferences.getBoolean("isLoggedIn", false)
 
         if(!isLoggedIn) {
