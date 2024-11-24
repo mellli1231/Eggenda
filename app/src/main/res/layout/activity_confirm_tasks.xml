@@ -95,6 +95,7 @@
         android:divider="@android:color/darker_gray"
         android:layout_marginBottom="20dp"
         android:dividerHeight="1dp"
+        android:textColor="@color/dark_blue"
         android:paddingHorizontal="20dp" />
 
     <!-- Add Task Button -->

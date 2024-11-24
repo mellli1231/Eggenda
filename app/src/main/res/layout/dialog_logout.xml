@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/logout_confirmation"
+        android:fontFamily="@font/dangrek_font"
+        android:padding="24dp"
+        android:gravity="center"
+        android:textSize="20sp"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="16dp">
+
+        <Button
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.5"
+            android:layout_margin="16dp"
+            android:id="@+id/logout_button"
+            android:text="@string/log_out"
+            android:textSize="18sp"
+            android:fontFamily="@font/titan_one"
+            android:backgroundTint="@color/bold_yellow"/>
+
+        <Button
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.5"
+            android:layout_margin="16dp"
+            android:id="@+id/cancel_button"
+            android:text="@string/cancel_button"
+            android:textSize="18sp"
+            android:fontFamily="@font/titan_one"
+            android:backgroundTint="@color/bold_yellow"/>
+    </LinearLayout>
+</LinearLayout>

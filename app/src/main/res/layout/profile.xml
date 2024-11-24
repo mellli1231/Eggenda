@@ -65,10 +65,21 @@
                 android:inputType="text"
                 android:textSize="16sp"
                 android:background="@drawable/edit_text_border"
-                android:text="@string/username_hint"
+                android:hint="@string/username_hint"
                 android:paddingStart="16dp"
                 android:textColor="@color/dark_blue"
                 android:fontFamily="@font/dangrek_font"/>
+
+            <TextView
+                android:id="@+id/username_error"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                android:textColor="@color/red"
+                android:fontFamily="@font/dangrek_font"
+                android:paddingStart="8dp"
+                android:textSize="15sp"/>
+
         </LinearLayout>
 
         <!--first name-->
@@ -92,7 +103,7 @@
                 android:inputType="text"
                 android:textSize="16sp"
                 android:background="@drawable/edit_text_border"
-                android:text="@string/first_name_hint"
+                android:hint="@string/first_name_hint"
                 android:paddingStart="16dp"
                 android:textColor="@color/dark_blue"
                 android:fontFamily="@font/dangrek_font"/>
@@ -119,7 +130,7 @@
                 android:inputType="text"
                 android:textSize="16sp"
                 android:background="@drawable/edit_text_border"
-                android:text="@string/last_name_hint"
+                android:hint="@string/last_name_hint"
                 android:paddingStart="16dp"
                 android:textColor="@color/dark_blue"
                 android:fontFamily="@font/dangrek_font"/>
@@ -146,7 +157,7 @@
                 android:inputType="text"
                 android:textSize="16sp"
                 android:background="@drawable/edit_text_border"
-                android:text="@string/e_mail_phone_hint"
+                android:hint="@string/e_mail_phone_hint"
                 android:paddingStart="16dp"
                 android:textColor="@color/dark_blue"
                 android:fontFamily="@font/dangrek_font"/>
@@ -173,7 +184,7 @@
                 android:inputType="text"
                 android:textSize="16sp"
                 android:background="@drawable/edit_text_border"
-                android:text="@string/birth_hint"
+                android:hint="@string/birth_hint"
                 android:paddingStart="16dp"
                 android:textColor="@color/dark_blue"
                 android:fontFamily="@font/dangrek_font"/>
@@ -200,7 +211,7 @@
                 android:inputType="text"
                 android:textSize="16sp"
                 android:background="@drawable/edit_text_border"
-                android:text="@string/country_hint"
+                android:hint="@string/country_hint"
                 android:paddingStart="16dp"
                 android:textColor="@color/dark_blue"
                 android:fontFamily="@font/dangrek_font"/>

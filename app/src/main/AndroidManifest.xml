@@ -3,11 +3,12 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-feature android:name="android.hardware.camera" />
-
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
 
     <application
         android:allowBackup="true"
@@ -41,10 +42,15 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ui.settings.ProfileActivity" />
-        <activity android:name=".ui.task.AddTaskActivity" />
-        <activity android:name=".ui.task.ConfirmTasksActivity" />
 
+
+
+        <activity android:name=".ui.settings.ProfileActivity"/>
+        <activity android:name=".ui.account.LoginActivity"/>
+        <activity android:name=".ui.account.CreateAccountActivity"/>
+        <activity android:name=".ui.account.CreateProfileActivity"/>
+        <activity android:name=".ui.task.AddTaskActivity"/>
+        <activity android:name=".ui.task.ConfirmTasksActivity"/>
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="com.example.eggenda"

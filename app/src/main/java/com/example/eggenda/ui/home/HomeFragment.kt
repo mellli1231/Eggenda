@@ -4,30 +4,42 @@ import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
+import android.graphics.BitmapFactory
 import android.media.MediaPlayer
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.os.VibrationEffect
 import android.os.Vibrator
-import android.util.Log
 import android.view.HapticFeedbackConstants
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
 import android.widget.Button
-import android.widget.TextView
+import android.widget.ListView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import com.example.eggenda.R
+import com.example.eggenda.UserPref
 import com.example.eggenda.databinding.DialogHatchBinding
 import com.example.eggenda.databinding.FragmentHomeBinding
 import com.example.eggenda.gamePetChoose.SharedPreferenceManager
 import com.example.eggenda.gamePlay.gameActivity
+import com.example.eggenda.ui.database.entryDatabase.EntryDatabase
+import com.example.eggenda.ui.database.entryDatabase.EntryDatabaseDao
+import com.example.eggenda.ui.database.entryDatabase.EntryRepo
+import com.example.eggenda.ui.database.entryDatabase.EntryViewModel
+import com.example.eggenda.ui.database.entryDatabase.EntryViewModelFactory
 import com.example.eggenda.ui.task.ConfirmTasksActivity
+import com.example.eggenda.ui.task.TaskAdapter
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import kotlin.random.Random
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
+import java.io.File
 
 class HomeFragment : Fragment() {
 
@@ -43,7 +55,13 @@ class HomeFragment : Fragment() {
     private val maxExperience = 100
 
     private val PET_OWNERSHIP_KEY = "pet_ownership"
-    private val DEFAULT_PET_OWNERSHIP = arrayOf(1, 1, 1, 0, 0) // 5 pets, all initially unowned
+    private val DEFAULT_PET_OWNERSHIP = arrayOf(1, 1, 1, 0, 0, 0, 0, 0, 0, 0)
+
+    private lateinit var database: EntryDatabase
+    private lateinit var databaseDao: EntryDatabaseDao
+    private lateinit var repo: EntryRepo
+    private lateinit var entryViewModel: EntryViewModel
+    private lateinit var viewModelFactory: EntryViewModelFactory
 
 
     @SuppressLint("SetTextI18n")
@@ -58,6 +76,26 @@ class HomeFragment : Fragment() {
         val petOwnership = loadPetOwnership()
 //        sharedPreferenceManager = SharedPreferenceManager(requireContext())
 
+        //get username and id
+        val user = UserPref.getUsername(requireContext())
+        val id = UserPref.getId(requireContext())
+        println("user: ${user}, id: ${id}")
+
+        //load profile picture
+        val sharedPreferences = requireContext().getSharedPreferences("user_${id}", Context.MODE_PRIVATE)
+        binding.displayName.text=user //set username
+        val profileImgPath = sharedPreferences.getString("profileImagePath", null)
+        if (profileImgPath != null) { //if profile pic exists, set
+            val ogFile = File(profileImgPath)
+            if (ogFile.exists()) {
+                val bitmap = BitmapFactory.decodeFile(ogFile.absolutePath)
+                binding.profilePic.setImageBitmap(bitmap)
+            } else {
+                binding.profilePic.setImageResource(R.drawable.defaultprofile)
+            }
+        } else {
+            binding.profilePic.setImageResource(R.drawable.defaultprofile)
+        }
 
         // xp
         loadProgress()
@@ -105,6 +143,17 @@ class HomeFragment : Fragment() {
         gotoGameButton.setOnClickListener {
             val intent = Intent(requireContext(), gameActivity::class.java)
             startActivity(intent)
+        }
+
+        val questListView: ListView = binding.questList
+
+        // Load tasks into quest board ListView
+        lifecycleScope.launch {
+            EntryDatabase.getInstance(requireContext()).entryDatabaseDao.getAllTasks().collectLatest { tasks ->
+                // val taskTitles = tasks.map { it.title }
+                val adapter = TaskAdapter(requireContext(), tasks)
+                questListView.adapter = adapter
+            }
         }
 
         return root
@@ -242,11 +291,16 @@ class HomeFragment : Fragment() {
 
         // Set the pet image based on petIndex
         when (petIndex) {
-            0 -> dialogBinding.petImageView.setImageResource(R.drawable.pet_chubby_bunny_large)
-            1 -> dialogBinding.petImageView.setImageResource(R.drawable.pet_evil_water_large)
-            2 -> dialogBinding.petImageView.setImageResource(R.drawable.pet_flaming_skull_large)
-            3 -> dialogBinding.petImageView.setImageResource(R.drawable.pet_little_mothman_large)
-            4 -> dialogBinding.petImageView.setImageResource(R.drawable.pet_shy_raccoon_large)
+            0 -> dialogBinding.petImageView.setImageResource(R.drawable.pet_a_babyowlbear)
+            1 -> dialogBinding.petImageView.setImageResource(R.drawable.pet_b_ambushmouseviper)
+            2 -> dialogBinding.petImageView.setImageResource(R.drawable.pet_b_evilwater)
+            3 -> dialogBinding.petImageView.setImageResource(R.drawable.pet_c_animatednutcracker)
+            4 -> dialogBinding.petImageView.setImageResource(R.drawable.pet_c_deepseamerman)
+            5 -> dialogBinding.petImageView.setImageResource(R.drawable.pet_c_flamingskull)
+            6 -> dialogBinding.petImageView.setImageResource(R.drawable.pet_c_glutinousbunny)
+            7 -> dialogBinding.petImageView.setImageResource(R.drawable.pet_c_healingsprite)
+            8 -> dialogBinding.petImageView.setImageResource(R.drawable.pet_c_lilmothy)
+            9 -> dialogBinding.petImageView.setImageResource(R.drawable.pet_c_shyraccoon)
         }
 
         // Create and display the dialog

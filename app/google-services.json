@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "414637357963",
+    "project_id": "eggenda-ef79d",
+    "storage_bucket": "eggenda-ef79d.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:414637357963:android:3acb782db42662661e8d8e",
+        "android_client_info": {
+          "package_name": "com.example.eggenda"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDegxagfWUtXovSYP3IJQNvLyvGqeS1_Hs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

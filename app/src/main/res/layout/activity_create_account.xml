@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/yellow">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_gravity="center"
+        android:layout_marginHorizontal="20dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/create_an_account"
+            android:textSize="30sp"
+            android:fontFamily="@font/titan_one"
+            android:textColor="@color/brown"
+            android:paddingBottom="24dp"/>
+
+        <!--username-->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="90dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/brown"
+                android:text="@string/username_header"
+                android:textSize="16sp"
+                android:fontFamily="@font/titan_one"
+                />
+
+            <EditText
+                android:id="@+id/edit_username"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:inputType="text"
+                android:textSize="16sp"
+                android:background="@drawable/edit_text_border"
+                android:hint="@string/username_hint"
+                android:paddingStart="16dp"
+                android:textColor="@color/dark_blue"
+                android:fontFamily="@font/dangrek_font"/>
+
+            <TextView
+                android:id="@+id/username_error"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                android:textColor="@color/red"
+                android:fontFamily="@font/dangrek_font"
+                android:paddingStart="8dp"
+                android:textSize="15sp"/>
+        </LinearLayout>
+
+        <!--password-->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="90dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/brown"
+                android:text="@string/password_hint"
+                android:textSize="16sp"
+                android:fontFamily="@font/titan_one"/>
+
+            <EditText
+                android:id="@+id/create_password"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:inputType="textPassword"
+                android:textSize="16sp"
+                android:background="@drawable/edit_text_border"
+                android:hint="@string/password_hint"
+                android:paddingStart="16dp"
+                android:textColor="@color/dark_blue"
+                android:fontFamily="@font/dangrek_font"/>
+
+            <TextView
+                android:id="@+id/password_error"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                android:textColor="@color/red"
+                android:fontFamily="@font/dangrek_font"
+                android:paddingStart="8dp"
+                android:textSize="15sp"/>
+        </LinearLayout>
+
+            <!--confirm password-->
+        <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="90dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/brown"
+            android:text="@string/confirm_password"
+            android:textSize="16sp"
+            android:fontFamily="@font/titan_one"/>
+
+        <EditText
+            android:id="@+id/confirm_password"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:inputType="textPassword"
+            android:textSize="16sp"
+            android:background="@drawable/edit_text_border"
+            android:hint="@string/confirm_password"
+            android:paddingStart="16dp"
+            android:textColor="@color/dark_blue"
+            android:fontFamily="@font/dangrek_font"/>
+
+        <TextView
+            android:id="@+id/confirm_error"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:textColor="@color/red"
+            android:fontFamily="@font/dangrek_font"
+            android:paddingStart="8dp"
+            android:textSize="15sp"/>
+
+        </LinearLayout>
+
+            <!--to next page-->
+        <Button
+        android:layout_gravity="center"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="24dp"
+        android:padding="14dp"
+        android:id="@+id/create_acc_btn"
+        android:text="Next"
+        android:textSize="24sp"
+        android:fontFamily="@font/titan_one"
+        android:backgroundTint="@color/bold_yellow"/>
+
+    </LinearLayout>
+</ScrollView>

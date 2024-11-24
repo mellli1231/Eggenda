@@ -71,7 +71,7 @@ class GamePetChooseMainActivity : AppCompatActivity(){
 
         //initialize pets array that has in the code in int array
         //here should take it form pet info class
-        allPetsArrayID = intArrayOf(0,1,2,3,4)
+        allPetsArrayID = intArrayOf(0,1,2,3,4,5,6,7,8,9)
 
         //initialize start button
         startButton = findViewById(R.id.fight_start)
