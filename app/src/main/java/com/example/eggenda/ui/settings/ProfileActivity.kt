@@ -409,24 +409,17 @@ class ProfileActivity: AppCompatActivity() {
         }
 
         id?.let { userId ->
-            val userRef = myRef.child("users").child(userId)  // Reference to the specific user node
-
-            // Create a user object with the updated username (and keep other fields the same)
-            val updatedUser = mapOf(
-                "id" to userId,
-                "username" to username,  // Updated username
-                "password" to UserPref.getPassword(this), // Ensure you are not changing the password unless intended
-                "points" to UserPref.getPoints(this) // Retain the existing points
-            )
+            val userRef = myRef.child(userId)  // Reference to the specific user node
 
             // Set the updated user data
-            userRef.setValue(updatedUser).addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-                    println("User updated successfully in Firebase.")
-                    Toast.makeText(this, "Username updated successfully", Toast.LENGTH_SHORT).show()
+            val usernameUpdate = hashMapOf<String, Any>(
+                "username" to username
+            )
+            userRef.updateChildren(usernameUpdate).addOnCompleteListener{task ->
+                if(task.isSuccessful) {
+                    println("Username updated in firebase")
                 } else {
-                    println("Failed to update user: ${task.exception?.message}")
-                    Toast.makeText(this, "Failed to update user", Toast.LENGTH_SHORT).show()
+                    println("Failed to update username: ${task.exception?.message}")
                 }
             }
         }

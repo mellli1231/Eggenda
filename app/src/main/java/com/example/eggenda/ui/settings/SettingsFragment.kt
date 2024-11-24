@@ -118,7 +118,6 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
             viewLifecycleOwner.lifecycleScope.launch {
                 try {
                     repository.deleteAll()
-
                     myRef.child("users").removeValue().addOnCompleteListener { task ->
                         if (task.isSuccessful) {
                             println("All users have been deleted successfully from Firebase.")
