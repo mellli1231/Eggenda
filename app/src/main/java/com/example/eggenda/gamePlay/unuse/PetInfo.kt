@@ -38,7 +38,7 @@ class petInfo {
 
     private val catInfo = PetInfo(
         name = "Cat",
-        imageId = R.drawable.pet_chubby_bunny_large,  // Replace with actual drawable resource ID
+        imageId = R.drawable.pet_c_glutinousbunny,  // Replace with actual drawable resource ID
         element = dict.ELEMENT_FIRE,
         type = dict.ATK_TYPE_STAY,
         damage = 30,
@@ -71,7 +71,7 @@ class petInfo {
 
     private val wormInfo = PetInfo(
         name = "Worm",
-        imageId = R.drawable.pet_evil_water_large,  // Replace with actual drawable resource ID
+        imageId = R.drawable.pet_b_evilwater,  // Replace with actual drawable resource ID
         element = dict.ELEMENT_WATER,
         type = dict.ATK_TYPE_RETURN,
         damage = 20,
@@ -99,7 +99,7 @@ class petInfo {
 
     private val tigerInfo = PetInfo(
         name = "Tiger",
-        imageId = R.drawable.pet_flaming_skull_large,  // Replace with actual drawable resource ID
+        imageId = R.drawable.pet_c_flamingskull,  // Replace with actual drawable resource ID
         element = dict.ELEMENT_FOREST,
         type = dict.ATK_TYPE_BOUNCE,
         damage = 20,
@@ -131,7 +131,7 @@ class petInfo {
 
     private val dragonInfo = PetInfo(
         name = "Dragon",
-        imageId = R.drawable.pet_little_mothman_large,  // Replace with actual drawable resource ID
+        imageId = R.drawable.pet_c_lilmothy,  // Replace with actual drawable resource ID
         element = dict.ELEMENT_FIRE,
         type = dict.ATK_TYPE_STAY,
         damage = 25,
@@ -162,7 +162,7 @@ class petInfo {
 
     private val mewtwoInfo = PetInfo(
         name = "Mewtwo",
-        imageId = R.drawable.pet_shy_raccoon_large,  // Replace with actual drawable resource ID
+        imageId = R.drawable.pet_c_shyraccoon,  // Replace with actual drawable resource ID
         element = dict.ELEMENT_WATER,
         type = dict.ATK_TYPE_STAY,
         damage = 100,
@@ -188,7 +188,7 @@ class petInfo {
 
     private val mewOneInfo = PetInfo(
         name = "Mewone",
-        imageId = R.drawable.pet_shy_raccoon_large,  // Replace with actual drawable resource ID
+        imageId = R.drawable.pet_c_shyraccoon,  // Replace with actual drawable resource ID
         element = dict.ELEMENT_WATER,
         type = dict.ATK_TYPE_STAY,
         damage = 50,

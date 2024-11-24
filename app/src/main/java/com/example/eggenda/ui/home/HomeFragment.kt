@@ -34,6 +34,7 @@ import com.example.eggenda.ui.database.entryDatabase.EntryRepo
 import com.example.eggenda.ui.database.entryDatabase.EntryViewModel
 import com.example.eggenda.ui.database.entryDatabase.EntryViewModelFactory
 import com.example.eggenda.ui.task.ConfirmTasksActivity
+import com.example.eggenda.ui.task.TaskAdapter
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.flow.collectLatest
@@ -54,7 +55,7 @@ class HomeFragment : Fragment() {
     private val maxExperience = 100
 
     private val PET_OWNERSHIP_KEY = "pet_ownership"
-    private val DEFAULT_PET_OWNERSHIP = arrayOf(1, 1, 1, 0, 0) // 5 pets, all initially unowned
+    private val DEFAULT_PET_OWNERSHIP = arrayOf(1, 1, 1, 0, 0, 0, 0, 0, 0, 0)
 
     private lateinit var database: EntryDatabase
     private lateinit var databaseDao: EntryDatabaseDao
@@ -149,8 +150,8 @@ class HomeFragment : Fragment() {
         // Load tasks into quest board ListView
         lifecycleScope.launch {
             EntryDatabase.getInstance(requireContext()).entryDatabaseDao.getAllTasks().collectLatest { tasks ->
-                val taskTitles = tasks.map { it.title }
-                val adapter = ArrayAdapter(requireContext(), R.layout.custom_list_item, R.id.taskItemText, taskTitles)
+                // val taskTitles = tasks.map { it.title }
+                val adapter = TaskAdapter(requireContext(), tasks)
                 questListView.adapter = adapter
             }
         }
@@ -290,11 +291,16 @@ class HomeFragment : Fragment() {
 
         // Set the pet image based on petIndex
         when (petIndex) {
-            0 -> dialogBinding.petImageView.setImageResource(R.drawable.pet_chubby_bunny_large)
-            1 -> dialogBinding.petImageView.setImageResource(R.drawable.pet_evil_water_large)
-            2 -> dialogBinding.petImageView.setImageResource(R.drawable.pet_flaming_skull_large)
-            3 -> dialogBinding.petImageView.setImageResource(R.drawable.pet_little_mothman_large)
-            4 -> dialogBinding.petImageView.setImageResource(R.drawable.pet_shy_raccoon_large)
+            0 -> dialogBinding.petImageView.setImageResource(R.drawable.pet_a_babyowlbear)
+            1 -> dialogBinding.petImageView.setImageResource(R.drawable.pet_b_ambushmouseviper)
+            2 -> dialogBinding.petImageView.setImageResource(R.drawable.pet_b_evilwater)
+            3 -> dialogBinding.petImageView.setImageResource(R.drawable.pet_c_animatednutcracker)
+            4 -> dialogBinding.petImageView.setImageResource(R.drawable.pet_c_deepseamerman)
+            5 -> dialogBinding.petImageView.setImageResource(R.drawable.pet_c_flamingskull)
+            6 -> dialogBinding.petImageView.setImageResource(R.drawable.pet_c_glutinousbunny)
+            7 -> dialogBinding.petImageView.setImageResource(R.drawable.pet_c_healingsprite)
+            8 -> dialogBinding.petImageView.setImageResource(R.drawable.pet_c_lilmothy)
+            9 -> dialogBinding.petImageView.setImageResource(R.drawable.pet_c_shyraccoon)
         }
 
         // Create and display the dialog

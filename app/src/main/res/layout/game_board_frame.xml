@@ -22,7 +22,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:scaleType="centerInside"
-            app:srcCompat="@drawable/pet_shy_raccoon_large"
+            app:srcCompat="@drawable/pet_c_shyraccoon"
             android:padding="10dp"
 
             />
