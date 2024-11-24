@@ -14,6 +14,15 @@ data class TaskEntry(
     @PrimaryKey(autoGenerate = true)
     var id: Long = 0L, // Primary Key
 
+    @ColumnInfo(name = "quest_title")
+    var questTitle: String = "", // New quest title field
+
+    @ColumnInfo(name = "due_date")
+    var dueDate: String = "", // New due date field
+
+    @ColumnInfo(name = "timer_started")
+    var timerStarted: Boolean = false,  // Task timer started flag
+
     @ColumnInfo(name = "task_title")
     var title: String = "", // Task title (max 50 characters)
 
@@ -33,7 +42,7 @@ data class TaskEntry(
     var remainingTime: Long = 0L, // Remaining time when paused
 
     @ColumnInfo(name = "is_checked")
-    var isChecked: Boolean = false
+    var isChecked: Boolean = false  // Task checkbox state
 )
 
 /**

@@ -25,6 +25,7 @@ class TaskAdapter(
 
     private val timers = mutableMapOf<Long, CountDownTimer>() // To manage timers by task ID
 
+    @SuppressLint("SetTextI18n")
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
         val view = convertView ?: LayoutInflater.from(context).inflate(R.layout.custom_list_item, parent, false)
         val checkBox = view.findViewById<CheckBox>(R.id.taskCheckBox)
@@ -54,7 +55,7 @@ class TaskAdapter(
             // listener for the checkbox, if checked: cross out and pause time
             checkBox.setOnCheckedChangeListener { _, isChecked ->
                 it.isChecked = isChecked
-                if (isChecked) {
+                if (isChecked && !it.timerStarted) {
                     // Mark task as complete and pause timer
                     stopTimer(it.id)
                     it.remainingTime = it.endTime - System.currentTimeMillis() // Save remaining time

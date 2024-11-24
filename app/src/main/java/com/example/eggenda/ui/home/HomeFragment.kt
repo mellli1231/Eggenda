@@ -37,8 +37,11 @@ import com.example.eggenda.ui.task.ConfirmTasksActivity
 import com.example.eggenda.ui.task.TaskAdapter
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.io.File
 
 class HomeFragment : Fragment() {
@@ -136,23 +139,39 @@ class HomeFragment : Fragment() {
         val newQuestButton: Button = root.findViewById(R.id.new_quest)
         newQuestButton.setOnClickListener {
             val intent = Intent(requireContext(), ConfirmTasksActivity::class.java)
+            intent.putExtra("isNewQuest", true) // Indicate a new quest
             startActivity(intent)
         }
 
         val gotoGameButton: Button = root.findViewById(R.id.game)
         gotoGameButton.setOnClickListener {
-            val intent = Intent(requireContext(), gameActivity::class.java)
+            val intent = Intent(requireContext(), ConfirmTasksActivity::class.java)
             startActivity(intent)
         }
 
         val questListView: ListView = binding.questList
 
-        // Load tasks into quest board ListView
         lifecycleScope.launch {
             EntryDatabase.getInstance(requireContext()).entryDatabaseDao.getAllTasks().collectLatest { tasks ->
-                // val taskTitles = tasks.map { it.title }
-                val adapter = TaskAdapter(requireContext(), tasks)
+                val quests = tasks.filter { it.questTitle.isNotEmpty() }.map { it.questTitle }
+                val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_list_item_1, quests)
                 questListView.adapter = adapter
+            }
+        }
+
+        questListView.setOnItemClickListener { _, _, position, _ ->
+            val selectedQuest = questListView.getItemAtPosition(position) as String
+
+            // Fetch the quest details (e.g., deadline) from the database
+            CoroutineScope(Dispatchers.IO).launch {
+                val task = EntryDatabase.getInstance(requireContext()).entryDatabaseDao.getQuestByTitle(selectedQuest)
+                withContext(Dispatchers.Main) {
+                    val intent = Intent(requireContext(), ConfirmTasksActivity::class.java).apply {
+                        putExtra("quest_title", task.questTitle)
+                        putExtra("quest_deadline", task.dueDate)
+                    }
+                    startActivity(intent)
+                }
             }
         }
 

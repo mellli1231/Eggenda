@@ -84,6 +84,7 @@
     <string name="incorrect_password">Incorrect password</string>
     <string name="user_doesn_t_exist">User doesn\'t exist</string>
     <string name="username_is_empty">Username is Empty</string>
+    <string name="delete">Delete</string>
 
     <string-array name="language_options">
         <item>English</item>

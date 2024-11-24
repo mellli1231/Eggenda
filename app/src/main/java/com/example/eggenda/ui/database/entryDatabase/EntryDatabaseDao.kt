@@ -1,6 +1,7 @@
 package com.example.eggenda.ui.database.entryDatabase
 
 import androidx.room.Dao
+import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
@@ -22,6 +23,27 @@ interface EntryDatabaseDao {
 
     @Query("SELECT COUNT(id) FROM task_table")
     suspend fun getTaskCount(): Int
+
+    @Query("SELECT * FROM task_table WHERE quest_title != ''")
+    fun getAllQuests(): Flow<List<TaskEntry>>
+
+    @Query("SELECT * FROM task_table WHERE quest_title = :questTitle")
+    fun getTasksByQuest(questTitle: String): List<TaskEntry>
+
+    @Query("SELECT * FROM task_table WHERE quest_title = :questTitle")
+    fun getTasksByQuestFlow(questTitle: String): Flow<List<TaskEntry>>
+
+    @Query("SELECT * FROM task_table WHERE quest_title = :questTitle LIMIT 1")
+    suspend fun getQuestByTitle(questTitle: String): TaskEntry
+
+    @Query("DELETE FROM task_table WHERE quest_title = :questTitle")
+    suspend fun deleteQuestAndTasks(questTitle: String)
+
+    @Delete
+    suspend fun deleteTask(task: TaskEntry)
+
+    @Update
+    suspend fun updateTasks(tasks: List<TaskEntry>)
 
     @Update
     suspend fun updateTask(task: TaskEntry)
