@@ -28,6 +28,7 @@ class ConfirmTasksActivity : AppCompatActivity() {
     private var selectedDate: String = ""
     private var isNewQuest: Boolean = true
 
+    @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_confirm_tasks)
@@ -59,8 +60,8 @@ class ConfirmTasksActivity : AppCompatActivity() {
                 dueDateField.text = receivedDeadline
                 dueDateField.isEnabled = false
             }
-//            loadTasks(receivedQuestTitle)
-            loadTasks()
+            loadTasks(receivedQuestTitle)
+//            loadTasks()
         }
 
         findViewById<ImageView>(R.id.nq_calendar).setOnClickListener {

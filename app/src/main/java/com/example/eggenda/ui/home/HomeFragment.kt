@@ -20,21 +20,17 @@ import android.widget.Button
 import android.widget.ListView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.example.eggenda.R
-import com.example.eggenda.UserPref
 import com.example.eggenda.databinding.DialogHatchBinding
 import com.example.eggenda.databinding.FragmentHomeBinding
 import com.example.eggenda.gamePetChoose.SharedPreferenceManager
-import com.example.eggenda.gamePlay.gameActivity
 import com.example.eggenda.ui.database.entryDatabase.EntryDatabase
 import com.example.eggenda.ui.database.entryDatabase.EntryDatabaseDao
 import com.example.eggenda.ui.database.entryDatabase.EntryRepo
 import com.example.eggenda.ui.database.entryDatabase.EntryViewModel
 import com.example.eggenda.ui.database.entryDatabase.EntryViewModelFactory
 import com.example.eggenda.ui.task.ConfirmTasksActivity
-import com.example.eggenda.ui.task.TaskAdapter
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.CoroutineScope
@@ -79,14 +75,13 @@ class HomeFragment : Fragment() {
         val petOwnership = loadPetOwnership()
 //        sharedPreferenceManager = SharedPreferenceManager(requireContext())
 
-        //get username and id
-        val user = UserPref.getUsername(requireContext())
-        val id = UserPref.getId(requireContext())
-        println("user: ${user}, id: ${id}")
+
+        //display username
+        val sharedPreferences = requireContext().getSharedPreferences("account", Context.MODE_PRIVATE)
+        val username = sharedPreferences.getString("username", "John Smith")
+        binding.displayName.text=username
 
         //load profile picture
-        val sharedPreferences = requireContext().getSharedPreferences("user_${id}", Context.MODE_PRIVATE)
-        binding.displayName.text=user //set username
         val profileImgPath = sharedPreferences.getString("profileImagePath", null)
         if (profileImgPath != null) { //if profile pic exists, set
             val ogFile = File(profileImgPath)
@@ -152,9 +147,9 @@ class HomeFragment : Fragment() {
         val questListView: ListView = binding.questList
 
         lifecycleScope.launch {
-            EntryDatabase.getInstance(requireContext()).entryDatabaseDao.getAllTasks().collectLatest { tasks ->
-                val quests = tasks.filter { it.questTitle.isNotEmpty() }.map { it.questTitle }
-                val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_list_item_1, quests)
+            EntryDatabase.getInstance(requireContext()).entryDatabaseDao.getAllQuests().collectLatest { quests ->
+                val questTitles = quests.map { it.questTitle }
+                val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_list_item_1, questTitles)
                 questListView.adapter = adapter
             }
         }
@@ -162,13 +157,13 @@ class HomeFragment : Fragment() {
         questListView.setOnItemClickListener { _, _, position, _ ->
             val selectedQuest = questListView.getItemAtPosition(position) as String
 
-            // Fetch the quest details (e.g., deadline) from the database
             CoroutineScope(Dispatchers.IO).launch {
-                val task = EntryDatabase.getInstance(requireContext()).entryDatabaseDao.getQuestByTitle(selectedQuest)
+                val quest = EntryDatabase.getInstance(requireContext()).entryDatabaseDao.getQuestByTitle(selectedQuest)
                 withContext(Dispatchers.Main) {
                     val intent = Intent(requireContext(), ConfirmTasksActivity::class.java).apply {
-                        putExtra("quest_title", task.questTitle)
-                        putExtra("quest_deadline", task.dueDate)
+                        putExtra("quest_title", quest.questTitle)
+                        putExtra("quest_deadline", quest.dueDate)
+                        putExtra("isNewQuest", false)
                     }
                     startActivity(intent)
                 }
