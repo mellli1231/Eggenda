@@ -7,16 +7,16 @@ class petInfo2 {
 
     private val TOTAL = 10
 
-    private val BABY_OWLBEAR = 0
-    private val AMBUSH_MOUSEVIPER = 1
-    private val EVIL_WATER = 2
-    private val ANIMATED_NUTCRACKER = 3
-    private val DEEPSEA_MERMAN = 4
-    private val FLAMING_SKULL = 5
-    private val GLUTINOUS_BUNNY= 6
-    private val HEALING_SPRITE = 7
-    private val LIL_MOTHY = 8
-    private val SHY_RACCOON = 9
+    private val GLUTINOUS_BUNNY= 0
+    private val EVIL_WATER = 1
+    private val FLAMING_SKULL = 2
+    private val LIL_MOTHY = 3
+    private val SHY_RACCOON = 4
+    private val HEALING_SPRITE = 5
+    private val BABY_OWLBEAR = 6
+    private val AMBUSH_MOUSEVIPER = 7
+    private val ANIMATED_NUTCRACKER = 8
+    private val DEEPSEA_MERMAN = 9
 
     fun getPetInfoById(id: Int):Pet?{
         val petMap: Map<Int, () -> Pet> = mapOf(
@@ -164,7 +164,7 @@ class petInfo2 {
         }
     }
     private class evilWater() :Pet {
-        override val id: Int = 2
+        override val id: Int = 1
         override val name: String = "Evil Water"
         override val imageId: Int = R.drawable.pet_b_evilwater
         override val element: Int = dict.ELEMENT_WATER
@@ -214,6 +214,50 @@ class petInfo2 {
                 return damage.toString()+" " +dict.ELEMENT_STRING[element]+" damages"
             }
             return "0 " +dict.ELEMENT_STRING[element]+" damages"
+        }
+
+        override fun resetAfterDamage(): Boolean {
+            return true
+        }
+    }
+
+    private class flamingSkull :Pet {
+        override val id: Int = 2
+        override val name: String = "Flaming Skull"
+        override val imageId: Int = R.drawable.pet_c_flamingskull
+        override val element: Int =  dict.ELEMENT_FIRE
+        override val attackType: Int = dict.ATK_TYPE_BOUNCE
+        override val damage: Int = 40
+        override val count: Int = 2
+        override val skillName:String = "You can't catch me!"
+        override val description: String = "Deal "+damage+" "+dict.ELEMENT_STRING[element]+" damage\n" +
+                "after every "+count+ " position change when it is on the board."
+        override val rarity: Int = dict.RARITY_RARE
+
+        override fun dealDamage(petStatus: Array<petStatus?>, petOrder: Int,deckSize:Int): Int {
+            val skullStatus = petStatus[petOrder]!!
+            if(skullStatus.bounceNum !=0 && skullStatus.bounceNum % count == 0 && skullStatus.location == dict.onBoard) {
+                return damage
+            }
+            return 0
+        }
+
+        override fun attackCountdown(petStatus: Array<petStatus?>, petOrder: Int,deckSize:Int): Int {
+            return count - petStatus[petOrder]!!.bounceNum
+        }
+
+        override fun condition(petStatus: Array<petStatus?>, petOrder: Int,deckSize:Int): String {
+            if(petStatus[petOrder]!!.location == dict.onDECK){
+                return count.toString()+" more bounce when it stay on the board\n"
+            }
+            else{
+                val count = attackCountdown(petStatus, petOrder,deckSize)
+                return count.toString()+" more bounce when it stay on the board\n"
+            }
+        }
+
+        override fun nextDamage(petStatus: Array<petStatus?>, petOrder: Int,deckSize:Int): String {
+            return damage.toString()+" "+dict.ELEMENT_STRING[element]+" damages"
         }
 
         override fun resetAfterDamage(): Boolean {
@@ -336,51 +380,9 @@ class petInfo2 {
             return true
         }
     }
-    private class flamingSkull :Pet {
-        override val id: Int = 5
-        override val name: String = "Flaming Skull"
-        override val imageId: Int = R.drawable.pet_c_flamingskull
-        override val element: Int =  dict.ELEMENT_FIRE
-        override val attackType: Int = dict.ATK_TYPE_BOUNCE
-        override val damage: Int = 40
-        override val count: Int = 2
-        override val skillName:String = "You can't catch me!"
-        override val description: String = "Deal "+damage+" "+dict.ELEMENT_STRING[element]+" damage\n" +
-                "after every "+count+ " position change when it is on the board."
-        override val rarity: Int = dict.RARITY_RARE
 
-        override fun dealDamage(petStatus: Array<petStatus?>, petOrder: Int,deckSize:Int): Int {
-            val skullStatus = petStatus[petOrder]!!
-            if(skullStatus.bounceNum !=0 && skullStatus.bounceNum % count == 0 && skullStatus.location == dict.onBoard) {
-                return damage
-            }
-            return 0
-        }
-
-        override fun attackCountdown(petStatus: Array<petStatus?>, petOrder: Int,deckSize:Int): Int {
-            return count - petStatus[petOrder]!!.bounceNum
-        }
-
-        override fun condition(petStatus: Array<petStatus?>, petOrder: Int,deckSize:Int): String {
-            if(petStatus[petOrder]!!.location == dict.onDECK){
-                return count.toString()+" more bounce when it stay on the board\n"
-            }
-            else{
-                val count = attackCountdown(petStatus, petOrder,deckSize)
-                return count.toString()+" more bounce when it stay on the board\n"
-            }
-        }
-
-        override fun nextDamage(petStatus: Array<petStatus?>, petOrder: Int,deckSize:Int): String {
-            return damage.toString()+" "+dict.ELEMENT_STRING[element]+" damages"
-        }
-
-        override fun resetAfterDamage(): Boolean {
-            return true
-        }
-    }
     private class glutinousBunny :Pet {
-        override val id: Int = 6
+        override val id: Int = 0
         override val name: String = "Glutinous Bunny"
         override val imageId: Int = R.drawable.pet_c_glutinousbunny
         override val element: Int = dict.ELEMENT_FOREST
@@ -477,7 +479,7 @@ class petInfo2 {
 
     }
     private class lilMothman :Pet {
-        override val id: Int = 8
+        override val id: Int = 3
         override val name: String = "Lil' Mothman"
         override val imageId: Int = R.drawable.pet_c_lilmothy
         override val element: Int =  dict.ELEMENT_FIRE
@@ -532,7 +534,7 @@ class petInfo2 {
         }
     }
     private class shyRaccoon :Pet {
-        override val id: Int = 9
+        override val id: Int = 4
         override val name: String = "Shy Raccoon"
         override val imageId: Int = R.drawable.pet_c_shyraccoon
         override val element: Int =  dict.ELEMENT_WATER
