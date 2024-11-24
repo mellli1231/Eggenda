@@ -6,17 +6,12 @@ import android.app.DatePickerDialog
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
-import android.widget.ArrayAdapter
-import android.widget.Button
-import android.widget.EditText
-import android.widget.ImageView
-import android.widget.ListView
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.example.eggenda.R
 import com.example.eggenda.ui.database.entryDatabase.EntryDatabase
+import com.example.eggenda.ui.database.entryDatabase.QuestEntry
 import com.example.eggenda.ui.database.entryDatabase.TaskEntry
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -28,55 +23,46 @@ import java.util.Calendar
 class ConfirmTasksActivity : AppCompatActivity() {
 
     private lateinit var taskListView: ListView
-    private val taskAdapter by lazy { ArrayAdapter<String>(this, android.R.layout.simple_list_item_1) }
     private lateinit var questTitleField: EditText
     private lateinit var dueDateField: TextView
     private var selectedDate: String = ""
+    private var isNewQuest: Boolean = true
 
-    @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_confirm_tasks)
 
-        val isNewQuest = intent.getBooleanExtra("isNewQuest", false)
+        isNewQuest = intent.getBooleanExtra("isNewQuest", false)
         val receivedQuestTitle = intent.getStringExtra("quest_title")
         val receivedDeadline = intent.getStringExtra("quest_deadline")
-        taskListView = findViewById(R.id.task_list)
-        taskListView.adapter = taskAdapter
 
+        taskListView = findViewById(R.id.task_list)
         questTitleField = findViewById(R.id.quest_title)
         dueDateField = findViewById(R.id.nq_date)
 
         val acceptButton: Button = findViewById(R.id.accept_quest)
-        val declineButton: Button = findViewById(R.id.decline_quest)
         val deleteButton: Button = findViewById(R.id.delete_quest)
+        val declineButton: Button = findViewById(R.id.decline_quest)
 
-        // Check if the activity was opened from the quest board
         if (isNewQuest) {
-            // Clear fields for a new quest
             questTitleField.setText("")
             dueDateField.text = "Select Date"
-            questTitleField.isEnabled = true // Editable for new quests
-            dueDateField.isEnabled = true // Editable for new quests
-            clearTaskList() // Reset task list for new quests
+            questTitleField.isEnabled = true
+            dueDateField.isEnabled = true
+            clearTaskList()
         } else {
-            // Populate fields for an existing quest
             if (!receivedQuestTitle.isNullOrEmpty()) {
                 questTitleField.setText(receivedQuestTitle)
-                questTitleField.isEnabled = false // Non-editable for existing quests
+                questTitleField.isEnabled = false
             }
             if (!receivedDeadline.isNullOrEmpty()) {
                 dueDateField.text = receivedDeadline
-                dueDateField.isEnabled = false // Non-editable deadline
+                dueDateField.isEnabled = false
             }
-
-            // Update button labels for existing quests
-            acceptButton.text = "Confirm"
-            declineButton.text = "Cancel"
-            deleteButton.visibility = View.VISIBLE // Show delete button
+//            loadTasks(receivedQuestTitle)
+            loadTasks()
         }
 
-        // Date Picker for Due Date
         findViewById<ImageView>(R.id.nq_calendar).setOnClickListener {
             if (dueDateField.isEnabled) {
                 val calendar = Calendar.getInstance()
@@ -91,8 +77,6 @@ class ConfirmTasksActivity : AppCompatActivity() {
             }
         }
 
-        loadTasks(receivedQuestTitle)
-
         val addTaskImage: ImageView = findViewById(R.id.add_task)
         addTaskImage.setOnClickListener {
             startActivity(Intent(this, AddTaskActivity::class.java))
@@ -103,31 +87,39 @@ class ConfirmTasksActivity : AppCompatActivity() {
 
         acceptButton.setOnClickListener {
             val questTitle = questTitleField.text.toString().trim()
-            val dueDate = selectedDate
+            val deadline = if (isNewQuest) selectedDate else receivedDeadline
 
-            if (isNewQuest) {
-                // Save new quest
-                val newQuest = TaskEntry(questTitle = questTitle, dueDate = dueDate)
-                CoroutineScope(Dispatchers.IO).launch {
-                    EntryDatabase.getInstance(applicationContext).entryDatabaseDao.insertTask(newQuest)
+            if (questTitle.isEmpty() || deadline.isNullOrEmpty()) {
+                Toast.makeText(this, "Quest Title/Deadline cannot be empty!", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            CoroutineScope(Dispatchers.IO).launch {
+                // Ensure the quest exists
+                if (isNewQuest) {
+                    val newQuest = QuestEntry(questTitle = questTitle, dueDate = deadline)
+                    EntryDatabase.getInstance(applicationContext).entryDatabaseDao.insertQuest(newQuest)
                 }
 
-                if (questTitle.isEmpty() || dueDate.isEmpty()) {
-                    Toast.makeText(this, "Quest Title/Deadline cannot be empty!", Toast.LENGTH_SHORT).show()
-                    return@setOnClickListener
-                }
-            } else {
-                // Update existing quest tasks
-                CoroutineScope(Dispatchers.IO).launch {
-                    val tasks = EntryDatabase.getInstance(applicationContext).entryDatabaseDao.getTasksByQuest(questTitle)
-                    tasks.forEach { it.timerStarted = true }
-                    EntryDatabase.getInstance(applicationContext).entryDatabaseDao.updateTasks(tasks)
-                }
+                // Now insert tasks for this quest
+                val task = TaskEntry(
+                    title = "Sample Task", // Replace with your task title
+                    questTitle = questTitle,
+                    timeLimit = "00:30:00", // Replace with your time limit
+                    details = "Sample Details", // Replace with task details
+                    attachmentPath = "",
+                    endTime = System.currentTimeMillis() + 1800000 // Example: 30 minutes from now
+                )
+
+                EntryDatabase.getInstance(applicationContext).entryDatabaseDao.insertTask(task)
+            }
+
+            runOnUiThread {
+                Toast.makeText(this@ConfirmTasksActivity, if (isNewQuest) "Quest added!" else "Quest updated!", Toast.LENGTH_SHORT).show()
+                finish()
             }
 
 
-            Toast.makeText(this, if (isNewQuest) "Quest added!" else "Quest updated!", Toast.LENGTH_SHORT).show()
-            finish()
         }
 
         declineButton.setOnClickListener {
@@ -135,57 +127,43 @@ class ConfirmTasksActivity : AppCompatActivity() {
             finish()
         }
 
-        // Delete Button Logic
         deleteButton.setOnClickListener {
-            if (!receivedQuestTitle.isNullOrEmpty()) {
-                // Confirm deletion with a dialog
-                AlertDialog.Builder(this)
-                    .setTitle("Delete Quest")
-                    .setMessage("Are you sure you want to delete this quest?")
-                    .setPositiveButton("Yes") { _, _ ->
-                        CoroutineScope(Dispatchers.IO).launch {
-                            // Delete the quest and its associated tasks
-                            EntryDatabase.getInstance(applicationContext)
-                                .entryDatabaseDao.deleteQuestAndTasks(receivedQuestTitle)
-                        }
-
-                        runOnUiThread {
-                            Toast.makeText(this, "Quest deleted successfully!", Toast.LENGTH_SHORT).show()
-                            finish() // Close the activity
-                        }
-                    }
-                    .setNegativeButton("No", null)
-                    .show()
+            val questTitle = receivedQuestTitle ?: return@setOnClickListener
+            CoroutineScope(Dispatchers.IO).launch {
+                EntryDatabase.getInstance(applicationContext).entryDatabaseDao.deleteQuest(questTitle)
+                runOnUiThread {
+                    Toast.makeText(this@ConfirmTasksActivity, "Quest deleted!", Toast.LENGTH_SHORT).show()
+                    finish()
+                }
             }
         }
     }
 
-//    private fun loadTasks(questTitle: String?) {
-//        lifecycleScope.launch {
-//            if (!questTitle.isNullOrEmpty()) {
-//                EntryDatabase.getInstance(applicationContext).entryDatabaseDao.getTasksByQuestFlow(questTitle).collectLatest { tasks ->
-//                    val adapter = TaskAdapter(this@ConfirmTasksActivity, tasks)
-//                    taskListView.adapter = adapter
-//                }
-//            }
-//        }
-//    }
-
     private fun loadTasks(questTitle: String?) {
-        lifecycleScope.launch(Dispatchers.IO) {
-            val tasks = if (!questTitle.isNullOrEmpty()) {
-                EntryDatabase.getInstance(applicationContext).entryDatabaseDao.getTasksByQuest(questTitle)
-            } else {
-                emptyList()
-            }
+        if (questTitle.isNullOrEmpty()) {
+            clearTaskList()
+            return
+        }
 
-            withContext(Dispatchers.Main) {
+        lifecycleScope.launch {
+            EntryDatabase.getInstance(applicationContext).entryDatabaseDao
+                .getTasksByQuest(questTitle)
+                .collectLatest { tasks ->
+                    val adapter = TaskAdapter(this@ConfirmTasksActivity, tasks)
+                    taskListView.adapter = adapter
+                }
+        }
+    }
+
+    private fun loadTasks() {
+        lifecycleScope.launch {
+            EntryDatabase.getInstance(applicationContext).entryDatabaseDao.getAllTasks().collectLatest { tasks ->
+                // val taskTitles = tasks.map(TaskEntry::title)
                 val adapter = TaskAdapter(this@ConfirmTasksActivity, tasks)
                 taskListView.adapter = adapter
             }
         }
     }
-
 
     private fun clearTaskList() {
         val emptyAdapter = ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, emptyList())
