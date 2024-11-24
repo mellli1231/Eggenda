@@ -5,21 +5,31 @@ import kotlin.math.abs
 
 class petInfo2 {
 
-    private val TOTAL = 5
+    private val TOTAL = 10
 
-    private val CHUBBY_BUNNY = 0
-    private val EVIL_WATER = 1
-    private val FLAMING_SKULL = 2
-    private val LITTLE_MOTHMAN = 3
-    private val SHY_RACCOON = 4
+    private val BABY_OWLBEAR = 0
+    private val AMBUSH_MOUSEVIPER = 1
+    private val EVIL_WATER = 2
+    private val ANIMATED_NUTCRACKER = 3
+    private val DEEPSEA_MERMAN = 4
+    private val FLAMING_SKULL = 5
+    private val GLUTINOUS_BUNNY= 6
+    private val HEALING_SPRITE = 7
+    private val LIL_MOTHY = 8
+    private val SHY_RACCOON = 9
 
     fun getPetInfoById(id: Int):Pet?{
         val petMap: Map<Int, () -> Pet> = mapOf(
-
-            CHUBBY_BUNNY to{chubbyBunny()},
+            // TODO
+            BABY_OWLBEAR to {babyOwlbear()},
+            AMBUSH_MOUSEVIPER to {ambushMouseviper()},
             EVIL_WATER to {evilWater()},
+            ANIMATED_NUTCRACKER to {animatedNutcracker()},
+            DEEPSEA_MERMAN to {deepseaMerman()},
             FLAMING_SKULL to {flamingSkull()},
-            LITTLE_MOTHMAN to {littleMothman()},
+            GLUTINOUS_BUNNY to {glutinousBunny()},
+            HEALING_SPRITE to {healingSprite()},
+            LIL_MOTHY to {lilMothman()},
             SHY_RACCOON to {shyRaccoon()}
 
         )
@@ -47,10 +57,11 @@ class petInfo2 {
         fun resetAfterDamage():Boolean
     }
 
-    private class chubbyBunny :Pet {
+    private class babyOwlbear :Pet {
+        // TODO: make this pet unique
         override val id: Int = 0
         override val name: String = "Chubby Bunny"
-        override val imageId: Int = R.drawable.pet_chubby_bunny_large
+        override val imageId: Int = R.drawable.pet_a_babyowlbear
         override val element: Int = dict.ELEMENT_FOREST
         override val attackType: Int = dict.ATK_TYPE_STAY
         override val damage: Int = -30
@@ -77,12 +88,12 @@ class petInfo2 {
         }
 
         override fun condition(petStatus: Array<petStatus?>, petOrder: Int,deckSize:Int): String {
-           if(petStatus[petOrder]!!.location == dict.onDECK){
-               return count.toString()+" more turn(s) to stay on the board "
-           }
-           else{
+            if(petStatus[petOrder]!!.location == dict.onDECK){
+                return count.toString()+" more turn(s) to stay on the board "
+            }
+            else{
                 return attackCountdown(petStatus, petOrder,deckSize).toString()+" more turn(s) to stay on the board"
-           }
+            }
 
         }
 
@@ -93,13 +104,12 @@ class petInfo2 {
         override fun resetAfterDamage(): Boolean {
             return true
         }
-
     }
-
-    private class evilWater() :Pet {
+    private class ambushMouseviper() :Pet {
+        // TODO: make this pet unique
         override val id: Int = 1
-        override val name: String = "Evil Water"
-        override val imageId: Int = R.drawable.pet_evil_water_large
+        override val name: String = "Ambush Mouseviper"
+        override val imageId: Int = R.drawable.pet_b_ambushmouseviper
         override val element: Int = dict.ELEMENT_WATER
         override val attackType: Int = dict.ATK_TYPE_RETURN
         override val damage: Int = 20
@@ -153,11 +163,183 @@ class petInfo2 {
             return true
         }
     }
-
-    private class flamingSkull :Pet {
+    private class evilWater() :Pet {
         override val id: Int = 2
+        override val name: String = "Evil Water"
+        override val imageId: Int = R.drawable.pet_b_evilwater
+        override val element: Int = dict.ELEMENT_WATER
+        override val attackType: Int = dict.ATK_TYPE_RETURN
+        override val damage: Int = 20
+        override val count: Int = 1
+        override val skillName :String ="Fragile!"
+        override val description: String = "Deal "+damage.toString()+" "+dict.ELEMENT_STRING[element]+" damages\n" +
+                "when it is knocked out from the board\n" +
+                "on the next turn after it is placed on the board."
+        override val rarity: Int = dict.RARITY_NORMAL
+
+        override fun dealDamage(petStatus: Array<petStatus?>, petOrder: Int,deckSize:Int): Int {
+            if(petStatus[petOrder]!!.stayNum == count && petStatus[petOrder]!!.location == dict.onDECK ) {
+                return damage
+            }
+            return 0
+        }
+
+        override fun attackCountdown(petStatus: Array<petStatus?>, petOrder: Int,deckSize:Int): Int {
+            val stayNum = petStatus[petOrder]!!.stayNum
+            if( stayNum <= 1 ){
+                return count - stayNum
+            }
+            return -1
+        }
+
+        override fun condition(petStatus: Array<petStatus?>, petOrder: Int,deckSize:Int): String {
+            if(petStatus[petOrder]!!.location == dict.onDECK){
+                return "Knocked out from the board after\n" +
+                        "1 more turn it stays on the board "
+            }
+            else{
+                val count = attackCountdown(petStatus, petOrder,deckSize)
+                var countStr = "∞"
+                if(count >= 0){
+                    countStr = count.toString()
+                }
+                return "Knocked out from the board after\n" +
+                        countStr+" more turn it stays on the board "
+            }
+        }
+
+        override fun nextDamage(petStatus: Array<petStatus?>,petOrder:Int,deckSize:Int): String {
+            val count = attackCountdown(petStatus, petOrder,deckSize)
+            if(count >= 0){
+                return damage.toString()+" " +dict.ELEMENT_STRING[element]+" damages"
+            }
+            return "0 " +dict.ELEMENT_STRING[element]+" damages"
+        }
+
+        override fun resetAfterDamage(): Boolean {
+            return true
+        }
+    }
+    private class animatedNutcracker() :Pet {
+        // TODO: make this pet unique
+        override val id: Int = 3
+        override val name: String = "Animated Nutcracker"
+        override val imageId: Int = R.drawable.pet_c_animatednutcracker
+        override val element: Int = dict.ELEMENT_WATER
+        override val attackType: Int = dict.ATK_TYPE_RETURN
+        override val damage: Int = 20
+        override val count: Int = 1
+        override val skillName :String ="Fragile!"
+        override val description: String = "Deal "+damage.toString()+" "+dict.ELEMENT_STRING[element]+" damages\n" +
+                "when it is knocked out from the board\n" +
+                "on the next turn after it is placed on the board."
+        override val rarity: Int = dict.RARITY_NORMAL
+
+        override fun dealDamage(petStatus: Array<petStatus?>, petOrder: Int,deckSize:Int): Int {
+            if(petStatus[petOrder]!!.stayNum == count && petStatus[petOrder]!!.location == dict.onDECK ) {
+                return damage
+            }
+            return 0
+        }
+
+        override fun attackCountdown(petStatus: Array<petStatus?>, petOrder: Int,deckSize:Int): Int {
+            val stayNum = petStatus[petOrder]!!.stayNum
+            if( stayNum <= 1 ){
+                return count - stayNum
+            }
+            return -1
+        }
+
+        override fun condition(petStatus: Array<petStatus?>, petOrder: Int,deckSize:Int): String {
+            if(petStatus[petOrder]!!.location == dict.onDECK){
+                return "Knocked out from the board after\n" +
+                        "1 more turn it stays on the board "
+            }
+            else{
+                val count = attackCountdown(petStatus, petOrder,deckSize)
+                var countStr = "∞"
+                if(count >= 0){
+                    countStr = count.toString()
+                }
+                return "Knocked out from the board after\n" +
+                        countStr+" more turn it stays on the board "
+            }
+        }
+
+        override fun nextDamage(petStatus: Array<petStatus?>,petOrder:Int,deckSize:Int): String {
+            val count = attackCountdown(petStatus, petOrder,deckSize)
+            if(count >= 0){
+                return damage.toString()+" " +dict.ELEMENT_STRING[element]+" damages"
+            }
+            return "0 " +dict.ELEMENT_STRING[element]+" damages"
+        }
+
+        override fun resetAfterDamage(): Boolean {
+            return true
+        }
+    }
+    private class deepseaMerman() :Pet {
+        // TODO: make this pet unique
+        override val id: Int = 4
+        override val name: String = "Deap-sea Merman"
+        override val imageId: Int = R.drawable.pet_c_deepseamerman
+        override val element: Int = dict.ELEMENT_WATER
+        override val attackType: Int = dict.ATK_TYPE_RETURN
+        override val damage: Int = 20
+        override val count: Int = 1
+        override val skillName :String ="Fragile!"
+        override val description: String = "Deal "+damage.toString()+" "+dict.ELEMENT_STRING[element]+" damages\n" +
+                "when it is knocked out from the board\n" +
+                "on the next turn after it is placed on the board."
+        override val rarity: Int = dict.RARITY_NORMAL
+
+        override fun dealDamage(petStatus: Array<petStatus?>, petOrder: Int,deckSize:Int): Int {
+            if(petStatus[petOrder]!!.stayNum == count && petStatus[petOrder]!!.location == dict.onDECK ) {
+                return damage
+            }
+            return 0
+        }
+
+        override fun attackCountdown(petStatus: Array<petStatus?>, petOrder: Int,deckSize:Int): Int {
+            val stayNum = petStatus[petOrder]!!.stayNum
+            if( stayNum <= 1 ){
+                return count - stayNum
+            }
+            return -1
+        }
+
+        override fun condition(petStatus: Array<petStatus?>, petOrder: Int,deckSize:Int): String {
+            if(petStatus[petOrder]!!.location == dict.onDECK){
+                return "Knocked out from the board after\n" +
+                        "1 more turn it stays on the board "
+            }
+            else{
+                val count = attackCountdown(petStatus, petOrder,deckSize)
+                var countStr = "∞"
+                if(count >= 0){
+                    countStr = count.toString()
+                }
+                return "Knocked out from the board after\n" +
+                        countStr+" more turn it stays on the board "
+            }
+        }
+
+        override fun nextDamage(petStatus: Array<petStatus?>,petOrder:Int,deckSize:Int): String {
+            val count = attackCountdown(petStatus, petOrder,deckSize)
+            if(count >= 0){
+                return damage.toString()+" " +dict.ELEMENT_STRING[element]+" damages"
+            }
+            return "0 " +dict.ELEMENT_STRING[element]+" damages"
+        }
+
+        override fun resetAfterDamage(): Boolean {
+            return true
+        }
+    }
+    private class flamingSkull :Pet {
+        override val id: Int = 5
         override val name: String = "Flaming Skull"
-        override val imageId: Int = R.drawable.pet_flaming_skull_large
+        override val imageId: Int = R.drawable.pet_c_flamingskull
         override val element: Int =  dict.ELEMENT_FIRE
         override val attackType: Int = dict.ATK_TYPE_BOUNCE
         override val damage: Int = 40
@@ -197,11 +379,107 @@ class petInfo2 {
             return true
         }
     }
+    private class glutinousBunny :Pet {
+        override val id: Int = 6
+        override val name: String = "Glutinous Bunny"
+        override val imageId: Int = R.drawable.pet_c_glutinousbunny
+        override val element: Int = dict.ELEMENT_FOREST
+        override val attackType: Int = dict.ATK_TYPE_STAY
+        override val damage: Int = -30
+        override val count: Int = 2
+        override val skillName :String ="Sleepy..."
+        override val description: String = "Heals "+(damage * -1)+" hp every "+count +" turns\n" +
+                "when it stays on the board."
+        override val rarity: Int = dict.RARITY_NORMAL
 
-    private class littleMothman :Pet {
-        override val id: Int = 3
-        override val name: String = "Little Mothman"
-        override val imageId: Int = R.drawable.pet_little_mothman_large
+        override fun dealDamage(petStatus: Array<petStatus?>, petOrder: Int,deckSize:Int): Int {
+            if(petStatus[petOrder]!!.stayNum != 0 && petStatus[petOrder]!!.stayNum % count == 0 && petStatus[petOrder]!!.location == dict.onBoard) {
+
+                return damage
+            }
+            return 0
+        }
+
+        override fun attackCountdown(petStatus: Array<petStatus?>, petOrder: Int,deckSize:Int): Int {
+            if(petStatus[petOrder]!!.location == dict.onDECK){
+                return 0
+            }
+//        return (petStatus[petOrder]!!.stayNum % (catInfo.count) )
+            return count - petStatus[petOrder]!!.stayNum % (count+1)
+        }
+
+        override fun condition(petStatus: Array<petStatus?>, petOrder: Int,deckSize:Int): String {
+           if(petStatus[petOrder]!!.location == dict.onDECK){
+               return count.toString()+" more turn(s) to stay on the board "
+           }
+           else{
+                return attackCountdown(petStatus, petOrder,deckSize).toString()+" more turn(s) to stay on the board"
+           }
+
+        }
+
+        override fun nextDamage(petStatus: Array<petStatus?>,petOrder:Int,deckSize:Int): String {
+            return "Heals "+(damage * -1).toString()+" hp"
+        }
+
+        override fun resetAfterDamage(): Boolean {
+            return true
+        }
+
+    }
+    private class healingSprite :Pet {
+        // TODO: make pet unique
+        override val id: Int = 7
+        override val name: String = "Healing Sprite"
+        override val imageId: Int = R.drawable.pet_c_healingsprite
+        override val element: Int = dict.ELEMENT_FOREST
+        override val attackType: Int = dict.ATK_TYPE_STAY
+        override val damage: Int = -30
+        override val count: Int = 2
+        override val skillName :String ="Sleepy..."
+        override val description: String = "Heals "+(damage * -1)+" hp every "+count +" turns\n" +
+                "when it stays on the board."
+        override val rarity: Int = dict.RARITY_NORMAL
+
+        override fun dealDamage(petStatus: Array<petStatus?>, petOrder: Int,deckSize:Int): Int {
+            if(petStatus[petOrder]!!.stayNum != 0 && petStatus[petOrder]!!.stayNum % count == 0 && petStatus[petOrder]!!.location == dict.onBoard) {
+
+                return damage
+            }
+            return 0
+        }
+
+        override fun attackCountdown(petStatus: Array<petStatus?>, petOrder: Int,deckSize:Int): Int {
+            if(petStatus[petOrder]!!.location == dict.onDECK){
+                return 0
+            }
+//        return (petStatus[petOrder]!!.stayNum % (catInfo.count) )
+            return count - petStatus[petOrder]!!.stayNum % (count+1)
+        }
+
+        override fun condition(petStatus: Array<petStatus?>, petOrder: Int,deckSize:Int): String {
+            if(petStatus[petOrder]!!.location == dict.onDECK){
+                return count.toString()+" more turn(s) to stay on the board "
+            }
+            else{
+                return attackCountdown(petStatus, petOrder,deckSize).toString()+" more turn(s) to stay on the board"
+            }
+
+        }
+
+        override fun nextDamage(petStatus: Array<petStatus?>,petOrder:Int,deckSize:Int): String {
+            return "Heals "+(damage * -1).toString()+" hp"
+        }
+
+        override fun resetAfterDamage(): Boolean {
+            return true
+        }
+
+    }
+    private class lilMothman :Pet {
+        override val id: Int = 8
+        override val name: String = "Lil' Mothman"
+        override val imageId: Int = R.drawable.pet_c_lilmothy
         override val element: Int =  dict.ELEMENT_FIRE
         override val attackType: Int = dict.ATK_TYPE_STAY
         override val damage: Int = 20
@@ -253,11 +531,10 @@ class petInfo2 {
             return false
         }
     }
-
     private class shyRaccoon :Pet {
-        override val id: Int = 4
+        override val id: Int = 9
         override val name: String = "Shy Raccoon"
-        override val imageId: Int = R.drawable.pet_shy_raccoon_large
+        override val imageId: Int = R.drawable.pet_c_shyraccoon
         override val element: Int =  dict.ELEMENT_WATER
         override val attackType: Int = dict.ATK_TYPE_STAY
         override val damage: Int = 30

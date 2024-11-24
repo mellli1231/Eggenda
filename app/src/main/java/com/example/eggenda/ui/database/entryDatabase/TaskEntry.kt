@@ -24,7 +24,16 @@ data class TaskEntry(
     var details: String = "", // Task details (max 300 characters)
 
     @ColumnInfo(name = "attachment_path")
-    var attachmentPath: String = "" // File path for attachments (e.g., mp4, png, pdf)
+    var attachmentPath: String = "", // File path for attachments (e.g., mp4, png, pdf)
+
+    @ColumnInfo(name = "end_time")
+    var endTime: Long = 0L,
+
+    @ColumnInfo(name = "remaining_time")
+    var remainingTime: Long = 0L, // Remaining time when paused
+
+    @ColumnInfo(name = "is_checked")
+    var isChecked: Boolean = false
 )
 
 /**
