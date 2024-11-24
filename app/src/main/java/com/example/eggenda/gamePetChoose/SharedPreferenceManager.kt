@@ -15,6 +15,8 @@ class SharedPreferenceManager (context: Context) {
     //the amount of pets that can use :  monster -> choose  (done)
     val maxAmountPetsSP:SharedPreferences = context.getSharedPreferences("Max_pets_allow", Context.MODE_PRIVATE)
 
+    val filteredAmtSP : SharedPreferences = context.getSharedPreferences("FilteredInfo", Context.MODE_PRIVATE)
+
     //the fighting pets list : choose -> gameplay  (not done)
     private val fightingPetsSP : SharedPreferences = context.getSharedPreferences("PetsToFight", Context.MODE_PRIVATE)
 
@@ -37,6 +39,19 @@ class SharedPreferenceManager (context: Context) {
             gson.fromJson(json,type)
         } else {
             ArrayList()
+        }
+    }
+
+    fun saveFilteredPetsAmount (filteredAmt : Int){
+        filteredAmtSP.edit().putInt("filtered_pets", filteredAmt).apply()
+    }
+
+    fun getFilteredPetsAmount() : Int{
+        val filteredAmt =  filteredAmtSP.getInt("filtered_pets", 3)
+        if(filteredAmt < 5){
+            return filteredAmt
+        } else {
+            return 5
         }
     }
 

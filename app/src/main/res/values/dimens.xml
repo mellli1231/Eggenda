@@ -7,4 +7,6 @@
     <dimen name="fab_margin">16dp</dimen>
     <dimen name="card_width">350dp</dimen>
     <dimen name="card_hight">550dp</dimen>
+    <dimen name="menu_width">300dp</dimen>
+    <dimen name="menu_hight">300dp</dimen>
 </resources>
