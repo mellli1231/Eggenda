@@ -18,4 +18,8 @@
     <color name="fire">#EEFF5959</color>
     <color name="water">#EE66A0FF</color>
     <color name="forest">#EE87FFAB</color>
+    <color name="dialog_btn_norm">#BAFABB</color>
+    <color name="dialog_btn_norm1">#60AF60</color>
+    <color name="dialog_btn_chosen">#FF8181</color>
+    <color name="dialog_btn_chosen1">#D44848</color>
 </resources>

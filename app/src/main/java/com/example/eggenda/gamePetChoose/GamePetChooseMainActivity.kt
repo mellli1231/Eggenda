@@ -94,7 +94,8 @@ class GamePetChooseMainActivity : AppCompatActivity(){
 
         //set the character 3 in a row
         characterRecyclerView = findViewById(R.id.game_characterchoose_recyclerView)
-        characterRecyclerView.layoutManager = GridLayoutManager(this, 5)
+        val filteredAmt = sharedPreferenceManager.getFilteredPetsAmount()
+        characterRecyclerView.layoutManager = GridLayoutManager(this, filteredAmt)
 
         //set adapter for showing pets
         petsAdapter = GamePetChooseAdapter(
