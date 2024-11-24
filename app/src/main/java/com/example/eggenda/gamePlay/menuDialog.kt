@@ -1,5 +1,6 @@
 package com.example.eggenda.gamePlay
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -12,6 +13,7 @@ import androidx.activity.viewModels
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.viewModels
+import com.example.eggenda.MainActivity
 import com.example.eggenda.R
 
 class menuDialog : DialogFragment() {
@@ -27,6 +29,7 @@ class menuDialog : DialogFragment() {
 
         val resumeBtn : ConstraintLayout = view.findViewById(R.id.game_dialog_resume)
         val restartBtn : ConstraintLayout = view.findViewById(R.id.game_dialog_restart)
+        val quitBtn : ConstraintLayout = view.findViewById(R.id.game_dialog_quit)
 
         val rootLayout : View = view.findViewById(R.id.menu_root_layout)
 
@@ -35,6 +38,7 @@ class menuDialog : DialogFragment() {
         //resume the game
         resumeBtn.setOnClickListener { dismiss() }
 
+        //restart the game
         restartBtn.setOnClickListener {
             //restart the game
             viewModel.updateGameRunState(dict.GAME_NOT_START)
@@ -42,15 +46,18 @@ class menuDialog : DialogFragment() {
 
         }
 
+        //quit game
+        quitBtn.setOnClickListener {
+            viewModel.updateGameRunState(dict.GAME_NOT_START)
+            val intent = Intent(requireContext(), MainActivity::class.java)
+            dismiss()
+            startActivity(intent)
+        }
+
+
+
 
         return view
-    }
-
-    private fun restartGame(){
-        //restart the game
-        viewModel.updateGameRunState(dict.GAME_NOT_START)
-        activity?.recreate()
-
     }
 
     companion object {

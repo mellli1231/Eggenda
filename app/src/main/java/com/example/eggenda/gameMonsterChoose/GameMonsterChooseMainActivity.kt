@@ -65,7 +65,6 @@ class GameMonsterChooseMainActivity : AppCompatActivity () {
         viewModel.chosenStageID.observe(this, Observer { newStageId->
             if(newStageId == 0 ){
                 backBtn.isInvisible = true
-//                backBtn.isActivated = false
             }
             else{
                 backBtn.isInvisible = false
@@ -89,7 +88,6 @@ class GameMonsterChooseMainActivity : AppCompatActivity () {
             bossTitle.text = bossStr
             bossImage.setImageResource(selectedStage.bossImageId)
             viewModel.updateAmount(selectedStage.deckSize)
-//            viewModel.updateChosenStageID(0)
 
         })
 

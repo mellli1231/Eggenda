@@ -82,6 +82,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="5dp"
         android:text="TextView"
+        android:fontFamily="@font/titan_one"
         android:textSize="34sp"
         app:layout_constraintBottom_toTopOf="@+id/frameLayout"
         app:layout_constraintEnd_toEndOf="@+id/frameLayout"
@@ -92,18 +93,55 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="5dp"
         android:text="TextView"
+        android:fontFamily="@font/titan_one"
         android:textSize="34sp"
         app:layout_constraintBottom_toTopOf="@+id/boss_title"
         app:layout_constraintEnd_toEndOf="@+id/frameLayout"
         app:layout_constraintStart_toStartOf="@+id/frameLayout" />
 
-    <Button
-        android:id="@+id/button2"
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/monster_status_bar"
+        android:layout_width="260dp"
+        android:layout_height="40dp"
+        android:background="@drawable/monster_status_bg"
+        app:layout_constraintBottom_toTopOf="@+id/guideline2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/guideline2"
+        app:layout_constraintVertical_bias="0.425">
+
+        <ImageView
+            android:id="@+id/monster_status_icon"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:src="@drawable/game_monster_cross"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.059"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/monster_status_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/titan_one"
+            android:text="Not Yet Defeated!"
+            android:textSize="20dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/monster_status_icon"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Button"
-        app:layout_constraintBottom_toTopOf="@+id/game_monster_go"
-        app:layout_constraintEnd_toEndOf="@+id/game_monster_go"
-        app:layout_constraintStart_toStartOf="@+id/game_monster_go" />
+        android:orientation="horizontal"
+        app:layout_constraintGuide_begin="445dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
