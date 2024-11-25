@@ -74,7 +74,7 @@ class HomeFragment : Fragment() {
         sharedPreferenceManager = SharedPreferenceManager(requireContext())
         val root: View = binding.root
         val petOwnership = loadPetOwnership()
-//        sharedPreferenceManager = SharedPreferenceManager(requireContext())
+//        sharedPreferenceManager = SharedPreferenceManager(requireContext())klh
 
         //get username and id
         val user = UserPref.getUsername(requireContext())
