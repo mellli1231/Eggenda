@@ -4,23 +4,177 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/yellow"
     tools:context=".ui.game.GameFragment">
 
 <!--    <TextView-->
-<!--        android:id="@+id/text_game"-->
-<!--        android:layout_width="match_parent"-->
+<!--        android:id="@+id/game_fragment_title"-->
+<!--        android:layout_width="wrap_content"-->
 <!--        android:layout_height="wrap_content"-->
-<!--        android:layout_marginStart="8dp"-->
-<!--        android:layout_marginTop="8dp"-->
-<!--        android:layout_marginEnd="8dp"-->
-<!--        android:textAlignment="center"-->
-<!--        android:textSize="20sp"-->
-<!--        app:layout_constraintBottom_toBottomOf="parent"-->
+<!--        android:fontFamily="@font/titan_one"-->
+<!--        android:text="Game Category"-->
+<!--        android:textSize="40dp"-->
+<!--        app:layout_constraintBottom_toTopOf="@+id/gameFrag_titleHorLine"-->
+<!--        app:layout_constraintEnd_toStartOf="@+id/gameFrag_verLine"-->
+<!--        app:layout_constraintHorizontal_bias="0.503"-->
+<!--        app:layout_constraintStart_toStartOf="@+id/gameFrag_verLine"-->
+<!--        app:layout_constraintTop_toTopOf="@+id/gameFrag_titleHorLine"-->
+<!--        app:layout_constraintVertical_bias="1.0" />-->
+
+
+<!--    <TextView-->
+<!--        android:id="@+id/game_fragment_description"-->
+<!--        android:layout_width="350dp"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_marginTop="32dp"-->
+<!--        android:fontFamily="@font/titan_one"-->
+<!--        android:padding="5dp"-->
+<!--        android:text="Please Choose one to Start your Challenge"-->
+<!--        android:textSize="20dp"-->
+<!--        app:layout_constraintBottom_toTopOf="@+id/itemHorLine"-->
 <!--        app:layout_constraintEnd_toEndOf="parent"-->
 <!--        app:layout_constraintStart_toStartOf="parent"-->
-<!--        app:layout_constraintTop_toTopOf="parent" />-->
+<!--        app:layout_constraintTop_toBottomOf="@+id/game_fragment_title"-->
+<!--        app:layout_constraintVertical_bias="0.28" />-->
 
-    <Button
+<!--    <androidx.constraintlayout.widget.ConstraintLayout-->
+<!--        android:id="@+id/game_frag_fight_conlay"-->
+<!--        android:layout_width="150dp"-->
+<!--        android:layout_height="200dp"-->
+<!--        android:background="@drawable/game_menu_dialog_btn_chossen"-->
+<!--        android:focusable="true"-->
+<!--        app:layout_constraintBottom_toTopOf="@+id/itemHorLine"-->
+<!--        app:layout_constraintEnd_toStartOf="@+id/gameFrag_verLine"-->
+<!--        app:layout_constraintHorizontal_bias="0.736"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toTopOf="@+id/itemHorLine"-->
+<!--        android:clickable="true"-->
+<!--        app:layout_constraintVertical_bias="0.485">-->
+
+
+<!--        <androidx.constraintlayout.widget.ConstraintLayout-->
+<!--            android:id="@+id/photo_constrain_layout"-->
+<!--            android:layout_width="130dp"-->
+<!--            android:layout_height="110dp"-->
+<!--            android:background="@drawable/monster_status_bg"-->
+<!--            app:layout_constraintBottom_toBottomOf="parent"-->
+<!--            app:layout_constraintEnd_toEndOf="parent"-->
+<!--            app:layout_constraintStart_toStartOf="parent"-->
+<!--            app:layout_constraintTop_toTopOf="parent"-->
+<!--            app:layout_constraintVertical_bias="0.145">-->
+
+<!--            <ImageView-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="100dp"-->
+<!--                android:src="@drawable/game_monster_icon"-->
+<!--                app:layout_constraintBottom_toBottomOf="parent"-->
+<!--                app:layout_constraintEnd_toEndOf="parent"-->
+<!--                app:layout_constraintStart_toStartOf="parent"-->
+<!--                app:layout_constraintTop_toTopOf="parent" />-->
+<!--        </androidx.constraintlayout.widget.ConstraintLayout>-->
+
+
+<!--        <TextView-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:fontFamily="@font/titan_one"-->
+<!--            android:text="Play"-->
+<!--            android:textSize="40dp"-->
+<!--            app:layout_constraintBottom_toBottomOf="parent"-->
+<!--            app:layout_constraintEnd_toEndOf="parent"-->
+<!--            app:layout_constraintStart_toStartOf="parent"-->
+<!--            app:layout_constraintTop_toBottomOf="@+id/photo_constrain_layout" />-->
+
+<!--    </androidx.constraintlayout.widget.ConstraintLayout>-->
+
+<!--    <androidx.constraintlayout.widget.ConstraintLayout-->
+<!--        android:id="@+id/game_frag_tutorial_conlay"-->
+<!--        android:layout_width="150dp"-->
+<!--        android:layout_height="200dp"-->
+<!--        android:background="@drawable/game_menu_dialog_button_norm"-->
+<!--        android:clickable="true"-->
+<!--        android:focusable="true"-->
+<!--        app:layout_constraintBottom_toTopOf="@+id/itemHorLine"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintStart_toStartOf="@+id/gameFrag_verLine"-->
+<!--        app:layout_constraintTop_toTopOf="@+id/itemHorLine">-->
+
+
+<!--        <androidx.constraintlayout.widget.ConstraintLayout-->
+<!--            android:id="@+id/tutorial_constrain_layout"-->
+<!--            android:layout_width="130dp"-->
+<!--            android:layout_height="110dp"-->
+<!--            android:background="@drawable/monster_status_bg"-->
+<!--            app:layout_constraintBottom_toBottomOf="parent"-->
+<!--            app:layout_constraintEnd_toEndOf="parent"-->
+<!--            app:layout_constraintStart_toStartOf="parent"-->
+<!--            app:layout_constraintTop_toTopOf="parent"-->
+<!--            app:layout_constraintVertical_bias="0.145">-->
+
+<!--            <ImageView-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="100dp"-->
+<!--                android:src="@drawable/game_tutorial_icon"-->
+<!--                app:layout_constraintBottom_toBottomOf="parent"-->
+<!--                app:layout_constraintEnd_toEndOf="parent"-->
+<!--                app:layout_constraintStart_toStartOf="parent"-->
+<!--                app:layout_constraintTop_toTopOf="parent" />-->
+<!--        </androidx.constraintlayout.widget.ConstraintLayout>-->
+
+
+<!--        <TextView-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:fontFamily="@font/titan_one"-->
+<!--            android:text="How-to"-->
+<!--            android:textSize="35sp"-->
+<!--            app:layout_constraintBottom_toBottomOf="parent"-->
+<!--            app:layout_constraintEnd_toEndOf="parent"-->
+<!--            app:layout_constraintStart_toStartOf="parent"-->
+<!--            app:layout_constraintTop_toBottomOf="@+id/tutorial_constrain_layout" />-->
+
+<!--    </androidx.constraintlayout.widget.ConstraintLayout>-->
+
+<!--    <Button-->
+<!--        android:id="@+id/game_fragment_info_btn"-->
+<!--        android:layout_width="105dp"-->
+<!--        android:layout_height="40dp"-->
+<!--        android:layout_marginBottom="16dp"-->
+<!--        android:background="@drawable/game_start_button"-->
+<!--        android:enabled="false"-->
+<!--        android:fontFamily="monospace"-->
+<!--        android:text="START"-->
+<!--        app:layout_constraintBottom_toBottomOf="parent"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintHorizontal_bias="0.498"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toBottomOf="@+id/constraintLayout4"-->
+<!--        app:layout_constraintVertical_bias="1.0" />-->
+
+
+<!--    <androidx.constraintlayout.widget.Guideline-->
+<!--        android:id="@+id/gameFrag_verLine"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:orientation="vertical"-->
+<!--        app:layout_constraintGuide_begin="207dp" />-->
+
+<!--    <androidx.constraintlayout.widget.Guideline-->
+<!--        android:id="@+id/gameFrag_titleHorLine"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:orientation="horizontal"-->
+<!--        app:layout_constraintGuide_begin="85dp" />-->
+
+<!--    <androidx.constraintlayout.widget.Guideline-->
+<!--        android:id="@+id/itemHorLine"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:orientation="horizontal"-->
+<!--        app:layout_constraintGuide_begin="375dp" />-->
+
+
+        <Button
         android:id="@+id/game_start_frag_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

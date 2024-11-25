@@ -48,6 +48,29 @@ class SharedPreferenceManager (context: Context) {
         }
     }
 
+    //get the total number that pets owned by user
+    fun getPetOwnershipNum() : Int {
+        val petOwnership : ArrayList<Int> = getPetOwnership()
+        val ownedPets : IntArray = petOwnership.toIntArray()
+        var filteredPetsList = ownedPets.filterIndexed { index, _->
+            index < ownedPets.size && ownedPets[index] == 1
+        }
+
+        return filteredPetsList.size
+
+    }
+
+    //get the total number that use done stage
+    fun getStageDoneNum () : Int{
+        val getStageDone : ArrayList<Int> = getStageDone()
+        val stageDone: IntArray = getStageDone.toIntArray()
+
+        var filteredStageList = stageDone.filterIndexed { index, _->
+            index < stageDone.size && stageDone[index] == 1
+        }
+        return filteredStageList.size
+    }
+
 
     fun saveFilteredPetsAmount (filteredAmt : Int){
 //        filteredAmtSP.edit().putInt("filtered_pets", filteredAmt).apply()
