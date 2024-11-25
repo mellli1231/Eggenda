@@ -640,6 +640,9 @@ class gameActivity : AppCompatActivity() {
                 pet.stayNum = 0
                 pet.bounceNum = 0
             }
+            Log.d("stay","id: ${chosenPetId[i]}")
+            Log.d("stay","stay: ${petStatus[i]!!.stayNum}")
+
         }
     }
 
@@ -1494,6 +1497,7 @@ class gameActivity : AppCompatActivity() {
         val unitsOnBoard: Array<petStatus?> = arrayOfNulls<petStatus?>(deckSize)
         for (i in 0..deckSize-1) {
             unitsOnBoard[i] = petStatus().apply {
+                element = petInfo.getPetInfoById(chosenPetId[i])!!.element
                 unitId = chosenPetId[i]
                 location = dict.onDECK
                 startPos = dict.outsideBoard

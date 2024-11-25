@@ -4,10 +4,13 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity.MODE_PRIVATE
+import com.example.eggenda.UserPref
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 
 class SharedPreferenceManager (context: Context) {
+
+    val userSharePref: SharedPreferences = context.getSharedPreferences("user_${UserPref.getId(context)}", Context.MODE_PRIVATE)
 
     //the amount that the pets are owned now : hatching -> choose (not done)
     val sharedPreferences : SharedPreferences= context.getSharedPreferences("eggenda_prefs", Context.MODE_PRIVATE)
@@ -29,11 +32,14 @@ class SharedPreferenceManager (context: Context) {
     fun savePetOwnership(petOwnership: Array<Int>) {
 //        val editor = sharedPreferences.edit()
         val json = gson.toJson(petOwnership)
-        sharedPreferences.edit().putString("pet_ownership", json).apply()
+
+//        sharedPreferences.edit().putString("pet_ownership", json).apply()
+        userSharePref.edit().putString("pet_ownership", json).apply()
     }
 
     fun getPetOwnership() : ArrayList<Int>{
-        val json = sharedPreferences.getString("pet_ownership", null)
+        val json = userSharePref.getString("pet_ownership", null)
+//        val json = sharedPreferences.getString("pet_ownership", null)
         val type = object : TypeToken<ArrayList<Int>>() {}.type
         return if (json != null){
             gson.fromJson(json,type)
@@ -42,12 +48,15 @@ class SharedPreferenceManager (context: Context) {
         }
     }
 
+
     fun saveFilteredPetsAmount (filteredAmt : Int){
-        filteredAmtSP.edit().putInt("filtered_pets", filteredAmt).apply()
+//        filteredAmtSP.edit().putInt("filtered_pets", filteredAmt).apply()
+        userSharePref.edit().putInt("filtered_pets", filteredAmt).apply()
     }
 
     fun getFilteredPetsAmount() : Int{
-        val filteredAmt =  filteredAmtSP.getInt("filtered_pets", 3)
+        val filteredAmt =  userSharePref.getInt("filtered_pets", 3)
+//        val filteredAmt =  filteredAmtSP.getInt("filtered_pets", 3)
         if(filteredAmt < 5){
             return filteredAmt
         } else {
@@ -57,23 +66,26 @@ class SharedPreferenceManager (context: Context) {
 
     //to save the amount of the max pets can choose
     fun savePetsAmount (petAmount: Int){
-        maxAmountPetsSP.edit().putInt("max_key", petAmount).apply()
+//        maxAmountPetsSP.edit().putInt("max_key", petAmount).apply()
+        userSharePref.edit().putInt("max_key", petAmount).apply()
     }
 
     fun getPetsAmount() : Int{
-        return maxAmountPetsSP.getInt("max_key", 1)
+//        return maxAmountPetsSP.getInt("max_key", 1)
+        return userSharePref.getInt("max_key", 1)
     }
 
     //to save the list
     fun savePetsList (petsList: IntArray){
         val json = gson.toJson(petsList)
-        fightingPetsSP.edit().putString("selected_pets_key", json).apply()
+//        fightingPetsSP.edit().putString("selected_pets_key", json).apply()
+        userSharePref.edit().putString("selected_pets_key", json).apply()
     }
 
     //retrive the list of pets id to shared preference
     fun getPetsList(): IntArray {
-
-        val jsonString = fightingPetsSP.getString("selected_pets_key", null)
+        val jsonString = userSharePref.getString("selected_pets_key", null)
+//        val jsonString = fightingPetsSP.getString("selected_pets_key", null)
         return if (jsonString != null) {
             gson.fromJson(jsonString, object : TypeToken<IntArray>() {}.type)  // Convert JSON string to IntArray
         } else {
@@ -84,22 +96,26 @@ class SharedPreferenceManager (context: Context) {
 
     @SuppressLint("CommitPrefEdits")
     fun saveStageChoose(stageId: Int){
-        stageSP.edit().putInt("stageId", stageId).apply()
+//        stageSP.edit().putInt("stageId", stageId).apply()
+        userSharePref.edit().putInt("stageId", stageId).apply()
     }
 
     fun getStageChoose():Int{
-        return stageSP.getInt("stageId", 0)
+//        return stageSP.getInt("stageId", 0)
+        return userSharePref.getInt("stageId", 0)
     }
 
     // for the stage done by the user. 0 = unfinished, 1 = finished
     fun saveStageDone(stageDone: ArrayList<Int>) {
 //        val editor = sharedPreferences.edit()
         val json = gson.toJson(stageDone)
-        stageSP.edit().putString("stageDone", json).apply()
+//        stageSP.edit().putString("stageDone", json).apply()
+        return userSharePref.edit().putString("stageDone", json).apply()
     }
 
     fun getStageDone() : ArrayList<Int>{
-        val json = stageSP.getString("stageDone", null)
+        val json = userSharePref.getString("stageDone", null)
+//        val json = stageSP.getString("stageDone", null)
         val type = object : TypeToken<ArrayList<Int>>() {}.type
         return if (json != null){
             gson.fromJson(json,type)
@@ -107,7 +123,5 @@ class SharedPreferenceManager (context: Context) {
             ArrayList()
         }
     }
-
-
 
 }
