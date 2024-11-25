@@ -17,6 +17,7 @@ import com.example.eggenda.gamePetChoose.GamePetChooseMainActivity
 import com.example.eggenda.gamePetChoose.PetChooseDialogFragment
 import com.example.eggenda.gamePetChoose.SharedPreferenceManager
 import com.example.eggenda.gamePlay.stageInfo
+import org.w3c.dom.Text
 
 class GameMonsterChooseMainActivity : AppCompatActivity () {
 
@@ -33,9 +34,11 @@ class GameMonsterChooseMainActivity : AppCompatActivity () {
     private lateinit var backBtn:ImageView
     private lateinit var nextBtn:ImageView
     private lateinit var bossImage:ImageView
-    private lateinit var bossDefeatCover:ImageView  //add cover to boss image if the boss is defeated
+    private lateinit var bossChallengeCover :ImageView  //add cover to boss image if the boss is not challengable at ths moment
     private lateinit var stageDoneArrayList: ArrayList<Int>
-    private var amount = 0
+    private lateinit var monsterStatusIcon : ImageView
+    private lateinit var monsterStatusText : TextView
+    private lateinit var ownedPetsList : ArrayList<Int> // to check if the pets are enough for play or not
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,8 +54,9 @@ class GameMonsterChooseMainActivity : AppCompatActivity () {
         backBtn = findViewById(R.id.back_button)
         nextBtn = findViewById(R.id.next_button)
         bossImage = findViewById(R.id.bossView)
-        bossDefeatCover = findViewById(R.id.bossDefeatCover)
-
+        bossChallengeCover = findViewById(R.id.bossDefeatCover)
+        monsterStatusIcon = findViewById(R.id.monster_status_icon)
+        monsterStatusText = findViewById(R.id.monster_status_text)
 
         //handle stageDone
         stageDoneArrayList = sharedPreferenceManager.getStageDone()
@@ -60,6 +64,10 @@ class GameMonsterChooseMainActivity : AppCompatActivity () {
             stageDoneArrayList = getNewStageDone(stageDoneArrayList, stageInfo.stageTotalNum)
             sharedPreferenceManager.saveStageDone(stageDoneArrayList)
         }
+
+        //handle the owned pets size whenever the pets is updated or not
+        ownedPetsList = sharedPreferenceManager.getPetOwnership()
+
 
 
         viewModel.chosenStageID.observe(this, Observer { newStageId->
@@ -78,11 +86,17 @@ class GameMonsterChooseMainActivity : AppCompatActivity () {
             val selectedStage = stageInfo.StageInfoMap(newStageId)!!
             val stageStr = "Stage "+(newStageId + 1).toString()+":"
             val bossStr = selectedStage.name
+
+            //set the stage status bar
             if(stageDoneArrayList[newStageId] == 1){
-                bossDefeatCover.isInvisible = false
+                monsterStatusIcon.setImageResource(R.drawable.game_monster_cross)
+                monsterStatusText.text = "Not Yet Defeated!"
+//                bossChallengeCover.isInvisible = false
             }
             else{
-                bossDefeatCover.isInvisible = true
+                monsterStatusIcon.setImageResource(R.drawable.game_monster_tick)
+                monsterStatusText.text = "Finished!"
+//                bossChallengeCover.isInvisible = true
             }
             stageTitle.text = stageStr
             bossTitle.text = bossStr

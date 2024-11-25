@@ -131,6 +131,7 @@
             android:textSize="20dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.304"
             app:layout_constraintStart_toEndOf="@+id/monster_status_icon"
             app:layout_constraintTop_toTopOf="parent" />
 
