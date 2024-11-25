@@ -340,7 +340,7 @@ class ProfileActivity: AppCompatActivity() {
 
 
         //get saved data
-        val savedUsername = sharedPreferences.getString("username", "")
+        val savedUsername = UserPref.getUsername(this)
         val savedfirstName = sharedPreferences.getString("firstName", "")
         val savedlastName = sharedPreferences.getString("lastName", "")
         val savedEmailPhone = sharedPreferences.getString("emailPhone", "")
