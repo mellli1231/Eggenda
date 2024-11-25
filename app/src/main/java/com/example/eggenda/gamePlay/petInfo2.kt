@@ -75,7 +75,7 @@ class petInfo2 {
 
                 return damage
             }
-            return 0//
+            return 0////
         }
 
         override fun attackCountdown(petStatus: Array<petStatus?>, petOrder: Int,deckSize:Int): Int {
