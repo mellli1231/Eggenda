@@ -140,7 +140,7 @@ class CreateAccountActivity: AppCompatActivity() {
                 lifecycleScope.launch {
                     try {
                         println("start coroutine")
-                        // Check if username already exists
+                        // check if username already exists
                         val isExists = checkUserExist(user)
                         if (isExists != null) {
                             withContext(Dispatchers.Main) {
@@ -149,17 +149,17 @@ class CreateAccountActivity: AppCompatActivity() {
                                 username.setBackgroundResource(R.drawable.error_text_border)
                                 println("Username already exists")
                             }
-                            return@launch // Exit the coroutine early
+                            return@launch // exit coroutine
                         }
 
-                        // Create account if username doesn't exist
+                        // create account if username doesn't exist
                         val hashedPassword = BCrypt.hashpw(pw, BCrypt.gensalt())
                         val idFB = myRef.push().key ?: throw Exception("Failed to generate Firebase ID")
 
                         val createdUser = User(id = idFB, username = user, password = hashedPassword, points = 0)
                         val createdUserFB = UserFB(id = idFB, username = user, password = hashedPassword, points = 0)
 
-                        // Insert into Room and Firebase
+                        // insert into databases
                         repository.insert(createdUser)
 
                         withContext(Dispatchers.Main) {
@@ -171,17 +171,15 @@ class CreateAccountActivity: AppCompatActivity() {
                                 }
                             }
 
-                            // Store current ID to access throughout app and after app restart
+                            // store values to access throughout the app
                             UserPref.setUser(this@CreateAccountActivity, user, idFB, hashedPassword, 0)
 
-                            // Navigate to the next activity
                             val intent = Intent(this@CreateAccountActivity, CreateProfileActivity::class.java)
                             startActivity(intent)
                             finish()
                         }
                     } catch(e: Exception) {
                         withContext(Dispatchers.Main) {
-                            // Handle any exceptions that may have occurred
                             Toast.makeText(this@CreateAccountActivity, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
                         }
                         println("Error in coroutine: ${e.message}")
@@ -197,22 +195,22 @@ class CreateAccountActivity: AppCompatActivity() {
                 ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
                     if (snapshot.exists()) {
-                        // A user with this username exists, retrieve the user data
+                        //get user if exist
                         for (userSnapshot in snapshot.children) {
-                            val existingUser = userSnapshot.getValue(UserFB::class.java) // Convert to User object
-                            cont.resume(existingUser) // Return the existing user in the callback
+                            val existingUser = userSnapshot.getValue(UserFB::class.java)
+                            cont.resume(existingUser)
                             return
                         }
                     } else {
-                        // No user found with this username
+                        //return null if not found
                         cont.resume(null)
                     }
                 }
 
                 override fun onCancelled(error: DatabaseError) {
-                    // Handle the error (if any)
+                    // handle error and return null
                     println("error checking username")
-                    cont.resume(null) // Return null if there is an error
+                    cont.resume(null)
                 }
             })
         }

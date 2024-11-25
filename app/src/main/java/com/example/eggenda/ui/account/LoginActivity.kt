@@ -168,22 +168,22 @@ class LoginActivity : AppCompatActivity() {
                 ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
                     if (snapshot.exists()) {
-                        // A user with this username exists, retrieve the user data
+                        // get user if exist
                         for (userSnapshot in snapshot.children) {
-                            val existingUser = userSnapshot.getValue(UserFB::class.java) // Convert to User object
-                            cont.resume(existingUser) // Return the existing user in the callback
+                            val existingUser = userSnapshot.getValue(UserFB::class.java)
+                            cont.resume(existingUser)
                             return
                         }
                     } else {
-                        // No user found with this username
+                        // return null if not
                         cont.resume(null)
                     }
                 }
 
                 override fun onCancelled(error: DatabaseError) {
-                    // Handle the error (if any)
+                    // return null if error
                     println("error checking username")
-                    cont.resume(null) // Return null if there is an error
+                    cont.resume(null)
                 }
             })
         }
