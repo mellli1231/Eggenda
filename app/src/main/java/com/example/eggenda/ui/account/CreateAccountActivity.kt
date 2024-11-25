@@ -167,7 +167,7 @@ class CreateAccountActivity: AppCompatActivity() {
                                 if(task.isSuccessful) {
                                     println("Account created with ID: $idFB, Username: $user")
                                 } else {
-                                    println("account not created")
+                                    println("account not created: ${task.exception?.message}")
                                 }
                             }
 

@@ -7,7 +7,6 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/nav_home"
-            android:icon="@drawable/ic_menu_camera"
             android:title="@string/menu_home" />
 
         <item
@@ -19,7 +18,7 @@
     <!--customization-->
     <group android:checkableBehavior="single">
         <item
-            android:title="Customization"
+            android:title="@string/customization"
             android:enabled="false" />
         <item
             android:id="@+id/nav_eggs"
@@ -28,12 +27,6 @@
         <item
             android:id="@+id/nav_pets"
             android:title="@string/pets"/>
-
-        <item
-            android:id="@+id/nav_character"
-            android:title="@string/character"/>
-
-
     </group>
 
     <!--points-->
@@ -49,11 +42,10 @@
     <!--showcase-->
     <group android:checkableBehavior="single">
         <item
-            android:title="Showcase"
+            android:title="@string/showcase"
             android:enabled="false" />
         <item
             android:id="@+id/nav_gallery"
-            android:icon="@drawable/ic_menu_gallery"
             android:title="@string/menu_gallery" />
 
         <item
