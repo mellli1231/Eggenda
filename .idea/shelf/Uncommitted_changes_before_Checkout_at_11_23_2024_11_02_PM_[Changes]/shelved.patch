@@ -1,0 +1,36 @@
+Index: .idea/misc.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<project version=\"4\">\r\n  <component name=\"ExternalStorageConfigurationManager\" enabled=\"true\" />\r\n  <component name=\"ProjectRootManager\" version=\"2\" languageLevel=\"JDK_17\" default=\"true\" project-jdk-name=\"jbr-17\" project-jdk-type=\"JavaSDK\">\r\n    <output url=\"file://$PROJECT_DIR$/build/classes\" />\r\n  </component>\r\n</project>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/misc.xml b/.idea/misc.xml
+--- a/.idea/misc.xml	(revision 2670201f5dd28a21b710fb77699d71fc0a08025d)
++++ b/.idea/misc.xml	(date 1732428899697)
+@@ -1,7 +1,7 @@
+ <?xml version="1.0" encoding="UTF-8"?>
+ <project version="4">
+   <component name="ExternalStorageConfigurationManager" enabled="true" />
+-  <component name="ProjectRootManager" version="2" languageLevel="JDK_17" default="true" project-jdk-name="jbr-17" project-jdk-type="JavaSDK">
++  <component name="ProjectRootManager" version="2" languageLevel="JDK_21" default="true" project-jdk-name="jbr-21" project-jdk-type="JavaSDK">
+     <output url="file://$PROJECT_DIR$/build/classes" />
+   </component>
+ </project>
+\ No newline at end of file
+Index: .idea/shelf/Uncommitted_changes_before_Update_at_2024-11-17_3_10_p_m___Changes_.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><changelist name=\"Uncommitted_changes_before_Update_at_2024-11-17_3_10_p_m__[Changes]\" date=\"1731885011290\" recycled=\"true\" deleted=\"true\">\r\n  <option name=\"PATH\" value=\"$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_2024-11-17_3_10_p_m__[Changes]/shelved.patch\" />\r\n  <option name=\"DESCRIPTION\" value=\"Uncommitted changes before Update at 2024-11-17 3:10 p.m. [Changes]\" />\r\n  <binary>\r\n    <option name=\"BEFORE_PATH\" />\r\n    <option name=\"AFTER_PATH\" value=\"app/src/main/res/drawable/app_icon.png\" />\r\n    <option name=\"SHELVED_PATH\" value=\"$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_2024-11-17_3_10_p_m__[Changes]/app_icon.png\" />\r\n  </binary>\r\n</changelist>
+===================================================================
+diff --git a/.idea/shelf/Uncommitted_changes_before_Update_at_2024-11-17_3_10_p_m___Changes_.xml b/.idea/shelf/Uncommitted_changes_before_Update_at_2024-11-17_3_10_p_m___Changes_.xml
+--- a/.idea/shelf/Uncommitted_changes_before_Update_at_2024-11-17_3_10_p_m___Changes_.xml	(revision 2670201f5dd28a21b710fb77699d71fc0a08025d)
++++ b/.idea/shelf/Uncommitted_changes_before_Update_at_2024-11-17_3_10_p_m___Changes_.xml	(date 1732428851434)
+@@ -2,7 +2,6 @@
+   <option name="PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_2024-11-17_3_10_p_m__[Changes]/shelved.patch" />
+   <option name="DESCRIPTION" value="Uncommitted changes before Update at 2024-11-17 3:10 p.m. [Changes]" />
+   <binary>
+-    <option name="BEFORE_PATH" />
+     <option name="AFTER_PATH" value="app/src/main/res/drawable/app_icon.png" />
+     <option name="SHELVED_PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_2024-11-17_3_10_p_m__[Changes]/app_icon.png" />
+   </binary>
