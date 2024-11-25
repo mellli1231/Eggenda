@@ -24,7 +24,7 @@
     <color name="strike_through_color">@color/bold_yellow</color> <!-- Red for strike-through -->
     <color name="normal_text_color">#FF0000</color>    <!-- Black for normal text -->
     <color name="brown">#4A310A</color>
-    <color name="dialog_btn_norm">#BAFABB</color>
+    <color name="dialog_btn_norm">#99DB9B</color>
     <color name="dialog_btn_norm1">#60AF60</color>
     <color name="dialog_btn_chosen">#FF8181</color>
     <color name="dialog_btn_chosen1">#D44848</color>
