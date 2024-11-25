@@ -5,13 +5,14 @@
     android:id="@+id/gallery_unit_frame"
     android:layout_width="100dp"
     android:layout_height="100dp"
+    android:layout_margin="3dp"
     android:background="@drawable/game_stroke_background">
 
     <ImageView
         android:id="@+id/imageView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="4dp"
+        android:padding="3dp"
         android:src="@drawable/game_enemy_goblin"
         android:scaleType="centerInside" />
 
