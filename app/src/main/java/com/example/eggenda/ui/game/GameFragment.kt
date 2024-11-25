@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.eggenda.R
@@ -19,7 +20,9 @@ import com.example.eggenda.ui.gallery.GalleryViewModel
 class GameFragment : Fragment(R.layout.fragment_game) {
 
     private var _binding: FragmentGameBinding? = null
-    private lateinit var gameStartButton: Button
+    private lateinit var gameInfo: Button
+    private lateinit var gameItem : ConstraintLayout
+    private lateinit var tutorialItem : ConstraintLayout
 
     // This property is only valid between onCreateView and
     // onDestroyView.
@@ -34,14 +37,25 @@ class GameFragment : Fragment(R.layout.fragment_game) {
         _binding = FragmentGameBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
+        gameItem = root.findViewById(R.id.game_frag_fight_conlay)
+        tutorialItem = root.findViewById(R.id.game_frag_tutorial_conlay)
 
-        //set the game button to the choose character acitivity
-//        val gameStartButton: Button = view?.findViewById(R.id.game_start_frag_btn) ?:
-        binding.gameStartFragBtn.setOnClickListener {
+        //game item goes to game page
+        gameItem.setOnClickListener {
             //use intent to goto another activity
             val intent = Intent(requireContext(),GameMonsterChooseMainActivity::class.java )
             startActivity(intent)
         }
+
+        //tutorial item goes to tutorial class
+        tutorialItem.setOnClickListener {
+        }
+
+
+        //About this game or it does not needed
+
+
+
         return root
     }
 
