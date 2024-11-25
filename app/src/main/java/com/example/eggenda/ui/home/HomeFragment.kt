@@ -161,7 +161,9 @@ class HomeFragment : Fragment() {
 
     private fun loadPetOwnership(): Array<Int> {
         val sharedPreferences = requireContext().getSharedPreferences("eggenda_prefs", Context.MODE_PRIVATE)
-        val json = sharedPreferences.getString(PET_OWNERSHIP_KEY, null)
+        //orig
+//        val json = sharedPreferences.getString(PET_OWNERSHIP_KEY, null)
+        val json = requireContext().getSharedPreferences("user_${UserPref.getId(requireContext())}", Context.MODE_PRIVATE).getString(PET_OWNERSHIP_KEY, null)
         return if (json != null) {
             val type = object : TypeToken<Array<Int>>() {}.type
             Gson().fromJson(json, type)
