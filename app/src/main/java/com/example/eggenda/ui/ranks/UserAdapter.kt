@@ -10,6 +10,7 @@ import com.example.eggenda.ui.database.userDatabase.UserFB
 
 class UserAdapter (private val list: List<UserFB>) : RecyclerView.Adapter<UserAdapter.UserViewHolder>(){
     class UserViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        val rank : TextView = itemView.findViewById(R.id.rank)
         val username : TextView = itemView.findViewById(R.id.username)
         val points: TextView = itemView.findViewById(R.id.points)
     }
@@ -21,6 +22,7 @@ class UserAdapter (private val list: List<UserFB>) : RecyclerView.Adapter<UserAd
 
     override fun onBindViewHolder(holder: UserViewHolder, position: Int) {
         val user = list[position]
+        holder.rank.text = (position + 1).toString()
         holder.username.text = user.username
         holder.points.text = user.points.toString()
     }

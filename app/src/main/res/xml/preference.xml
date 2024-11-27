@@ -1,37 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@color/yellow">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+        <Preference
+            android:key="header"
+            android:title="@string/settings_title"
+            app:iconSpaceReserved="false"
+            android:layout="@layout/setting_header"/>
 
         <!-- user profile bar-->
-    <Preference
-        android:key="user_profile"
-        android:title="@string/user_profile_header"
-        app:iconSpaceReserved="false" />
+        <Preference
+            android:key="user_profile"
+            android:title="@string/user_profile_header"
+            app:iconSpaceReserved="false"
+            android:layout="@layout/preference_settings"/>
 
-    <ListPreference
-        android:key="language"
-        android:title="@string/language_header"
-        android:entries="@array/language_options"
-        android:entryValues="@array/language_values"
-        android:defaultValue="en"
-        app:iconSpaceReserved="false"/>
+        <ListPreference
+            android:key="language"
+            android:title="@string/language_header"
+            android:entries="@array/language_options"
+            android:entryValues="@array/language_values"
+            android:defaultValue="en"
+            app:iconSpaceReserved="false"
+            android:layout="@layout/preference_settings"/>
 
-    <Preference
-        android:key="terms"
-        android:title="@string/conditions_header"
-        app:iconSpaceReserved="false"/>
+        <Preference
+            android:key="terms"
+            android:title="@string/conditions_header"
+            app:iconSpaceReserved="false"
+            android:layout="@layout/preference_settings"/>
 
-    <Preference
-        android:key="logout"
-        android:title="@string/logout"
-        app:iconSpaceReserved="false"/>
-
-    <Preference
-        android:key="deleteAll"
-        android:title="delete all users from database (for debugging)"
-        app:iconSpaceReserved="false"/>
-
+        <Preference
+            android:key="logout"
+            android:title="@string/logout"
+            app:iconSpaceReserved="false"
+            android:layout="@layout/preference_logout" />
+<!--
+        <Preference
+            android:key="deleteAll"
+            android:title="delete all users from database (for debugging)"
+            app:iconSpaceReserved="false"/>
+-->
 </PreferenceScreen>
 
 
