@@ -33,10 +33,23 @@ import com.example.eggenda.ui.database.entryDatabase.EntryDatabaseDao
 import com.example.eggenda.ui.database.entryDatabase.EntryRepo
 import com.example.eggenda.ui.database.entryDatabase.EntryViewModel
 import com.example.eggenda.ui.database.entryDatabase.EntryViewModelFactory
+import com.example.eggenda.ui.database.userDatabase.UserDatabase
+import com.example.eggenda.ui.database.userDatabase.UserDatabaseDao
+import com.example.eggenda.ui.database.userDatabase.UserRepository
+import com.example.eggenda.ui.database.userDatabase.UserViewModel
+import com.example.eggenda.ui.database.userDatabase.UserViewModelFactory
 import com.example.eggenda.ui.task.ConfirmTasksActivity
 import com.example.eggenda.ui.task.TaskAdapter
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.MutableData
+import com.google.firebase.database.Transaction
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import java.io.File
@@ -63,6 +76,15 @@ class HomeFragment : Fragment() {
     private lateinit var entryViewModel: EntryViewModel
     private lateinit var viewModelFactory: EntryViewModelFactory
 
+    private lateinit var udatabase: UserDatabase
+    private lateinit var udatabaseDao: UserDatabaseDao
+    private lateinit var userViewModel: UserViewModel
+    private lateinit var repository: UserRepository
+    private lateinit var userViewModelFactory: UserViewModelFactory
+    private lateinit var FBdatabase: FirebaseDatabase
+    private lateinit var myRef: DatabaseReference
+    private var id: String=""
+
 
     @SuppressLint("SetTextI18n")
     override fun onCreateView(
@@ -78,8 +100,18 @@ class HomeFragment : Fragment() {
 
         //get username and id
         val user = UserPref.getUsername(requireContext())
-        val id = UserPref.getId(requireContext())
+        id = UserPref.getId(requireContext()).toString()
         println("user: ${user}, id: ${id}")
+
+        //load database to retrieve gained points
+        FBdatabase = FirebaseDatabase.getInstance()
+        myRef = FBdatabase.reference.child("users")
+        udatabase = UserDatabase.getInstance(requireContext())
+        udatabaseDao = udatabase.userDatabaseDao
+        repository = UserRepository(udatabaseDao)
+        userViewModelFactory = UserViewModelFactory(repository)
+        userViewModel = ViewModelProvider(this, userViewModelFactory)[UserViewModel::class.java]
+
 
         //load profile picture
         val sharedPreferences = requireContext().getSharedPreferences("user_${id}", Context.MODE_PRIVATE)
@@ -264,6 +296,36 @@ class HomeFragment : Fragment() {
             saveExperienceProgress()
             updateProgress()
         }
+
+        CoroutineScope(Dispatchers.IO).launch {
+            repository.updatePoints(id, amount) //update room database
+
+            //update firebase database
+            myRef.child(id).child("points").runTransaction(object: Transaction.Handler {
+                override fun doTransaction(mutableData: MutableData): Transaction.Result {
+                    val curr = mutableData.getValue(Int::class.java)
+                    if (curr != null) {
+                        mutableData.value = curr + amount
+                    }
+                    return Transaction.success(mutableData)
+                }
+
+                override fun onComplete(databaseError: DatabaseError?, committed: Boolean, dataSnapshot: DataSnapshot?) {
+                    if(databaseError != null) {
+                        println("Error updating points: ${databaseError.message}")
+                    } else {
+                        println("Points updated in firebase")
+                    }
+                }
+            })
+        }
+        //adding to database just to test, temporary as well
+
+
+
+
+
+
     }
 
     // Eventually, we won't need this either
