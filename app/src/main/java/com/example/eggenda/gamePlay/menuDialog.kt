@@ -16,9 +16,9 @@ import androidx.fragment.app.viewModels
 import com.example.eggenda.MainActivity
 import com.example.eggenda.R
 
-class menuDialog : DialogFragment() {
+class menuDialog(viewModel:gameViewModel2) : DialogFragment() {
 
-    private val viewModel: gameViewModel2 by viewModels()
+    private val gameViewModel = viewModel
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -41,14 +41,14 @@ class menuDialog : DialogFragment() {
         //restart the game
         restartBtn.setOnClickListener {
             //restart the game
-            viewModel.updateGameRunState(dict.GAME_NOT_START)
+            gameViewModel.updateGameRunState(dict.GAME_NOT_START)
             activity?.recreate()
 
         }
 
         //quit game
         quitBtn.setOnClickListener {
-            viewModel.updateGameRunState(dict.GAME_NOT_START)
+            gameViewModel.updateGameRunState(dict.GAME_NOT_START)
             val intent = Intent(requireContext(), MainActivity::class.java)
             dismiss()
             startActivity(intent)
@@ -62,8 +62,9 @@ class menuDialog : DialogFragment() {
 
     companion object {
 
-        fun newInstance(): menuDialog {
-            val fragment = menuDialog()
+        fun newInstance(viewModel:gameViewModel2): menuDialog {
+
+            val fragment = menuDialog(viewModel)
             val args = Bundle().apply {}
             fragment.arguments = args
             return fragment

@@ -5,7 +5,7 @@ import com.example.eggenda.R
 
 class stageInfo {
 
-    val stageTotalNum = 5
+    val stageTotalNum = 7
 
     fun StageInfoMap(id: Int): stage?{
         val petMap: Map<Int, () -> stage> = mapOf(
@@ -14,6 +14,8 @@ class stageInfo {
             2 to { stage_2() },
             3 to { stage_3() },
             4 to { stage_4() },
+            5 to { stage_5() },
+            6 to { stage_6() },
         )
         return petMap[id]?.invoke()
     }
@@ -39,6 +41,54 @@ class stageInfo {
 
     private class stage_0():stage{
         override val id: Int = 0
+        override val name: String = "Small seed"
+        override val bossImageId: Int = R.drawable.game_enemy_seed
+        override val acceptElement: Int = dict.STAGE_ACCEPT_ALL_ELEMENT
+        override val objectiveType: Int = dict.STAGE_OBJECTIVE_BEST
+        override val maxTurn: Int = 2
+        override val damageRequirement: Int = 20
+        override val description: String = "Try evil water!"
+        override val deckSize:Int = 3
+
+        override fun actionType(turn: Int): Int {
+            return dict.STAGE_ACTION_NO_ACTION
+        }
+
+        override fun actionAmount(turn: Int,petStatus: Array<petStatus?>): Int {
+            return 0
+        }
+
+        override fun actionDescription(turn: Int,petStatus: Array<petStatus?>): String {
+            return ""
+        }
+    }
+
+    private class stage_1():stage{
+        override val id: Int = 1
+        override val name: String = "Big seed"
+        override val bossImageId: Int = R.drawable.game_enemy_bigseed
+        override val acceptElement: Int = dict.STAGE_ACCEPT_ALL_ELEMENT
+        override val objectiveType: Int = dict.STAGE_OBJECTIVE_BEST
+        override val maxTurn: Int = 3
+        override val damageRequirement: Int = 40
+        override val description: String = "Try flaming skull!"
+        override val deckSize:Int = 3
+
+        override fun actionType(turn: Int): Int {
+            return dict.STAGE_ACTION_NO_ACTION
+        }
+
+        override fun actionAmount(turn: Int,petStatus: Array<petStatus?>): Int {
+            return 0
+        }
+
+        override fun actionDescription(turn: Int,petStatus: Array<petStatus?>): String {
+            return ""
+        }
+    }
+
+    private class stage_2():stage{
+        override val id: Int = 2
         override val name: String = "Innocent Sapling"
         override val bossImageId: Int = R.drawable.game_enemy_sapling
         override val acceptElement: Int = dict.STAGE_ACCEPT_ALL_ELEMENT
@@ -61,32 +111,8 @@ class stageInfo {
         }
     }
 
-    private class stage_1():stage{
-        override val id: Int = 1
-        override val name: String = "Wood Pile"
-        override val bossImageId: Int = R.drawable.game_enemy_woodpile
-        override val acceptElement: Int = dict.STAGE_ACCEPT_ALL_ELEMENT
-        override val objectiveType: Int = dict.STAGE_OBJECTIVE_BEST
-        override val maxTurn: Int = 8
-        override val damageRequirement: Int = 120
-        override val description: String = "Just a wood pile"
-        override val deckSize:Int = 3
-
-        override fun actionType(turn: Int): Int {
-            return dict.STAGE_ACTION_NO_ACTION
-        }
-
-        override fun actionAmount(turn: Int,petStatus: Array<petStatus?>): Int {
-            return 0
-        }
-
-        override fun actionDescription(turn: Int,petStatus: Array<petStatus?>): String {
-            return ""
-        }
-    }
-
-    private class stage_2():stage{
-        override val id: Int = 2
+    private class stage_3():stage{
+        override val id: Int = 3
         override val name: String = "Icy"
         override val bossImageId: Int = R.drawable.game_enemy_icy
         override val acceptElement: Int = dict.STAGE_ACCEPT_ALL_ELEMENT
@@ -118,9 +144,33 @@ class stageInfo {
         }
     }
 
+    private class stage_4():stage{
+        override val id: Int = 4
+        override val name: String = "Wood Pile"
+        override val bossImageId: Int = R.drawable.game_enemy_woodpile
+        override val acceptElement: Int = dict.STAGE_ACCEPT_ALL_ELEMENT
+        override val objectiveType: Int = dict.STAGE_OBJECTIVE_BEST
+        override val maxTurn: Int = 8
+        override val damageRequirement: Int = 120
+        override val description: String = "Just a wood pile"
+        override val deckSize:Int = 3
 
-    private class stage_3():stage{
-        override val id: Int = 3
+        override fun actionType(turn: Int): Int {
+            return dict.STAGE_ACTION_NO_ACTION
+        }
+
+        override fun actionAmount(turn: Int,petStatus: Array<petStatus?>): Int {
+            return 0
+        }
+
+        override fun actionDescription(turn: Int,petStatus: Array<petStatus?>): String {
+            return ""
+        }
+    }
+
+
+    private class stage_5():stage{
+        override val id: Int = 5
         override val name: String = "High Quality Wood Pile"
         override val bossImageId: Int = R.drawable.game_enemy_hq_woodpile
         override val acceptElement: Int = dict.STAGE_ACCEPT_ALL_ELEMENT
@@ -143,8 +193,8 @@ class stageInfo {
         }
     }
 
-    private class stage_4():stage{
-        override val id: Int = 4
+    private class stage_6():stage{
+        override val id: Int = 6
         override val name: String = "Goblin"
         override val bossImageId: Int = R.drawable.game_enemy_goblin
         override val acceptElement: Int = dict.STAGE_ACCEPT_ALL_ELEMENT
@@ -153,6 +203,39 @@ class stageInfo {
         override val damageRequirement: Int = 240
         override val description: String = "Goblin will smash you harder and harder until you die!!"
         override val deckSize:Int = 4
+        //
+        override fun actionType(turn: Int): Int {
+            if(turn % 2 == 0){
+                return dict.STAGE_ACTION_ATTACK
+            }
+            return dict.STAGE_ACTION_NO_ACTION
+        }
+
+        override fun actionAmount(turn: Int,petStatus: Array<petStatus?>): Int {
+            if(turn % 2 == 0){
+                return turn * 10
+            }
+            return 0
+        }
+
+        override fun actionDescription(turn: Int, petStatus: Array<petStatus?>): String {
+            if(turn % 2 == 0){
+                return name+" dealt "+actionAmount(turn,petStatus)+" damages to you!!"
+            }
+            return ""
+        }
+    }
+
+    private class stage_7():stage{
+        override val id: Int = 7
+        override val name: String = "Big Tree"
+        override val bossImageId: Int = R.drawable.game_enemy_bigtree
+        override val acceptElement: Int = dict.ELEMENT_WATER
+        override val objectiveType: Int = dict.STAGE_OBJECTIVE_FIGHT
+        override val maxTurn: Int = 10
+        override val damageRequirement: Int = 240
+        override val description: String = "Give me more water!!!!"
+        override val deckSize:Int = 5
         //
         override fun actionType(turn: Int): Int {
             if(turn % 2 == 0){

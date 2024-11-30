@@ -15,6 +15,7 @@ import com.example.eggenda.databinding.FragmentGalleryBinding
 import com.example.eggenda.databinding.FragmentGameBinding
 import com.example.eggenda.gameMonsterChoose.GameMonsterChooseMainActivity
 import com.example.eggenda.gamePetChoose.GamePetChooseMainActivity
+import com.example.eggenda.gameTutorial.tutorialActivity
 import com.example.eggenda.ui.gallery.GalleryViewModel
 
 class GameFragment : Fragment(R.layout.fragment_game) {
@@ -49,6 +50,8 @@ class GameFragment : Fragment(R.layout.fragment_game) {
 
         //tutorial item goes to tutorial class
         tutorialItem.setOnClickListener {
+            val intent = Intent(requireContext(), tutorialActivity::class.java )
+            startActivity(intent)
         }
 
 
