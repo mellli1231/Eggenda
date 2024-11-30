@@ -35,7 +35,7 @@ import org.w3c.dom.Text
 import java.time.LocalDateTime
 import kotlin.math.abs
 
-class gameActivity : AppCompatActivity() {
+class gameActivity : AppCompatActivity(), menuDialog.MenuDialogListener {
 
     private lateinit var sharedPreferenceManager: SharedPreferenceManager
 
@@ -282,6 +282,19 @@ class gameActivity : AppCompatActivity() {
 
 
     }
+
+    override fun onRestartGame(){
+        viewModel.updateGameRunState(dict.GAME_NOT_START)
+        recreate()
+    }
+
+    override fun onQuitGame(){
+        viewModel.updateGameRunState(dict.GAME_NOT_START)
+        val intent = Intent(this, MainActivity::class.java)
+        startActivity(intent)
+    }
+
+
 
     //put pet-> bounce-> count dmg(include stay
     //-> win if target hp = 0, lose if damage too high for some objective
@@ -1750,6 +1763,7 @@ class gameActivity : AppCompatActivity() {
         val dialog = menuDialog.newInstance()
         dialog.show(supportFragmentManager, "MenuDialog")
     }
+
 
 
 }

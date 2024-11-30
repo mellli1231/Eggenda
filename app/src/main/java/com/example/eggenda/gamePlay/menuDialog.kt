@@ -1,5 +1,6 @@
 package com.example.eggenda.gamePlay
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -18,7 +19,20 @@ import com.example.eggenda.R
 
 class menuDialog : DialogFragment() {
 
-    private val viewModel: gameViewModel2 by viewModels()
+    interface MenuDialogListener {
+        fun onRestartGame()
+        fun onQuitGame()
+    }
+
+    private var listener: MenuDialogListener? = null
+
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        // Ensure the activity implements the interface
+        listener = context as? MenuDialogListener
+            ?: throw RuntimeException("$context must implement MenuDialogListener")
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -40,21 +54,16 @@ class menuDialog : DialogFragment() {
 
         //restart the game
         restartBtn.setOnClickListener {
-            //restart the game
-            viewModel.updateGameRunState(dict.GAME_NOT_START)
-            activity?.recreate()
+            listener?.onRestartGame()
+            dismiss()
 
         }
 
         //quit game
         quitBtn.setOnClickListener {
-            viewModel.updateGameRunState(dict.GAME_NOT_START)
-            val intent = Intent(requireContext(), MainActivity::class.java)
+            listener?.onQuitGame()
             dismiss()
-            startActivity(intent)
         }
-
-
 
 
         return view
@@ -69,6 +78,10 @@ class menuDialog : DialogFragment() {
             return fragment
         }
 
+    }
+
+    interface RestartDialogListener {
+        fun onRestartConfirmed()
     }
 
 
