@@ -63,7 +63,7 @@ class GamePetChooseMainActivity : AppCompatActivity(){
         //to set the game should have maximum how many characters
         var deckSize = stageInfo.StageInfoMap(selectedStage)!!.deckSize
 
-        //the mutuable list that can save the list of the pets ,that can send to the game part
+        //the mutuable list that can save the list of the pets ,that can send to the game partasqswq
         val selectedPetID =  MutableList<Int?>(deckSize){ null }
 
         //initialize view model
