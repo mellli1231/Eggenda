@@ -355,15 +355,15 @@ class HomeFragment : Fragment() {
 
         // Set the pet image based on petIndex
         when (petIndex) {
-            0 -> dialogBinding.petImageView.setImageResource(R.drawable.pet_a_babyowlbear)
-            1 -> dialogBinding.petImageView.setImageResource(R.drawable.pet_b_ambushmouseviper)
-            2 -> dialogBinding.petImageView.setImageResource(R.drawable.pet_b_evilwater)
-            3 -> dialogBinding.petImageView.setImageResource(R.drawable.pet_c_animatednutcracker)
+            6 -> dialogBinding.petImageView.setImageResource(R.drawable.pet_a_babyowlbear)
+            7 -> dialogBinding.petImageView.setImageResource(R.drawable.pet_b_ambushmouseviper)
+            1 -> dialogBinding.petImageView.setImageResource(R.drawable.pet_b_evilwater)
+            8 -> dialogBinding.petImageView.setImageResource(R.drawable.pet_c_animatednutcracker)
             4 -> dialogBinding.petImageView.setImageResource(R.drawable.pet_c_deepseamerman)
-            5 -> dialogBinding.petImageView.setImageResource(R.drawable.pet_c_flamingskull)
-            6 -> dialogBinding.petImageView.setImageResource(R.drawable.pet_c_glutinousbunny)
-            7 -> dialogBinding.petImageView.setImageResource(R.drawable.pet_c_healingsprite)
-            8 -> dialogBinding.petImageView.setImageResource(R.drawable.pet_c_lilmothy)
+            2 -> dialogBinding.petImageView.setImageResource(R.drawable.pet_c_flamingskull)
+            0 -> dialogBinding.petImageView.setImageResource(R.drawable.pet_c_glutinousbunny)
+            5 -> dialogBinding.petImageView.setImageResource(R.drawable.pet_c_healingsprite)
+            3 -> dialogBinding.petImageView.setImageResource(R.drawable.pet_c_lilmothy)
             9 -> dialogBinding.petImageView.setImageResource(R.drawable.pet_c_shyraccoon)
         }
 
