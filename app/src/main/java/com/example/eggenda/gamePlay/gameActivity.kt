@@ -1760,7 +1760,7 @@ class gameActivity : AppCompatActivity(), menuDialog.MenuDialogListener {
 
     //set the menu dialog funciton
     private fun showMenuDialog(){
-        val dialog = menuDialog.newInstance(viewModel)
+        val dialog = menuDialog.newInstance()
         dialog.show(supportFragmentManager, "MenuDialog")
     }
 
