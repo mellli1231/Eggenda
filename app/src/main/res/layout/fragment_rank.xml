@@ -10,15 +10,32 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <TextView
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="18dp"
-            android:text="@string/rank_header"
-            android:textSize="32sp"
-            android:textColor="@color/white"
-            android:fontFamily="@font/titan_one"
-            android:gravity="center" />
+            android:orientation="vertical"
+            android:gravity="center"
+            android:paddingVertical="20dp">
+
+            <com.example.eggenda.OutlinedText
+                android:layout_marginTop="20dp"
+                android:paddingHorizontal="2dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/titan_one"
+                android:text="@string/rank_header1"
+                android:textColor="@color/white"
+                android:textSize="32sp" />
+
+            <com.example.eggenda.OutlinedText
+                android:paddingHorizontal="2dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/rank_header2"
+                android:textSize="32sp"
+                android:textColor="@color/white"
+                android:fontFamily="@font/titan_one" />
+        </LinearLayout>
 
 
         <androidx.recyclerview.widget.RecyclerView

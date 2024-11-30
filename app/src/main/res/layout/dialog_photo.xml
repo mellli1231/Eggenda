@@ -12,11 +12,10 @@
         android:layout_height="wrap_content"
         android:text="@string/gallery_choice"
         android:textColor="@color/dark_blue"
-        android:backgroundTint="@color/white"/>
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="?android:attr/listDivider"/>
+        android:backgroundTint="@color/white"
+        android:fontFamily="@font/dangrek_font"
+        android:textSize="18sp"
+        android:layout_marginHorizontal="16dp"/>
 
     <Button
         android:id="@+id/choosePhoto"
@@ -24,5 +23,8 @@
         android:layout_height="wrap_content"
         android:text="@string/photo_choice"
         android:textColor="@color/dark_blue"
-        android:backgroundTint="@color/white"/>
+        android:backgroundTint="@color/white"
+        android:fontFamily="@font/dangrek_font"
+        android:textSize="18sp"
+        android:layout_marginHorizontal="16dp"/>
 </LinearLayout>
