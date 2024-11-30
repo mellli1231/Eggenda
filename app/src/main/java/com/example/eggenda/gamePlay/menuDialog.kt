@@ -1,5 +1,6 @@
 package com.example.eggenda.gamePlay
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -16,9 +17,22 @@ import androidx.fragment.app.viewModels
 import com.example.eggenda.MainActivity
 import com.example.eggenda.R
 
-class menuDialog(viewModel:gameViewModel2) : DialogFragment() {
+class menuDialog : DialogFragment() {
 
-    private val gameViewModel = viewModel
+    interface MenuDialogListener {
+        fun onRestartGame()
+        fun onQuitGame()
+    }
+
+    private var listener: MenuDialogListener? = null
+
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        // Ensure the activity implements the interface
+        listener = context as? MenuDialogListener
+            ?: throw RuntimeException("$context must implement MenuDialogListener")
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -40,21 +54,16 @@ class menuDialog(viewModel:gameViewModel2) : DialogFragment() {
 
         //restart the game
         restartBtn.setOnClickListener {
-            //restart the game
-            gameViewModel.updateGameRunState(dict.GAME_NOT_START)
-            activity?.recreate()
+            listener?.onRestartGame()
+            dismiss()
 
         }
 
         //quit game
         quitBtn.setOnClickListener {
-            gameViewModel.updateGameRunState(dict.GAME_NOT_START)
-            val intent = Intent(requireContext(), MainActivity::class.java)
+            listener?.onQuitGame()
             dismiss()
-            startActivity(intent)
         }
-
-
 
 
         return view
@@ -62,14 +71,17 @@ class menuDialog(viewModel:gameViewModel2) : DialogFragment() {
 
     companion object {
 
-        fun newInstance(viewModel:gameViewModel2): menuDialog {
-
-            val fragment = menuDialog(viewModel)
+        fun newInstance(): menuDialog {
+            val fragment = menuDialog()
             val args = Bundle().apply {}
             fragment.arguments = args
             return fragment
         }
 
+    }
+
+    interface RestartDialogListener {
+        fun onRestartConfirmed()
     }
 
 
