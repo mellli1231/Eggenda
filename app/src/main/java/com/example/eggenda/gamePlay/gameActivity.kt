@@ -77,7 +77,7 @@ class gameActivity : AppCompatActivity(), menuDialog.MenuDialogListener {
     private lateinit var unitRecyclerView: RecyclerView
     private lateinit var deckAdapter: deckAdapter
 
-    private lateinit var tempRestart: Button
+    private lateinit var tempRestart: ImageView
 
     //variables for UI
     private var selectedPetOrder: Int = -1

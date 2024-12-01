@@ -86,11 +86,9 @@ class GalleryAdapter(private var characterList : IntArray,
 
     fun updatePetsChoose(newImages: IntArray) {
         characterList = newImages
-//        filteredPetsList = characterList.filterIndexed { index, _ ->
-//            index < ownedPets.size && ownedPets[index] == 1
-//        }
         notifyDataSetChanged()
     }
+
 
 
 }

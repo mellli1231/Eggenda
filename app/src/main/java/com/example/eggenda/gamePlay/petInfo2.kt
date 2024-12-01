@@ -208,10 +208,6 @@ class petInfo2 {
         }
     }
 
-
-
-
-
     private class lilMothman :Pet {
         override val id: Int = 3
         override val name: String = "Lil' Mothman"

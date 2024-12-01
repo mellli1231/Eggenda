@@ -7,6 +7,7 @@ import android.util.Log
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.ViewSwitcher
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
@@ -79,7 +80,6 @@ class GameMonsterChooseMainActivity : AppCompatActivity () {
             index < ownedPets.size && ownedPets[index] == 1
         } .also { Log.d("FilteredPets", "filteredPetsList size: ${it.size}") }
 
-
         //set the button
 
         button = findViewById(R.id.game_monster_go)
@@ -112,13 +112,14 @@ class GameMonsterChooseMainActivity : AppCompatActivity () {
             else{
                 monsterStatusIcon.isVisible = false
                 monsterStatusText.text = "You're ready to play!"
-//                bossChallengeCover.isInvisible = true
+
             }
 
             //set the mask if the user does not get enough pets for that stage
             if(stageInfo.StageInfoMap(newStageId)!!.deckSize > filteredPetsList.size){
                 bossChallengeCover.isVisible = true
                 monsterWarningText.isVisible = true
+                monsterWarningText.setTextColor(resources.getColor(R.color.fire))
                 monsterWarningText.text = "Warning : \n The number of pets owned is insufficient to " +
                         "challenge the boss! \n Pets owned now: ${filteredPetsList.size} \n" + "" +
                         "Stage Required : ${stageInfo.StageInfoMap(newStageId)!!.deckSize}"
@@ -134,8 +135,11 @@ class GameMonsterChooseMainActivity : AppCompatActivity () {
 
             } else {
                 bossChallengeCover.isVisible = false
-                monsterWarningText.isVisible = false
+                monsterWarningText.isVisible = true
                 buttonClickableStatus()
+                monsterWarningText.setTextColor(resources.getColor(R.color.water))
+                monsterWarningText.text = "Pets Required : \nPets owned now: ${filteredPetsList.size} \n"  +
+                        "Stage Required : ${stageInfo.StageInfoMap(newStageId)!!.deckSize}"
 
             }
 

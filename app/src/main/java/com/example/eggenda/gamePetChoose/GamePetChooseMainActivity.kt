@@ -63,7 +63,7 @@ class GamePetChooseMainActivity : AppCompatActivity(){
         //to set the game should have maximum how many characters
         var deckSize = stageInfo.StageInfoMap(selectedStage)!!.deckSize
 
-        //the mutuable list that can save the list of the pets ,that can send to the game part
+        //the mutuable list that can save the list of the pets ,that can send to the game partasqswq
         val selectedPetID =  MutableList<Int?>(deckSize){ null }
 
         //initialize view model
@@ -72,7 +72,7 @@ class GamePetChooseMainActivity : AppCompatActivity(){
 
         //initialize pets array that has in the code in int array
         //here should take it form pet info class
-        allPetsArrayID = intArrayOf(0,1,2,3,4,5,6,7,8,9)
+        allPetsArrayID = IntArray(petInfo.getTotalPetAmount()){it}
 
         //initialize start button
         startButton = findViewById(R.id.fight_start)
