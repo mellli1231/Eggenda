@@ -9,7 +9,7 @@
     android:gravity="center"
     android:id="@+id/game_dialog_root_layout">
 
-    <View
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/game_dailog_background_view"
         android:layout_width="320dp"
         android:layout_height="30dp"
@@ -19,31 +19,33 @@
         app:layout_constraintEnd_toStartOf="@+id/card_virtical_line"
         app:layout_constraintHorizontal_bias="0.485"
         app:layout_constraintStart_toStartOf="@+id/card_virtical_line"
-        app:layout_constraintTop_toTopOf="@+id/titleHorLine" />
+        app:layout_constraintTop_toTopOf="@+id/titleHorLine" >
 
-    <TextView
-        android:id="@+id/game_card_petName"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:fontFamily="@font/titan_one"
-        android:text="Shy Raccoon"
-        android:textSize="20sp"
-        app:layout_constraintBottom_toBottomOf="@+id/game_dailog_background_view"
-        app:layout_constraintEnd_toEndOf="@+id/game_dailog_background_view"
-        app:layout_constraintStart_toStartOf="@+id/game_dailog_background_view"
-        app:layout_constraintTop_toTopOf="@+id/game_dailog_background_view" />
+        <TextView
+            android:id="@+id/game_card_petName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/titan_one"
+            android:text="Shy Raccoon"
+            android:textSize="20sp"
+            app:layout_constraintBottom_toBottomOf="@+id/game_dailog_background_view"
+            app:layout_constraintEnd_toEndOf="@+id/game_dailog_background_view"
+            app:layout_constraintStart_toStartOf="@+id/game_dailog_background_view"
+            app:layout_constraintTop_toTopOf="@+id/game_dailog_background_view" />
 
-    <TextView
-        android:id="@+id/game_card_petId"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:fontFamily="@font/titan_one"
-        android:text="004"
-        android:textSize="20sp"
-        app:layout_constraintBottom_toBottomOf="@+id/game_dailog_background_view"
-        app:layout_constraintEnd_toStartOf="@+id/game_card_petName"
-        app:layout_constraintStart_toStartOf="@+id/game_dailog_background_view"
-        app:layout_constraintTop_toTopOf="@+id/game_dailog_background_view" />
+        <TextView
+            android:id="@+id/game_card_petId"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/titan_one"
+            android:text="004"
+            android:textSize="20sp"
+            app:layout_constraintBottom_toBottomOf="@+id/game_dailog_background_view"
+            app:layout_constraintEnd_toStartOf="@+id/game_card_petName"
+            app:layout_constraintStart_toStartOf="@+id/game_dailog_background_view"
+            app:layout_constraintTop_toTopOf="@+id/game_dailog_background_view" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/card_image_line"
