@@ -38,7 +38,13 @@ class NotifyService : Service() {
 
         when (notificationType) {
             "hatch" -> showHatchNotification()
-            "deadline" -> showDeadlineNotification(intent.getStringExtra("task_name"))
+            "deadline" -> {
+                val taskId = intent.getLongExtra("task_id", -1)
+                val taskName = intent.getStringExtra("task_name")
+                if (taskId != -1L) {
+                    showDeadlineNotification(taskId, taskName)
+                }
+            }
         }
 
         stopSelf()
@@ -83,13 +89,14 @@ class NotifyService : Service() {
             .setContentText("Your egg is ready to hatch!")
             .setSmallIcon(R.drawable.egg_uncracked_blue_white)
             .setContentIntent(pendingIntent) // Set the PendingIntent
+            .setPriority(NotificationCompat.PRIORITY_LOW)
             .setAutoCancel(true) // Dismiss notification on tap
             .build()
 
         notificationManager.notify(1, notification) // Unique ID for experience notifications
     }
 
-    private fun showDeadlineNotification(taskName: String?) {
+    private fun showDeadlineNotification(taskId: Long, taskName: String?) {
         val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         val channelId = "deadline_channel"
 
@@ -110,19 +117,20 @@ class NotifyService : Service() {
             // Optional: Add data to specify navigation to HomeFragment
             action = "OPEN_HOME_FRAGMENT"
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            putExtra("task_id", taskId) // Pass the unique task ID
         }
 
         // Wrap the intent in a PendingIntent
         val pendingIntent = PendingIntent.getActivity(
             this,
-            0,
+            taskName.hashCode(), // Unique request code for each task
             intent,
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
 
         val notification = NotificationCompat.Builder(this, channelId)
             .setContentTitle("Task Deadline Alert")
-            .setContentText("Your task \"$taskName\" is due in 10 minutes!")
+            .setContentText("Your task \"$taskName\" is due in 10 minutes or less!")
             .setSmallIcon(R.drawable.app_icon)
             .setContentIntent(pendingIntent)
             .setAutoCancel(true)
