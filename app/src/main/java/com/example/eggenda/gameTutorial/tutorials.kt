@@ -20,33 +20,41 @@ class tutorials {
     interface tutorial{
         val coverDescription: String
         val coverImage: Int
-        val totalPages: Int
         val pagesImage: IntArray
         val description: Array<String>
+        val totalPages: Int
     }
 
     class tutorial1():tutorial{
         override val coverDescription: String = "Basic mechanic: put your pets"
         override val coverImage: Int = R.drawable.tut1_cover
-        override val totalPages: Int = 2
-        override val pagesImage: IntArray = intArrayOf(R.drawable.tut1_p1, R.drawable.tut1_p2)
-        override val description: Array<String> = arrayOf("Click a pet on your deck.", "Click a box on the board.")
+
+        override val pagesImage: IntArray = intArrayOf(R.drawable.tut1_p1, R.drawable.tut1_p2, R.drawable.tut1_p3)
+        override val description: Array<String> = arrayOf("Click a pet on your deck.",
+            "Click a box on the board (the orange dot).",
+            "Done")
+        override val totalPages: Int = pagesImage.size
     }
 
     class tutorial2():tutorial{
         override val coverDescription: String = "Basic mechanic: push your pet"
         override val coverImage: Int = R.drawable.tut2_cover
-        override val totalPages: Int = 2
-        override val pagesImage: IntArray = intArrayOf(R.drawable.tut2_p1, R.drawable.tut2_p2)
-        override val description: Array<String> = arrayOf("What happen if we put a pet on this position?", "It will push all the pet away from it! Notice that the bunny is returned to the deck, because it was on the boundary of the board.")
+        override val pagesImage: IntArray = intArrayOf(R.drawable.tut2_p1, R.drawable.tut2_p2, R.drawable.tut2_p3)
+        override val description: Array<String> = arrayOf("if we put a pet on this position (orange dot)",
+            "It will push all the pet away from it!",
+            "The position of flame skull and bunny are changed. Notice that the bunny is returned to your deck because it was placed on the boundary")
+        override val totalPages: Int = pagesImage.size
     }
 
 
     class tutorial3():tutorial{
-        override val coverDescription: String = "Basic mechanic: Attack"
+        override val coverDescription: String = "Basic mechanic: Attack and Victory"
         override val coverImage: Int = R.drawable.tut3_cover
-        override val totalPages: Int = 3
-        override val pagesImage: IntArray = intArrayOf(R.drawable.tut3_p1, R.drawable.tut3_p2,R.drawable.tut3_p3)
-        override val description: Array<String> = arrayOf("Each pet has its unique skill!.", "Long press on the icon to check it", "Your pet can deal damage when the condition is matched")
+        override val pagesImage: IntArray = intArrayOf(R.drawable.tut3_p1, R.drawable.tut3_p2,R.drawable.tut3_p3, R.drawable.tut3_p4)
+        override val description: Array<String> = arrayOf("Each pet has its unique skill, when the condition is met, the counting will become 0.",
+            "Long press on the icon to check how to attack",
+            "Your pet can deal damage when the condition is matched",
+            "Generally you can win the game when the hp of the enemy become zero!")
+        override val totalPages: Int = pagesImage.size
     }
 }
