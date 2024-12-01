@@ -173,6 +173,7 @@
         android:id="@+id/fight_start"
         android:layout_width="105dp"
         android:layout_height="40dp"
+        android:layout_marginTop="80dp"
         android:layout_marginBottom="16dp"
         android:background="@drawable/game_start_button"
         android:enabled="false"
@@ -182,8 +183,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/constraintLayout4"
-        app:layout_constraintVertical_bias="1.0" />
+        app:layout_constraintTop_toTopOf="@+id/guideline18" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/infoHorLine"
