@@ -103,7 +103,6 @@
         app:layout_constraintTop_toTopOf="@+id/descriptionBox_line"
         app:layout_constraintVertical_bias="0.458">
 
-
         <TextView
             android:id="@+id/game_dialog_petSkill_name"
             android:layout_width="match_parent"
@@ -111,14 +110,15 @@
             android:fontFamily="@font/titan_one"
             android:padding="5dp"
             android:text="Skill Name"
-            android:textSize="17sp"
+            android:textSize="20sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toTopOf="@+id/descHorLine"
             app:layout_constraintEnd_toStartOf="@+id/descVerLine"
-            app:layout_constraintHorizontal_bias="0.528"
+            app:layout_constraintHorizontal_bias="0.103"
             app:layout_constraintStart_toStartOf="@+id/descVerLine"
             app:layout_constraintTop_toTopOf="@+id/descHorLine"
-            app:layout_constraintVertical_bias="0.478" />
+            app:layout_constraintVertical_bias="0.484" />
+
 
         <TextView
             android:id="@+id/game_dialog_skillDescription"
@@ -133,31 +133,34 @@
             app:layout_constraintTop_toBottomOf="@+id/game_dialog_petSkill_name" />
 
 
-        <TextView
-            android:id="@+id/game_dialog_condition_title"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/titan_one"
-            android:padding="5dp"
-            android:text="Condition"
-            android:textSize="17sp"
-            android:textStyle="bold"
-            app:layout_constraintEnd_toStartOf="@+id/descVerLine"
-            app:layout_constraintStart_toStartOf="@+id/descVerLine"
-            app:layout_constraintTop_toBottomOf="@+id/game_dialog_skillDescription" />
+<!--        <TextView-->
+<!--            android:id="@+id/game_dialog_condition_title"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:fontFamily="@font/titan_one"-->
+<!--            android:padding="5dp"-->
+<!--            android:text="Condition"-->
+<!--            android:textSize="17sp"-->
+<!--            android:textStyle="bold"-->
+<!--            app:layout_constraintEnd_toStartOf="@+id/descVerLine"-->
+<!--            app:layout_constraintStart_toStartOf="@+id/descVerLine"-->
+<!--            app:layout_constraintTop_toBottomOf="@+id/game_dialog_skillDescription" />-->
 
 
-        <TextView
-            android:id="@+id/game_dialog_next_reminder"
-            android:layout_width="290dp"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/titan_one"
-            android:padding="5dp"
-            android:text="5 more turn(s) to stay on the board                 jwlqlwkepo"
-            android:textSize="14.5sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/game_dialog_condition_title" />
+<!--        <TextView-->
+<!--            android:id="@+id/game_dialog_next_reminder"-->
+<!--            android:layout_width="305dp"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:fontFamily="@font/titan_one"-->
+<!--            android:letterSpacing="0.007"-->
+<!--            android:lineSpacingExtra="1dp"-->
+<!--            android:padding="5dp"-->
+<!--            android:text="5 more turn(s) to stay on the board                 jwlqlwkepo"-->
+<!--            android:textSize="15.5sp"-->
+<!--            app:layout_constraintEnd_toEndOf="parent"-->
+<!--            app:layout_constraintHorizontal_bias="1.0"-->
+<!--            app:layout_constraintStart_toStartOf="parent"-->
+<!--            app:layout_constraintTop_toBottomOf="@+id/game_dialog_petSkill_name" />-->
 
         <TextView
             android:id="@+id/game_dialog_next_dmg_title"
@@ -165,12 +168,13 @@
             android:layout_height="wrap_content"
             android:fontFamily="@font/titan_one"
             android:padding="5dp"
-            android:text="Next Damage"
-            android:textSize="17sp"
+            android:text="Abilities after X turns"
+            android:textSize="20sp"
             android:textStyle="bold"
             app:layout_constraintEnd_toStartOf="@+id/descVerLine"
+            app:layout_constraintHorizontal_bias="0.153"
             app:layout_constraintStart_toStartOf="@+id/descVerLine"
-            app:layout_constraintTop_toBottomOf="@+id/game_dialog_next_reminder" />
+            app:layout_constraintTop_toBottomOf="@+id/game_dialog_skillDescription" />
 
         <TextView
             android:id="@+id/game_dialog_nextDmgAmount"
@@ -179,7 +183,7 @@
             android:fontFamily="@font/titan_one"
             android:padding="5dp"
             android:text="100 water damage"
-            android:textSize="14.5sp"
+            android:textSize="17sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.533"
             app:layout_constraintStart_toStartOf="parent"

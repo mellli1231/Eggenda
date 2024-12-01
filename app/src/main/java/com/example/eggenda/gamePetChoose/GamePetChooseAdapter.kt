@@ -34,7 +34,7 @@ class GamePetChooseAdapter(private var characterList: IntArray,
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.game_item_frame, parent,false)
+            .inflate(R.layout.game_choose_pet_item_frame, parent,false)
         return ViewHolder(view)
     }
 
@@ -60,8 +60,7 @@ class GamePetChooseAdapter(private var characterList: IntArray,
             // Set the pet image
             petDetails?.let {
                 imageView.setImageResource(it.imageId)
-
-                // Change the item's background color based on pet properties
+//                 Change the item's background color based on pet properties
                 val backgroundColor = when (it.element) { // Assuming `type` is a property
                     dict.ELEMENT_FIRE -> context.getColor(R.color.fire)
                     dict.ELEMENT_WATER -> context.getColor(R.color.water)

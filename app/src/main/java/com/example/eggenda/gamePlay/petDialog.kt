@@ -75,7 +75,8 @@ class petDialog : DialogFragment(){
             view.findViewById<TextView>(R.id.game_card_petName).text = getpet.name
             view.findViewById<TextView>(R.id.game_dialog_petSkill_name).text = getpet.skillName
             view.findViewById<TextView>(R.id.game_dialog_skillDescription).text = getpet.description
-            view.findViewById<TextView>(R.id.game_dialog_next_reminder).text = petCondition
+//            view.findViewById<TextView>(R.id.game_dialog_next_reminder).text = petCondition
+            view.findViewById<TextView>(R.id.game_dialog_next_dmg_title).text = petCondition
             view.findViewById<TextView>(R.id.game_dialog_nextDmgAmount).text = petNextDmg
 //            view.findViewById<ImageView>(R.id.pet_card_icon).setImageResource(R.drawable.game_petcard_water)
 //            when (element_background){

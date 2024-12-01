@@ -66,8 +66,8 @@ class petInfo2 {
         override val damage: Int = -30
         override val count: Int = 2
         override val skillName :String ="Sleepy..."
-        override val description: String = "Heals "+(damage * -1)+" hp every "+count +" turns\n" +
-                "when it stays on the board."
+        override val description: String = "It heals the player " + (damage * -1)+ " hp only if it remains on the board for " + count.toString()+ " turn(s).\n\n" + "" +
+                "If it’s knocked out, no healing occurs"
         override val rarity: Int = dict.RARITY_NORMAL
 
         override fun dealDamage(petStatus: Array<petStatus?>, petOrder: Int,deckSize:Int): Int {
@@ -75,7 +75,7 @@ class petInfo2 {
 
                 return damage
             }
-            return 0////
+            return 0
         }
 
         override fun attackCountdown(petStatus: Array<petStatus?>, petOrder: Int,deckSize:Int): Int {
@@ -88,10 +88,18 @@ class petInfo2 {
 
         override fun condition(petStatus: Array<petStatus?>, petOrder: Int,deckSize:Int): String {
             if(petStatus[petOrder]!!.location == dict.onDECK){
-                return count.toString()+" more turn(s) to stay on the board "
+                return "Abilities after " +count.toString()+  " turns (not on board yet)"
+//                return count.toString()+" more turn(s) to stay on the board to heal" + (damage * -1)+ "hp"
+//                return "It heals the player " + (damage * -1)+ " hp only if it remains on the board for " + count.toString()+ " turn(s).\n\n" +
+//                        "If it’s knocked out, no healing occurs."
             }
             else{
-                return attackCountdown(petStatus, petOrder,deckSize).toString()+" more turn(s) to stay on the board"
+                return "Abilities after " +attackCountdown(petStatus, petOrder,deckSize).toString()+  " turns"
+//                return attackCountdown(petStatus, petOrder,deckSize).toString()+" more turn(s) to stay on the board"
+//                return "This pet heals the player only if it remains on the board for [X] more turn(s). If it’s knocked out, no healing occurs"
+//                return "It heals the player " + (damage * -1)+ " hp only if it remains on the board for " + attackCountdown(petStatus, petOrder,deckSize).toString()+ " more turn(s).\n\n" +
+//                        "If it’s knocked out, no healing occurs."
+//                return name + " has " + attackCountdown(petStatus, petOrder,deckSize).toString()+" more turn(s) to heal the player" + (damage * -1)+ "hp"
             }
 
         }
@@ -115,9 +123,13 @@ class petInfo2 {
         override val damage: Int = 20
         override val count: Int = 1
         override val skillName :String ="Fragile!"
-        override val description: String = "Deal "+damage.toString()+" "+dict.ELEMENT_STRING[element]+" damages\n" +
-                "when it is knocked out from the board\n" +
-                "on the next turn after it is placed on the board."
+        override val description: String = "If Evil Water is knocked out of the board within 1 turn it was placed, " +
+                "deal " + damage.toString() + " Water Elemental damage to the Boss.\n\n" +
+                "If it remains on the board after 1 turn, deal 0 damage to Boss."
+
+//            "Deal "+damage.toString()+" "+dict.ELEMENT_STRING[element]+" damages " +
+//                "when it is knocked out from the board" +
+//                "on the next turn after it is placed on the board."
         override val rarity: Int = dict.RARITY_NORMAL
 
         override fun dealDamage(petStatus: Array<petStatus?>, petOrder: Int,deckSize:Int): Int {
@@ -137,17 +149,25 @@ class petInfo2 {
 
         override fun condition(petStatus: Array<petStatus?>, petOrder: Int,deckSize:Int): String {
             if(petStatus[petOrder]!!.location == dict.onDECK){
-                return "Knocked out from the board after\n" +
-                        "1 more turn it stays on the board "
+                return "Abilities after " +count.toString()+  " turns (not on board yet)"
+//                return "If it's knocked out of the board within 1 turn it was placed, deal " + damage.toString() + " Water Elemental damage to the Boss.\n\n"
+//                        "If it remains on the board next turn, deal 0 damage to Boss."
             }
             else{
                 val count = attackCountdown(petStatus, petOrder,deckSize)
                 var countStr = "∞"
                 if(count >= 0){
                     countStr = count.toString()
+//                    return "Abilities after " + count.toString()+  " turns (not on board yet)"
+//                    return "If Evil Water is knocked out of the board next turn, deal " + damage.toString() + " Water Elemental damage to the Boss.\n\n" +
+//                            "If it remains on the board at next turn, deal 0 damage to Boss."
+
                 }
-                return "Knocked out from the board after\n" +
-                        countStr+" more turn it stays on the board "
+                return "Abilities after " + countStr+  " turns"
+//                return "Evil Water is not knocked out of the board, no damages will deal until it's knocked out from the board."
+
+//                return "Knocked out from the board after\n" +
+//                        countStr+" more turn it stays on the board "
             }
         }
 
