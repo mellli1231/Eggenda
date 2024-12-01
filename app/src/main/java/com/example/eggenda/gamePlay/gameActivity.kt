@@ -860,7 +860,7 @@ class gameActivity : AppCompatActivity(), menuDialog.MenuDialogListener {
             val petElement = petInfo.getPetInfoById(chosenPetId[i])!!.element
             Log.d("damage dealt", "pet element : ${petElement}")
             Log.d("damage dealt", "accept element: ${acceptElement}")
-            if (damage > 0 &&  (acceptElement == dict.STAGE_ACCEPT_ALL_ELEMENT || acceptElement == petElement)){
+            if (damage > 0 ){
                 val petID = petStatus[i]?.unitId!!
                 val pet = petInfo.getPetInfoById(petID)!!
                 val atkElement = pet.element
@@ -884,7 +884,7 @@ class gameActivity : AppCompatActivity(), menuDialog.MenuDialogListener {
                 }
 
 
-                if((atkType == dict.ATK_TYPE_STAY && includeStay)|| atkType != dict.ATK_TYPE_STAY){
+                if(((atkType == dict.ATK_TYPE_STAY && includeStay)|| atkType != dict.ATK_TYPE_STAY )&&  (acceptElement == dict.STAGE_ACCEPT_ALL_ELEMENT || acceptElement == petElement)){
                     damageHistory[atkElement] += damage
                     reportList.add(damageReport)
                     hitNum ++
