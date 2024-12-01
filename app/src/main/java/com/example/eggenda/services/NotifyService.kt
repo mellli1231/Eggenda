@@ -94,17 +94,41 @@ class NotifyService : Service() {
         val channelId = "deadline_channel"
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val channel = NotificationChannel(channelId, "Deadline Notifications", NotificationManager.IMPORTANCE_HIGH)
+            val channel = NotificationChannel(
+                channelId,
+                "Deadline Notifications",
+                NotificationManager.IMPORTANCE_HIGH
+            )
             notificationManager.createNotificationChannel(channel)
         }
+
+        // Use taskName.hashCode() or a unique ID for the notification ID
+        val notificationId = taskName?.hashCode() ?: System.currentTimeMillis().toInt()
+
+        // Create an Intent to open MainActivity
+        val intent = Intent(this, MainActivity::class.java).apply {
+            // Optional: Add data to specify navigation to HomeFragment
+            action = "OPEN_HOME_FRAGMENT"
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        }
+
+        // Wrap the intent in a PendingIntent
+        val pendingIntent = PendingIntent.getActivity(
+            this,
+            0,
+            intent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
 
         val notification = NotificationCompat.Builder(this, channelId)
             .setContentTitle("Task Deadline Alert")
             .setContentText("Your task \"$taskName\" is due in 10 minutes!")
             .setSmallIcon(R.drawable.app_icon)
+            .setContentIntent(pendingIntent)
+            .setAutoCancel(true)
             .build()
 
-        notificationManager.notify(2, notification) // Unique ID for deadline notifications
+        notificationManager.notify(notificationId, notification) // Unique IDs for each deadline
     }
 
 
