@@ -275,21 +275,21 @@ class stageInfo {
         }
 
         override fun actionAmount(turn: Int,petStatus: Array<petStatus?>): Int {
-            if(turn % 2 == 0){
-                return dict.STAGE_PUSH_NORTH
-            }
             if(turn % 5 == 0){
                 return 80
+            }
+            if(turn % 2 == 0){
+                return dict.STAGE_PUSH_NORTH
             }
             return 0
         }
 
         override fun actionDescription(turn: Int,petStatus: Array<petStatus?>): String {
-            if(turn % 2 == 0){
-                return "Headquarter of Environmental Protection Agency pull you to the north"
-            }
             if(turn % 5 == 0){
                 return "Headquarter of Environmental Protection Agency dealt 80 damage to you!"
+            }
+            if(turn % 2 == 0){
+                return "Headquarter of Environmental Protection Agency pull you to the north"
             }
             return ""
         }
