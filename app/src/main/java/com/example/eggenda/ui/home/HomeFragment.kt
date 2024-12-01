@@ -28,6 +28,7 @@ import com.example.eggenda.databinding.DialogHatchBinding
 import com.example.eggenda.databinding.FragmentHomeBinding
 import com.example.eggenda.gamePetChoose.SharedPreferenceManager
 import com.example.eggenda.gamePlay.gameActivity
+import com.example.eggenda.Util
 import com.example.eggenda.ui.database.entryDatabase.EntryDatabase
 import com.example.eggenda.ui.database.entryDatabase.EntryDatabaseDao
 import com.example.eggenda.ui.database.entryDatabase.EntryRepo
@@ -97,6 +98,9 @@ class HomeFragment : Fragment() {
         val root: View = binding.root
         val petOwnership = loadPetOwnership()
 //        sharedPreferenceManager = SharedPreferenceManager(requireContext())klh
+
+        // Get permission for notifications
+        Util.checkPermissions(this)
 
         //get username and id
         val user = UserPref.getUsername(requireContext())
