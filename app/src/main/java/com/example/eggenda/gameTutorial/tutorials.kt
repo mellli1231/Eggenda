@@ -43,7 +43,7 @@ class tutorials {
         override val coverImage: Int = R.drawable.tut2_cover
         override val pagesImage: IntArray = intArrayOf(R.drawable.tut2_p1, R.drawable.tut2_p2, R.drawable.tut2_p3)
         override val description: Array<String> = arrayOf("if we put a pet on this position (orange dot)",
-            "It will push all the pet away from it!",
+            "It will push all the pets away from it!",
             "The position of flame skull and bunny are changed. Notice that the bunny is returned to your deck because it was placed on the boundary")
         override val totalPages: Int = pagesImage.size
     }
@@ -65,17 +65,21 @@ class tutorials {
         override val coverImage: Int = R.drawable.tut4_cover
         override val pagesImage: IntArray = intArrayOf(R.drawable.tut4_p1, R.drawable.tut4_p2,R.drawable.tut4_p3, R.drawable.tut4_p4)
         override val description: Array<String> = arrayOf("Each stage has different requirements, you can click STAGE INFO to check it.",
-            "The first type of objective is: No damage restriction. Means you have to kill the enemy within the max turn, but you can deal more damage than the hp of them",
-            "The second type of objective is: Deal EXACT damage. Means you have to deal damage within the max turn EXACTLY equals to the HP of the enemy",
-            "The last type of objective is: Boss fight. Means you have to kill the boss within the max turn with no damage restriction, but the boss can fight you back or move you pets position.")
+            "1) No damage restriction.\n You have to kill the enemy within the max turn, but you can deal more damage than the enemy HP",
+            "2) Deal EXACT damage.\nYou have to deal damage within the max turn EXACTLY equals to the HP of the enemy",
+            "3) Boss fight.\nYou have to kill the boss within the max turn + no damage restriction,it can fight you back / move on-board pets' position.")
         override val totalPages: Int = pagesImage.size
     }
+
+//    "The first type of objective is: No damage restriction. Means you have to kill the enemy within the max turn, but you can deal more damage than the hp of them",
+//    "The second type of objective is: Deal EXACT damage. Means you have to deal damage within the max turn EXACTLY equals to the HP of the enemy",
+//    "The last type of objective is: Boss fight. Means you have to kill the boss within the max turn with no damage restriction, but the boss can fight you back or move you pets position.")
 
     class tutorial5():tutorial{
         override val coverDescription: String = "Advanced mechanic: Elements"
         override val coverImage: Int = R.drawable.tut5_cover
         override val pagesImage: IntArray = intArrayOf(R.drawable.tut5_p1, R.drawable.tut5_p2,R.drawable.tut5_p3)
-        override val description: Array<String> = arrayOf("We have three elements in this game: Forest, Water and Fire.",
+        override val description: Array<String> = arrayOf("We have 3 elements in this game: Forest, Water and Fire.",
             "Some stages allow you to deal damage with all kind of elements, but some stages allow accept one of those three",
             "We will add more interesting stuff for elements once we get more fund!")
         override val totalPages: Int = pagesImage.size

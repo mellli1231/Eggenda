@@ -63,7 +63,7 @@ class PetChooseDialogFragment  : DialogFragment (){
             view.findViewById<TextView>(R.id.dialog_petSkill_name).text = getpet.skillName
             view.findViewById<TextView>(R.id.dialog_skillCondition).text = getpet.description
             view.findViewById<TextView>(R.id.dialog_attackType).text = dict.ATK_STRING[getpet.attackType]
-            view.findViewById<TextView>(R.id.dialog_count).text = getpet.count.toString() + "turn(s) to make an attack"
+//            view.findViewById<TextView>(R.id.dialog_count).text = getpet.count.toString() + "turn(s) to make an attack"
         }
 
         return view

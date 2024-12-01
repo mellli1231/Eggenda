@@ -23,8 +23,6 @@ class boardAdapter(
         val countFrame: ImageView = itemView.findViewById(R.id.countFrame)
         val countView: TextView = itemView.findViewById(R.id.attackCount)
 
-
-
         init {
             itemView.setOnClickListener {
                 onItemClick(adapterPosition)
