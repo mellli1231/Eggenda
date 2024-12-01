@@ -18,17 +18,14 @@
             android:orientation="vertical"
             android:gravity="center">
 
-            <ImageView
+            <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/profile_photo"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:maxWidth="150dp"
-                android:maxHeight="175dp"
-                android:adjustViewBounds="true"
+                android:layout_width="175dp"
+                android:layout_height="175dp"
                 android:layout_margin="10dp"
                 android:src="@drawable/defaultprofile"
-                android:scaleType="centerCrop">
-            </ImageView>
+                android:scaleType="centerCrop" />
+
 
             <Button
                 android:id="@+id/btnChangePhoto"

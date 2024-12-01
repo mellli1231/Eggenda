@@ -91,6 +91,9 @@
     <string name="rank_header1">Your Journey to the</string>
     <string name="rank_header2">Top Starts Here!</string>
     <string name="your_settings_so_that_you_are_comfortable">Your settings so that you are comfortable</string>
+    <string name="about">About Us</string>
+    <string name="about_description">Our Eggenda team is motivated to make you happy! We wish to help you produce a healthy work-life balance as we celebrate achievements - both professional and personal. Explore our website to learn more about us and our journey!</string>
+    <string name="discover_us">Discover Us</string>
 
     <string-array name="language_options">
         <item>English</item>

@@ -1,28 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:showIn="navigation_view">
 
     <!--main stuff-->
-    <group android:checkableBehavior="single">
+    <group android:id="@+id/main" android:checkableBehavior="single">
         <item
             android:id="@+id/nav_home"
-            android:title="@string/menu_home" />
+            android:title="@string/menu_home"
+            android:icon="@drawable/home"
+            app:itemIconTint="@color/light_brown"/>
 
         <item
             android:id="@+id/nav_game"
-            android:title="@string/game_label"/>
+            android:title="@string/game_label"
+            android:icon="@drawable/battle"/>
 
     </group>
 
     <!--customization-->
-    <group android:checkableBehavior="single">
-        <item
-            android:title="@string/customization"
-            android:enabled="false" />
+    <group android:id="@+id/customization" android:checkableBehavior="single">
         <item
             android:id="@+id/nav_eggs"
-            android:title="@string/eggs"/>
+            android:title="@string/eggs"
+            />
 
         <item
             android:id="@+id/nav_pets"
@@ -30,31 +32,30 @@
     </group>
 
     <!--points-->
-    <group android:checkableBehavior="single">
-        <item
-            android:title="@string/points"
-            android:enabled="false" />
+    <group android:id="@+id/points" android:checkableBehavior="single">
         <item
             android:id="@+id/nav_quests"
-            android:title="@string/quests" />
+            android:title="@string/quests"
+            android:icon="@drawable/quest"/>
     </group>
 
     <!--showcase-->
-    <group android:checkableBehavior="single">
-        <item
-            android:title="@string/showcase"
-            android:enabled="false" />
-
+    <group android:id="@+id/showcase" android:checkableBehavior="single">
         <item
             android:id="@+id/nav_rankings"
-            android:title="@string/rankings"/>
+            android:title="@string/rankings"
+            android:icon="@drawable/leaderboard"/>
         <item
             android:id="@+id/nav_gallery"
-            android:title="@string/menu_gallery" />
+            android:title="@string/menu_gallery"
+            android:icon="@drawable/picture"/>
+    </group>
 
+    <group android:id="@+id/settings" android:checkableBehavior="single">
         <item
             android:id="@+id/nav_settings"
-            android:title="@string/settings_title"/>
+            android:title="@string/settings_title"
+            android:icon="@drawable/settings"/>
     </group>
 
 </menu>
