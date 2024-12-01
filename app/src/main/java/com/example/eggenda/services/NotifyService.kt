@@ -2,6 +2,7 @@ package com.example.eggenda.services
 
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.app.PendingIntent
 import android.content.BroadcastReceiver
 import android.app.Service
 import android.content.Context
@@ -9,6 +10,7 @@ import android.content.Intent
 import android.os.Build
 import android.os.IBinder
 import androidx.core.app.NotificationCompat
+import com.example.eggenda.MainActivity
 import com.example.eggenda.R
 
 class NotifyService : Service() {
@@ -28,7 +30,6 @@ class NotifyService : Service() {
 
     override fun onCreate() {
         super.onCreate()
-        TODO("Not yet implemented")
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -40,6 +41,7 @@ class NotifyService : Service() {
             "deadline" -> showDeadlineNotification(intent.getStringExtra("task_name"))
         }
 
+        stopSelf()
         return START_NOT_STICKY
     }
 
@@ -61,10 +63,27 @@ class NotifyService : Service() {
             notificationManager.createNotificationChannel(channel)
         }
 
+        // Create an Intent to open MainActivity
+        val intent = Intent(this, MainActivity::class.java).apply {
+            // Optional: Add data to specify navigation to HomeFragment
+            action = "OPEN_HOME_FRAGMENT"
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        }
+
+        // Wrap the intent in a PendingIntent
+        val pendingIntent = PendingIntent.getActivity(
+            this,
+            0,
+            intent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+
         val notification = NotificationCompat.Builder(this, channelId)
-            .setContentTitle("Experience Points Alert")
-            .setContentText("You have enough experience points to hatch an egg!")
-            .setSmallIcon(R.drawable.app_icon)
+            .setContentTitle("Woah! What's this?")
+            .setContentText("Your egg is ready to hatch!")
+            .setSmallIcon(R.drawable.egg_uncracked_blue_white)
+            .setContentIntent(pendingIntent) // Set the PendingIntent
+            .setAutoCancel(true) // Dismiss notification on tap
             .build()
 
         notificationManager.notify(1, notification) // Unique ID for experience notifications
