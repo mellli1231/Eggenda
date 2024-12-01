@@ -5,14 +5,16 @@ import com.example.eggenda.R
 
 class tutorials {
 
-    val tutTotalNum = 3
+    val tutTotalNum = 5
 
     fun getTutorialById(id: Int): tutorial?{
         val tutorialMap: Map<Int, () -> tutorial> = mapOf(
             // TODO
             0 to {tutorial1()},
             1 to {tutorial2()},
-            2 to {tutorial3()}
+            2 to {tutorial3()},
+            3 to {tutorial4()},
+            4 to {tutorial5()},
 
         )
         return tutorialMap[id]?.invoke()
@@ -55,6 +57,27 @@ class tutorials {
             "Long press on the icon to check how to attack",
             "Your pet can deal damage when the condition is matched",
             "Generally you can win the game when the hp of the enemy become zero!")
+        override val totalPages: Int = pagesImage.size
+    }
+
+    class tutorial4():tutorial{
+        override val coverDescription: String = "Advanced mechanic: Objectives in the game"
+        override val coverImage: Int = R.drawable.tut4_cover
+        override val pagesImage: IntArray = intArrayOf(R.drawable.tut4_p1, R.drawable.tut4_p2,R.drawable.tut4_p3, R.drawable.tut4_p4)
+        override val description: Array<String> = arrayOf("Each stage has different requirements, you can click STAGE INFO to check it.",
+            "The first type of objective is: No damage restriction. Means you have to kill the enemy within the max turn, but you can deal more damage than the hp of them",
+            "The second type of objective is: Deal EXACT damage. Means you have to deal damage within the max turn EXACTLY equals to the HP of the enemy",
+            "The last type of objective is: Boss fight. Means you have to kill the boss within the max turn with no damage restriction, but the boss can fight you back or move you pets position.")
+        override val totalPages: Int = pagesImage.size
+    }
+
+    class tutorial5():tutorial{
+        override val coverDescription: String = "Advanced mechanic: Elements"
+        override val coverImage: Int = R.drawable.tut5_cover
+        override val pagesImage: IntArray = intArrayOf(R.drawable.tut5_p1, R.drawable.tut5_p2,R.drawable.tut5_p3)
+        override val description: Array<String> = arrayOf("We have three elements in this game: Forest, Water and Fire.",
+            "Some stages allow you to deal damage with all kind of elements, but some stages allow accept one of those three",
+            "We will add more interesting stuff for elements once we get more fund!")
         override val totalPages: Int = pagesImage.size
     }
 }
