@@ -5,7 +5,7 @@ import com.example.eggenda.R
 
 class stageInfo {
 
-    val stageTotalNum = 7
+    val stageTotalNum = 8
 
     fun StageInfoMap(id: Int): stage?{
         val petMap: Map<Int, () -> stage> = mapOf(
@@ -16,6 +16,7 @@ class stageInfo {
             4 to { stage_4() },
             5 to { stage_5() },
             6 to { stage_6() },
+            7 to { stage_7() }
         )
         return petMap[id]?.invoke()
     }
@@ -230,32 +231,24 @@ class stageInfo {
         override val id: Int = 7
         override val name: String = "Big Tree"
         override val bossImageId: Int = R.drawable.game_enemy_bigtree
-        override val acceptElement: Int = dict.ELEMENT_WATER
+        override val acceptElement: Int = dict.STAGE_ACCEPT_ALL_ELEMENT
         override val objectiveType: Int = dict.STAGE_OBJECTIVE_FIGHT
-        override val maxTurn: Int = 10
-        override val damageRequirement: Int = 240
-        override val description: String = "Give me more water!!!!"
+        override val maxTurn: Int = 9
+        override val damageRequirement: Int = 590
+        override val description: String = "The last plant in the forest!"
         override val deckSize:Int = 5
         //
         override fun actionType(turn: Int): Int {
-            if(turn % 2 == 0){
-                return dict.STAGE_ACTION_ATTACK
-            }
             return dict.STAGE_ACTION_NO_ACTION
         }
 
         override fun actionAmount(turn: Int,petStatus: Array<petStatus?>): Int {
-            if(turn % 2 == 0){
-                return turn * 10
-            }
             return 0
         }
 
-        override fun actionDescription(turn: Int, petStatus: Array<petStatus?>): String {
-            if(turn % 2 == 0){
-                return name+" dealt "+actionAmount(turn,petStatus)+" damages to you!!"
-            }
+        override fun actionDescription(turn: Int,petStatus: Array<petStatus?>): String {
             return ""
         }
     }
+
 }
