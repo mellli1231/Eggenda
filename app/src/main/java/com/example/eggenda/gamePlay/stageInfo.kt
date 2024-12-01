@@ -5,7 +5,7 @@ import com.example.eggenda.R
 
 class stageInfo {
 
-    val stageTotalNum = 8
+    val stageTotalNum = 9
 
     fun StageInfoMap(id: Int): stage?{
         val petMap: Map<Int, () -> stage> = mapOf(
@@ -16,7 +16,8 @@ class stageInfo {
             4 to { stage_4() },
             5 to { stage_5() },
             6 to { stage_6() },
-            7 to { stage_7() }
+            7 to { stage_7() },
+            8 to { stage_8() }
         )
         return petMap[id]?.invoke()
     }
@@ -247,6 +248,49 @@ class stageInfo {
         }
 
         override fun actionDescription(turn: Int,petStatus: Array<petStatus?>): String {
+            return ""
+        }
+    }
+
+    private class stage_8():stage{
+        override val id: Int = 8
+        override val name: String = "Headquarter of E.P.A"
+        override val bossImageId: Int = R.drawable.game_enemy_satan
+        override val acceptElement: Int = dict.ELEMENT_WATER
+        override val objectiveType: Int = dict.STAGE_OBJECTIVE_FIGHT
+        override val maxTurn: Int = 20
+        override val damageRequirement: Int = 600
+        override val description: String = "How dare you kill all the plants!"
+        override val deckSize:Int = 5
+        //
+        override fun actionType(turn: Int): Int {
+//            return dict.STAGE_ACTION_NO_ACTION
+            if(turn % 2 == 0){
+                return dict.STAGE_ACTION_PUSH
+            }
+            if(turn % 5 == 0){
+                return dict.STAGE_ACTION_ATTACK
+            }
+            return dict.STAGE_ACTION_NO_ACTION
+        }
+
+        override fun actionAmount(turn: Int,petStatus: Array<petStatus?>): Int {
+            if(turn % 2 == 0){
+                return dict.STAGE_PUSH_NORTH
+            }
+            if(turn % 5 == 0){
+                return 80
+            }
+            return 0
+        }
+
+        override fun actionDescription(turn: Int,petStatus: Array<petStatus?>): String {
+            if(turn % 2 == 0){
+                return "Headquarter of Environmental Protection Agency pull you to the north"
+            }
+            if(turn % 5 == 0){
+                return "Headquarter of Environmental Protection Agency dealt 80 damage to you!"
+            }
             return ""
         }
     }
