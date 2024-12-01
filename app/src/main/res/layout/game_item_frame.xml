@@ -4,15 +4,18 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/unitFrame"
     android:layout_width="75dp"
-    android:layout_height="75dp"
-    android:background="@drawable/game_stroke_background">
+    android:layout_height="75dp">
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/game_stroke_background"/>
 
     <ImageView
         android:id="@+id/imageView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:padding="4dp"
-        android:scaleType="centerInside"
-        />
+        android:scaleType="centerInside" />
 
 </FrameLayout>
