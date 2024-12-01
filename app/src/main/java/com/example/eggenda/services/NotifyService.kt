@@ -131,7 +131,7 @@ class NotifyService : Service() {
         val notification = NotificationCompat.Builder(this, channelId)
             .setContentTitle("Task Deadline Alert")
             .setContentText("Your task \"$taskName\" is due in 10 minutes or less!")
-            .setSmallIcon(R.drawable.app_icon)
+            .setSmallIcon(R.drawable.exclamation_mark)
             .setContentIntent(pendingIntent)
             .setAutoCancel(true)
             .build()
