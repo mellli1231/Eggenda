@@ -79,7 +79,7 @@ class petDialog : DialogFragment(){
             view.findViewById<TextView>(R.id.game_dialog_nextDmgAmount).text = petNextDmg
             view.findViewById<ImageView>(R.id.game_card_pet_bg).setImageResource(getpet.backgroundId)
 //            view.findViewById<ImageView>(R.id.pet_card_icon).setImageResource(R.drawable.game_petcard_water)
-//            when (element_background){
+//            when (element_background){sak
 //                "Fire" -> view.findViewById<ImageView>(R.id.pet_card_icon).setImageResource(R.drawable.game_petcard_fire)
 //                "Water" -> view.findViewById<ImageView>(R.id.pet_card_icon).setImageResource(R.drawable.game_petcard_water)
 //                "Forest" -> view.findViewById<ImageView>(R.id.pet_card_icon).setImageResource(R.drawable.game_petcard_forest)
