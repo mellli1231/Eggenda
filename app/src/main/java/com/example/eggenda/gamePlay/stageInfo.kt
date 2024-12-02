@@ -255,7 +255,7 @@ class stageInfo {
     private class stage_8():stage{
         override val id: Int = 8
         override val name: String = "Head of E.P.A"
-        override val bossImageId: Int = R.drawable.game_enemy_headEPA
+        override val bossImageId: Int = R.drawable.game_enemy_headepa
         override val acceptElement: Int = dict.ELEMENT_WATER
         override val objectiveType: Int = dict.STAGE_OBJECTIVE_FIGHT
         override val maxTurn: Int = 20
