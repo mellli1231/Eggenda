@@ -45,10 +45,13 @@ class AddTaskActivity : AppCompatActivity() {
             }, hour, minute, true).show()
         }
 
+        val questTitle = intent.getStringExtra("quest_title") ?: ""
+
         // Save task
         addTaskButton.setOnClickListener {
             val title = taskTitle.text.toString().trim()
             val details = taskDetails.text.toString().trim()
+//            val timeLimit = timeTextView.text.toString().trim()
 
             if (title.isEmpty() || details.isEmpty() || timeLimit.isEmpty()) {
                 Toast.makeText(this, "Please fill all fields!", Toast.LENGTH_SHORT).show()
@@ -69,7 +72,7 @@ class AddTaskActivity : AppCompatActivity() {
             val endTime = selectedTime.timeInMillis
 
             // Add task to database
-            val taskEntry = TaskEntry(title = title, timeLimit = timeLimit, details = details, endTime = endTime)
+            val taskEntry = TaskEntry(title = title, questTitle = questTitle, timeLimit = timeLimit, details = details, endTime = endTime)
             CoroutineScope(Dispatchers.IO).launch {
                 EntryDatabase.getInstance(applicationContext).entryDatabaseDao.insertTask(taskEntry)
             }

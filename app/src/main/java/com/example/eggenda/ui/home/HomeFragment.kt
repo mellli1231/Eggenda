@@ -186,12 +186,21 @@ class HomeFragment : Fragment() {
 
         val questListView: ListView = binding.questList
 
-        lifecycleScope.launch {
-            EntryDatabase.getInstance(requireContext()).entryDatabaseDao.getAllTasks().collectLatest { tasks ->
-                val quests = tasks.filter { it.questTitle.isNotEmpty() }.map { it.questTitle }
-                val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_list_item_1, quests)
-                questListView.adapter = adapter
-            }
+        // Fetch and display unique quest titles
+        lifecycleScope.launch(Dispatchers.IO) {
+            EntryDatabase.getInstance(requireContext())
+                .entryDatabaseDao
+                .getAllTasks()
+                .collectLatest { tasks ->
+                    val uniqueQuests = tasks
+                        .map { it.questTitle } // Extract quest titles
+                        .distinct() // Ensure uniqueness
+
+                    withContext(Dispatchers.Main) {
+                        val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_list_item_1, uniqueQuests)
+                        questListView.adapter = adapter
+                    }
+                }
         }
 
         questListView.setOnItemClickListener { _, _, position, _ ->

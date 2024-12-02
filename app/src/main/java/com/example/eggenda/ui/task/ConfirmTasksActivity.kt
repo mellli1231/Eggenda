@@ -125,8 +125,16 @@ class ConfirmTasksActivity : AppCompatActivity() {
 
         val addTaskImage: ImageView = findViewById(R.id.add_task)
         addTaskImage.setOnClickListener {
-            startActivity(Intent(this, AddTaskActivity::class.java))
+            val questTitle = questTitleField.text.toString().trim()
+            if (questTitle.isEmpty()) {
+                Toast.makeText(this, "Please specify a quest title", Toast.LENGTH_SHORT).show()
+            } else {
+                val intent = Intent(this, AddTaskActivity::class.java)
+                intent.putExtra("quest_title", questTitle)
+                startActivity(intent)
+            }
         }
+
 
         val backButton: Button = findViewById(R.id.back_button)
         backButton.setOnClickListener { finish() }
@@ -226,6 +234,14 @@ class ConfirmTasksActivity : AppCompatActivity() {
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        val questTitle = questTitleField.text.toString().trim()
+        if (questTitle.isNotEmpty()) {
+            loadTasks(questTitle)
+        }
+    }
+
     private fun loadTasks() {   // Load all tasks
         lifecycleScope.launch {
             EntryDatabase.getInstance(applicationContext).entryDatabaseDao
@@ -236,25 +252,21 @@ class ConfirmTasksActivity : AppCompatActivity() {
         }
     }
 
-    private fun loadTasks(questTitle: String?) {    // load tasks with matching title
+    private fun loadTasks(questTitle: String?) {
         lifecycleScope.launch(Dispatchers.IO) {
             if (questTitle != null) {
-                EntryDatabase.getInstance(applicationContext).entryDatabaseDao
-                    .getTasksByQuestFlow(questTitle).collectLatest { tasks ->
-                    val adapter = TaskAdapter(this@ConfirmTasksActivity, tasks)
-                    taskListView.adapter = adapter
-                }
-            }
-            // if list view is empty show all tasks
-            if (taskListView.adapter.isEmpty) {
-                EntryDatabase.getInstance(applicationContext).entryDatabaseDao
-                    .getAllTasks().collectLatest { tasks ->
-                    val adapter = TaskAdapter(this@ConfirmTasksActivity, tasks)
-                    taskListView.adapter = adapter
+                val tasks = EntryDatabase.getInstance(applicationContext)
+                    .entryDatabaseDao.getTasksByQuestFlow(questTitle)
+                    .collectLatest { taskList ->
+                    withContext(Dispatchers.Main) {
+                        val adapter = TaskAdapter(this@ConfirmTasksActivity, taskList)
+                        taskListView.adapter = adapter
+                    }
                 }
             }
         }
     }
+
 
     private fun clearTaskList() {
         val emptyAdapter = ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, emptyList())
