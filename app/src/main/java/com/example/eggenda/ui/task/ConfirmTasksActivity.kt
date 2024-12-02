@@ -33,7 +33,7 @@ class ConfirmTasksActivity : AppCompatActivity() {
     private lateinit var dueDateField: TextView
     private var selectedDate: String = ""
 
-    @SuppressLint("SetTextI18n")
+    @SuppressLint("SetTextI18n", "MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_confirm_tasks)
