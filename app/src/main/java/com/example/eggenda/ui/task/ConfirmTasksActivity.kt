@@ -15,24 +15,17 @@ import android.widget.ListView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.lifecycle.lifecycleScope
 import com.example.eggenda.R
 import com.example.eggenda.UserPref
-import com.example.eggenda.databinding.FragmentHomeBinding
 import com.example.eggenda.gamePetChoose.SharedPreferenceManager
-import com.example.eggenda.services.NotifyService
 import com.example.eggenda.ui.database.entryDatabase.EntryDatabase
 import com.example.eggenda.ui.database.entryDatabase.TaskEntry
 import com.example.eggenda.ui.database.userDatabase.UserDatabase
 import com.example.eggenda.ui.database.userDatabase.UserDatabaseDao
 import com.example.eggenda.ui.database.userDatabase.UserRepository
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.MutableData
-import com.google.firebase.database.Transaction
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
@@ -50,9 +43,6 @@ class ConfirmTasksActivity : AppCompatActivity() {
     private var id: String=""
 
     private var currentExperience = 0
-    private val maxExperience = 100
-    private var _binding: FragmentHomeBinding? = null
-//    private val binding get() = _binding!!
 
     private lateinit var sharedPreferenceManager: SharedPreferenceManager
     private lateinit var udatabase: UserDatabase
@@ -109,7 +99,7 @@ class ConfirmTasksActivity : AppCompatActivity() {
             loadTasks()
             loadProgress()
 //            loadTasks(receivedQuestTitle)
-            Toast.makeText(this, "Quest: $receivedQuestTitle", Toast.LENGTH_LONG).show()
+//            Toast.makeText(this, "Quest: $receivedQuestTitle", Toast.LENGTH_LONG).show()
 
             // Update button labels for existing quests
             acceptButton.text = "Confirm"
@@ -194,7 +184,7 @@ class ConfirmTasksActivity : AppCompatActivity() {
                         }
 
                         withContext(Dispatchers.Main) {
-                            Toast.makeText(this@ConfirmTasksActivity, "Quest Completed! Experience Updated.", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(this@ConfirmTasksActivity, "Quest Completed! + $expPoints exp.", Toast.LENGTH_SHORT).show()
                             finish()
                         }
                     }
@@ -271,67 +261,9 @@ class ConfirmTasksActivity : AppCompatActivity() {
         taskListView.adapter = emptyAdapter
     }
 
-    // Function for incrementing experience progress
-//    @SuppressLint("SetTextI18n")
-//    private fun updateProgress() {
-//        binding.progressBar.progress = currentExperience
-//        binding.circularProgress.progress = currentExperience
-//        binding.experienceTextView.text = "Experience: $currentExperience/$maxExperience"
-//    }
-
     private fun loadProgress() {
         val sharedPreferences = this.getSharedPreferences("eggenda_prefs", Context.MODE_PRIVATE)
         currentExperience = sharedPreferences.getInt("currentExperience", 0) // Default to 0 if not found
         // TODO: make this shared preference the same as whatever the tasks updates
     }
-
-    private fun saveExperienceProgress() {
-        val sharedPreferences = this.getSharedPreferences("eggenda_prefs", Context.MODE_PRIVATE)
-        sharedPreferences.edit().putInt("currentExperience", currentExperience).apply()
-    }
-
-    private fun gainExperience(amount: Int) {
-        if (currentExperience < maxExperience) {
-            currentExperience += amount
-            if (currentExperience > maxExperience) {
-                currentExperience = maxExperience
-            }
-            saveExperienceProgress()
-//            updateProgress()
-
-//            if (currentExperience == maxExperience) {
-//                startHatchNotificationService()
-//            }
-        }
-
-        CoroutineScope(Dispatchers.IO).launch {
-            repository.updatePoints(id, amount) //update room database
-
-            //update firebase database
-            myRef.child(id).child("points").runTransaction(object: Transaction.Handler {
-                override fun doTransaction(mutableData: MutableData): Transaction.Result {
-                    val curr = mutableData.getValue(Int::class.java)
-                    if (curr != null) {
-                        mutableData.value = curr + amount
-                    }
-                    return Transaction.success(mutableData)
-                }
-
-                override fun onComplete(databaseError: DatabaseError?, committed: Boolean, dataSnapshot: DataSnapshot?) {
-                    if(databaseError != null) {
-                        println("Error updating points: ${databaseError.message}")
-                    } else {
-                        println("Points updated in firebase")
-                    }
-                }
-            })
-        }
-    }
-
-    // Helper function to start notification for ready-to-hatch egg
-//    private fun startHatchNotificationService() {
-//        val intent = Intent(this, NotifyService::class.java)
-//        intent.putExtra("notification_type", "hatch")
-//        this.startService(intent)
-//    }
 }

@@ -8,6 +8,7 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.graphics.BitmapFactory
 import android.media.MediaPlayer
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -23,29 +24,24 @@ import android.widget.ListView
 import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.example.eggenda.R
 import com.example.eggenda.UserPref
+import com.example.eggenda.Util
 import com.example.eggenda.databinding.DialogHatchBinding
 import com.example.eggenda.databinding.FragmentHomeBinding
 import com.example.eggenda.gamePetChoose.SharedPreferenceManager
-import com.example.eggenda.gamePlay.gameActivity
 import com.example.eggenda.services.NotifyService
-import com.example.eggenda.Util
 import com.example.eggenda.ui.database.entryDatabase.EntryDatabase
-import com.example.eggenda.ui.database.entryDatabase.EntryDatabaseDao
-import com.example.eggenda.ui.database.entryDatabase.EntryRepo
-import com.example.eggenda.ui.database.entryDatabase.EntryViewModel
-import com.example.eggenda.ui.database.entryDatabase.EntryViewModelFactory
 import com.example.eggenda.ui.database.userDatabase.UserDatabase
 import com.example.eggenda.ui.database.userDatabase.UserDatabaseDao
 import com.example.eggenda.ui.database.userDatabase.UserRepository
 import com.example.eggenda.ui.database.userDatabase.UserViewModel
 import com.example.eggenda.ui.database.userDatabase.UserViewModelFactory
 import com.example.eggenda.ui.task.ConfirmTasksActivity
-import com.example.eggenda.ui.task.TaskAdapter
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
@@ -77,12 +73,6 @@ class HomeFragment : Fragment() {
     private val PET_OWNERSHIP_KEY = "pet_ownership"
     private val DEFAULT_PET_OWNERSHIP = arrayOf(1, 1, 1, 0, 0, 0, 0, 0, 0, 0)
 
-    private lateinit var database: EntryDatabase
-    private lateinit var databaseDao: EntryDatabaseDao
-    private lateinit var repo: EntryRepo
-    private lateinit var entryViewModel: EntryViewModel
-    private lateinit var viewModelFactory: EntryViewModelFactory
-
     private lateinit var udatabase: UserDatabase
     private lateinit var udatabaseDao: UserDatabaseDao
     private lateinit var userViewModel: UserViewModel
@@ -92,6 +82,7 @@ class HomeFragment : Fragment() {
     private lateinit var myRef: DatabaseReference
     private var id: String=""
 
+    @RequiresApi(Build.VERSION_CODES.O)
     @SuppressLint("SetTextI18n")
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -193,12 +184,6 @@ class HomeFragment : Fragment() {
             startActivity(intent)
         }
 
-        val gotoGameButton: Button = root.findViewById(R.id.game)
-        gotoGameButton.setOnClickListener {
-            val intent = Intent(requireContext(), ConfirmTasksActivity::class.java)
-            startActivity(intent)
-        }
-
         val questListView: ListView = binding.questList
 
         lifecycleScope.launch {
@@ -234,7 +219,9 @@ class HomeFragment : Fragment() {
                 }
             }
         }
-        requireContext().registerReceiver(experienceUpdateReceiver, IntentFilter("com.example.eggenda.EXPERIENCE_UPDATE"))
+        requireContext().registerReceiver(experienceUpdateReceiver,
+            IntentFilter("com.example.eggenda.EXPERIENCE_UPDATE"),
+            Context.RECEIVER_NOT_EXPORTED)
 
         return root
     }
@@ -334,6 +321,7 @@ class HomeFragment : Fragment() {
         binding.experienceTextView.text = "Experience: $currentExperience/$maxExperience"
     }
 
+    @SuppressLint("SetTextI18n")
     private fun updateProgress(newExperience: Int, progressBar: ProgressBar, experienceTextView: TextView) {
         currentExperience = newExperience
         progressBar.progress = currentExperience
