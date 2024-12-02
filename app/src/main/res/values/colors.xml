@@ -18,7 +18,7 @@
     <color name="water">#EE66A0FF</color>
     <color name="forest">#EE87FFAB</color>
     <color name="disabled_color">#D7D7D7</color>
-<!--    <color name="disabled_color">#A0A0A0</color>-->
+    <color name="dialog_bg_color">#EDD9B0</color>
     <color name="link">#1f9acf</color>
     <color name="red">#FD2222</color>
     <color name="strike_through_color">@color/bold_yellow</color> <!-- Red for strike-through -->

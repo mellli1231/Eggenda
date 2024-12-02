@@ -9,7 +9,7 @@
     android:gravity="center"
     android:id="@+id/game_dialog_root_layout">
 
-    <View
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/game_dailog_background_view"
         android:layout_width="320dp"
         android:layout_height="30dp"
@@ -19,31 +19,33 @@
         app:layout_constraintEnd_toStartOf="@+id/card_virtical_line"
         app:layout_constraintHorizontal_bias="0.485"
         app:layout_constraintStart_toStartOf="@+id/card_virtical_line"
-        app:layout_constraintTop_toTopOf="@+id/titleHorLine" />
+        app:layout_constraintTop_toTopOf="@+id/titleHorLine" >
 
-    <TextView
-        android:id="@+id/game_card_petName"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:fontFamily="@font/titan_one"
-        android:text="Shy Raccoon"
-        android:textSize="20sp"
-        app:layout_constraintBottom_toBottomOf="@+id/game_dailog_background_view"
-        app:layout_constraintEnd_toEndOf="@+id/game_dailog_background_view"
-        app:layout_constraintStart_toStartOf="@+id/game_dailog_background_view"
-        app:layout_constraintTop_toTopOf="@+id/game_dailog_background_view" />
+        <TextView
+            android:id="@+id/game_card_petName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/titan_one"
+            android:text="Shy Raccoon"
+            android:textSize="20sp"
+            app:layout_constraintBottom_toBottomOf="@+id/game_dailog_background_view"
+            app:layout_constraintEnd_toEndOf="@+id/game_dailog_background_view"
+            app:layout_constraintStart_toStartOf="@+id/game_dailog_background_view"
+            app:layout_constraintTop_toTopOf="@+id/game_dailog_background_view" />
 
-    <TextView
-        android:id="@+id/game_card_petId"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:fontFamily="@font/titan_one"
-        android:text="004"
-        android:textSize="20sp"
-        app:layout_constraintBottom_toBottomOf="@+id/game_dailog_background_view"
-        app:layout_constraintEnd_toStartOf="@+id/game_card_petName"
-        app:layout_constraintStart_toStartOf="@+id/game_dailog_background_view"
-        app:layout_constraintTop_toTopOf="@+id/game_dailog_background_view" />
+        <TextView
+            android:id="@+id/game_card_petId"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/titan_one"
+            android:text="004"
+            android:textSize="20sp"
+            app:layout_constraintBottom_toBottomOf="@+id/game_dailog_background_view"
+            app:layout_constraintEnd_toStartOf="@+id/game_card_petName"
+            app:layout_constraintStart_toStartOf="@+id/game_dailog_background_view"
+            app:layout_constraintTop_toTopOf="@+id/game_dailog_background_view" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/card_image_line"
@@ -62,7 +64,7 @@
         app:layout_constraintStart_toStartOf="@+id/card_virtical_line"
         app:layout_constraintTop_toTopOf="@+id/card_image_line"
         app:layout_constraintVertical_bias="0.526"
-        app:srcCompat="@drawable/a_card_bg" />
+        app:srcCompat="@drawable/background_raccoon_housetrash" />
 
     <ImageView
         android:id="@+id/game_card_pet_image"
@@ -101,7 +103,6 @@
         app:layout_constraintTop_toTopOf="@+id/descriptionBox_line"
         app:layout_constraintVertical_bias="0.458">
 
-
         <TextView
             android:id="@+id/game_dialog_petSkill_name"
             android:layout_width="match_parent"
@@ -113,17 +114,18 @@
             android:textStyle="bold"
             app:layout_constraintBottom_toTopOf="@+id/descHorLine"
             app:layout_constraintEnd_toStartOf="@+id/descVerLine"
-            app:layout_constraintHorizontal_bias="0.528"
+            app:layout_constraintHorizontal_bias="0.103"
             app:layout_constraintStart_toStartOf="@+id/descVerLine"
             app:layout_constraintTop_toTopOf="@+id/descHorLine"
-            app:layout_constraintVertical_bias="0.478" />
+            app:layout_constraintVertical_bias="0.484" />
+
 
         <TextView
             android:id="@+id/game_dialog_skillDescription"
             android:layout_width="290dp"
             android:layout_height="wrap_content"
             android:fontFamily="@font/titan_one"
-            android:padding="5dp"
+            android:padding="3dp"
             android:text="Deal 100 water damage\non the 5th turn\nwhen this unit is placed on the board"
             android:textSize="14.5sp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -131,31 +133,34 @@
             app:layout_constraintTop_toBottomOf="@+id/game_dialog_petSkill_name" />
 
 
-        <TextView
-            android:id="@+id/game_dialog_condition_title"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/titan_one"
-            android:padding="5dp"
-            android:text="Condition"
-            android:textSize="17sp"
-            android:textStyle="bold"
-            app:layout_constraintEnd_toStartOf="@+id/descVerLine"
-            app:layout_constraintStart_toStartOf="@+id/descVerLine"
-            app:layout_constraintTop_toBottomOf="@+id/game_dialog_skillDescription" />
+<!--        <TextView-->
+<!--            android:id="@+id/game_dialog_condition_title"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:fontFamily="@font/titan_one"-->
+<!--            android:padding="5dp"-->
+<!--            android:text="Condition"-->
+<!--            android:textSize="17sp"-->
+<!--            android:textStyle="bold"-->
+<!--            app:layout_constraintEnd_toStartOf="@+id/descVerLine"-->
+<!--            app:layout_constraintStart_toStartOf="@+id/descVerLine"-->
+<!--            app:layout_constraintTop_toBottomOf="@+id/game_dialog_skillDescription" />-->
 
 
-        <TextView
-            android:id="@+id/game_dialog_next_reminder"
-            android:layout_width="290dp"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/titan_one"
-            android:padding="5dp"
-            android:text="5 more turn(s) to stay on the board                 jwlqlwkepo"
-            android:textSize="14.5sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/game_dialog_condition_title" />
+<!--        <TextView-->
+<!--            android:id="@+id/game_dialog_next_reminder"-->
+<!--            android:layout_width="305dp"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:fontFamily="@font/titan_one"-->
+<!--            android:letterSpacing="0.007"-->
+<!--            android:lineSpacingExtra="1dp"-->
+<!--            android:padding="5dp"-->
+<!--            android:text="5 more turn(s) to stay on the board                 jwlqlwkepo"-->
+<!--            android:textSize="15.5sp"-->
+<!--            app:layout_constraintEnd_toEndOf="parent"-->
+<!--            app:layout_constraintHorizontal_bias="1.0"-->
+<!--            app:layout_constraintStart_toStartOf="parent"-->
+<!--            app:layout_constraintTop_toBottomOf="@+id/game_dialog_petSkill_name" />-->
 
         <TextView
             android:id="@+id/game_dialog_next_dmg_title"
@@ -163,19 +168,20 @@
             android:layout_height="wrap_content"
             android:fontFamily="@font/titan_one"
             android:padding="5dp"
-            android:text="Next Damage"
+            android:text="Abilities after X turns"
             android:textSize="17sp"
             android:textStyle="bold"
             app:layout_constraintEnd_toStartOf="@+id/descVerLine"
+            app:layout_constraintHorizontal_bias="0.153"
             app:layout_constraintStart_toStartOf="@+id/descVerLine"
-            app:layout_constraintTop_toBottomOf="@+id/game_dialog_next_reminder" />
+            app:layout_constraintTop_toBottomOf="@+id/game_dialog_skillDescription" />
 
         <TextView
             android:id="@+id/game_dialog_nextDmgAmount"
             android:layout_width="290dp"
             android:layout_height="wrap_content"
             android:fontFamily="@font/titan_one"
-            android:padding="5dp"
+            android:padding="3dp"
             android:text="100 water damage"
             android:textSize="14.5sp"
             app:layout_constraintEnd_toEndOf="parent"

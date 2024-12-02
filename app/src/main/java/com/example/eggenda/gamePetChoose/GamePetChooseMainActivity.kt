@@ -44,8 +44,6 @@ class GamePetChooseMainActivity : AppCompatActivity(){
     //load info from other activities
     private var selectedStage : Int = -1
 
-
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -56,14 +54,13 @@ class GamePetChooseMainActivity : AppCompatActivity(){
         sharedPreferenceManager = SharedPreferenceManager(this)
         petInfo = petInfo2()
         stageInfo = stageInfo()
-
         selectedStage = sharedPreferenceManager.getStageChoose()
 
 
         //to set the game should have maximum how many characters
         var deckSize = stageInfo.StageInfoMap(selectedStage)!!.deckSize
 
-        //the mutuable list that can save the list of the pets ,that can send to the game part
+        //the mutuable list that can save the list of the pets ,that can send to the game partasqswq
         val selectedPetID =  MutableList<Int?>(deckSize){ null }
 
         //initialize view model
@@ -71,13 +68,11 @@ class GamePetChooseMainActivity : AppCompatActivity(){
         petsViewModel = ViewModelProvider(this, factory).get(GamePetChooseViewModel::class.java)
 
         //initialize pets array that has in the code in int array
-        //here should take it form pet info class
-        allPetsArrayID = intArrayOf(0,1,2,3,4,5,6,7,8,9)
+        allPetsArrayID = IntArray(petInfo.getTotalPetAmount()){it}
 
         //initialize start button
         startButton = findViewById(R.id.fight_start)
         updateStartButtonState(false, selectedPetID)   //update the start button to gray
-
 
         //set the monster class
         val monsterConstraint = findViewById<ConstraintLayout>(R.id.monster_constraint_layout)
@@ -92,8 +87,7 @@ class GamePetChooseMainActivity : AppCompatActivity(){
             true
         }
 
-
-        //set the character 3 in a row
+        //set the character in the layout, see choose adapter
         characterRecyclerView = findViewById(R.id.game_characterchoose_recyclerView)
         val filteredAmt = sharedPreferenceManager.getFilteredPetsAmount()
         characterRecyclerView.layoutManager = GridLayoutManager(this, filteredAmt)
@@ -113,7 +107,6 @@ class GamePetChooseMainActivity : AppCompatActivity(){
 
         //set the selected image view with customized amount
         characterSelectedList = findViewById(R.id.game_character_selectedList)
-//        val spanCount = if(maxSelectableImage > 0) maxSelectableImage else 3
         characterSelectedList.layoutManager = GridLayoutManager(this, deckSize)
 
         //set the adapter for selecting pets
@@ -122,19 +115,16 @@ class GamePetChooseMainActivity : AppCompatActivity(){
 
         //observe the changes of the pets photo
         petsViewModel.allPets.observe(this, Observer { photos ->
-            Log.d("MainActivity", "allPets updated: $photos")
             petsAdapter.updatePetsChoose(photos)
         })
 
 
-        //variables to set
+        //view switcher setting
         val  viewSwitcher : ViewSwitcher = findViewById(R.id.viewSwitcher)
-        //preset the format
-        viewSwitcher.setDisplayedChild(1)
+        viewSwitcher.setDisplayedChild(1)//preset the format
 
         // Observe currently selected pet
         petsViewModel.currentSelectedPet.observe(this) { petId ->
-
             val petChosenImage = findViewById<ImageView>(R.id.game_pet_choose_image)
 
 
@@ -158,7 +148,6 @@ class GamePetChooseMainActivity : AppCompatActivity(){
 
         petsViewModel.selectedPets.observe(this, Observer { photos ->
             selectPetsAdapter.updatePets(photos)
-            Log.d("Main Activity", "updated")
             updateStartButtonState(petsViewModel.isSelectionComplete(), selectedPetID)
         })
 

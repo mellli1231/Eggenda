@@ -158,31 +158,31 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/dialog_attak_type_title"/>
 
-        <TextView
-            android:id="@+id/dialog_count_title"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/titan_one"
-            android:padding="5dp"
-            android:text="Count"
-            android:textStyle="bold"
-            android:textSize="17sp"
-            app:layout_constraintEnd_toStartOf="@+id/descVerLine"
-            app:layout_constraintStart_toStartOf="@+id/descVerLine"
-            app:layout_constraintTop_toBottomOf="@+id/dialog_attackType"/>
+<!--        <TextView-->
+<!--            android:id="@+id/dialog_count_title"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:fontFamily="@font/titan_one"-->
+<!--            android:padding="5dp"-->
+<!--            android:text="Count"-->
+<!--            android:textStyle="bold"-->
+<!--            android:textSize="17sp"-->
+<!--            app:layout_constraintEnd_toStartOf="@+id/descVerLine"-->
+<!--            app:layout_constraintStart_toStartOf="@+id/descVerLine"-->
+<!--            app:layout_constraintTop_toBottomOf="@+id/dialog_attackType"/>-->
 
-        <TextView
-            android:id="@+id/dialog_count"
-            android:layout_width="290dp"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/titan_one"
-            android:text="5 turns make an attack"
-            android:textSize="14.5dp"
-            android:padding="5dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.533"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/dialog_count_title"/>
+<!--        <TextView-->
+<!--            android:id="@+id/dialog_count"-->
+<!--            android:layout_width="290dp"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:fontFamily="@font/titan_one"-->
+<!--            android:text="5 turns make an attack"-->
+<!--            android:textSize="14.5dp"-->
+<!--            android:padding="5dp"-->
+<!--            app:layout_constraintEnd_toEndOf="parent"-->
+<!--            app:layout_constraintHorizontal_bias="0.533"-->
+<!--            app:layout_constraintStart_toStartOf="parent"-->
+<!--            app:layout_constraintTop_toBottomOf="@+id/dialog_count_title"/>-->
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/descVerLine"

@@ -9,4 +9,6 @@
     <dimen name="card_hight">550dp</dimen>
     <dimen name="menu_width">300dp</dimen>
     <dimen name="menu_hight">300dp</dimen>
+    <dimen name="tutorial_width">370dp</dimen>
+    <dimen name="tutorial_hight">650dp</dimen>
 </resources>

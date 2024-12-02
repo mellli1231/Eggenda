@@ -9,22 +9,25 @@
 
     <Button
         android:id="@+id/game_monster_info_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="250dp"
+        android:layout_height="50dp"
         android:fontFamily="@font/titan_one"
         android:text="Stage Info"
+        android:textSize="25dp"
         app:layout_constraintBottom_toTopOf="@+id/monster_status_bar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/frameLayout"
-        app:layout_constraintVertical_bias="0.222" />
+        app:layout_constraintVertical_bias="0.225" />
 
     <Button
         android:id="@+id/game_monster_go"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="go!"
+        android:layout_width="150dp"
+        android:layout_height="50dp"
         android:fontFamily="@font/titan_one"
+        android:gravity="center_horizontal"
+        android:text="go!"
+        android:textSize="30dp"
         app:layout_constraintBottom_toTopOf="@+id/guideline6"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -35,7 +38,7 @@
         android:layout_width="1dp"
         android:layout_height="1dp"
         android:orientation="horizontal"
-        app:layout_constraintGuide_begin="659dp" />
+        app:layout_constraintGuide_begin="660dp" />
 
     <FrameLayout
         android:id="@+id/frameLayout"
@@ -83,30 +86,31 @@
         android:id="@+id/next_button"
         android:layout_width="80dp"
         android:layout_height="80dp"
+        android:scaleX="-1"
         app:layout_constraintBottom_toBottomOf="@+id/frameLayout"
         app:layout_constraintStart_toEndOf="@+id/frameLayout"
         app:layout_constraintTop_toTopOf="@+id/frameLayout"
-        app:srcCompat="@drawable/back_arrow"
-        android:scaleX="-1"/>
+        app:srcCompat="@drawable/back_arrow" />
 
     <TextView
         android:id="@+id/boss_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="5dp"
-        android:text="TextView"
         android:fontFamily="@font/titan_one"
+        android:text="TextView"
         android:textSize="34sp"
         app:layout_constraintBottom_toTopOf="@+id/frameLayout"
         app:layout_constraintEnd_toEndOf="@+id/frameLayout"
         app:layout_constraintStart_toStartOf="@+id/frameLayout" />
+
     <TextView
         android:id="@+id/stage_Title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="5dp"
-        android:text="TextView"
         android:fontFamily="@font/titan_one"
+        android:text="TextView"
         android:textSize="34sp"
         app:layout_constraintBottom_toTopOf="@+id/boss_title"
         app:layout_constraintEnd_toEndOf="@+id/frameLayout"
@@ -157,24 +161,43 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_begin="460dp" />
+        app:layout_constraintGuide_begin="457dp" />
+
 
     <TextView
         android:id="@+id/monster_pets_warning"
-        android:layout_width="290dp"
+        android:layout_width="330dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:fontFamily="@font/titan_one"
-        android:text="Warning : \n The number of pets selected is insufficient to challenge the boss!"
+        android:text="Warning : \n The number of pets owned is insufficient to challenge the boss!"
         android:textColor="@color/fire"
-        android:textSize="18dp"
-        android:visibility="invisible"
+        android:textSize="21dp"
         app:layout_constraintBottom_toTopOf="@+id/game_monster_go"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.495"
+        app:layout_constraintHorizontal_bias="0.802"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/monster_status_bar"
-        app:layout_constraintVertical_bias="0.25" />
+        app:layout_constraintVertical_bias="0.277" />
+
+    <!--    <TextView-->
+<!--        android:id="@+id/monster_pets_go"-->
+<!--        android:layout_width="290dp"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_gravity="center"-->
+<!--        android:layout_marginTop="8dp"-->
+<!--        android:fontFamily="@font/titan_one"-->
+<!--        android:text="Pets Amount Required: \n 3 pets"-->
+<!--        android:textColor="@color/water"-->
+<!--        android:textSize="18dp"-->
+<!--        android:visibility="invisible"-->
+<!--        app:layout_constraintBottom_toTopOf="@+id/game_monster_go"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintHorizontal_bias="0.57"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toBottomOf="@+id/monster_status_bar"-->
+<!--        app:layout_constraintVertical_bias="0.277" />-->
 
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>

@@ -35,7 +35,7 @@ import org.w3c.dom.Text
 import java.time.LocalDateTime
 import kotlin.math.abs
 
-class gameActivity : AppCompatActivity() {
+class gameActivity : AppCompatActivity(), menuDialog.MenuDialogListener {
 
     private lateinit var sharedPreferenceManager: SharedPreferenceManager
 
@@ -77,7 +77,7 @@ class gameActivity : AppCompatActivity() {
     private lateinit var unitRecyclerView: RecyclerView
     private lateinit var deckAdapter: deckAdapter
 
-    private lateinit var tempRestart: Button
+    private lateinit var tempRestart: ImageView
 
     //variables for UI
     private var selectedPetOrder: Int = -1
@@ -282,6 +282,19 @@ class gameActivity : AppCompatActivity() {
 
 
     }
+
+    override fun onRestartGame(){
+        viewModel.updateGameRunState(dict.GAME_NOT_START)
+        recreate()
+    }
+
+    override fun onQuitGame(){
+        viewModel.updateGameRunState(dict.GAME_NOT_START)
+        val intent = Intent(this, MainActivity::class.java)
+        startActivity(intent)
+    }
+
+
 
     //put pet-> bounce-> count dmg(include stay
     //-> win if target hp = 0, lose if damage too high for some objective
@@ -847,7 +860,7 @@ class gameActivity : AppCompatActivity() {
             val petElement = petInfo.getPetInfoById(chosenPetId[i])!!.element
             Log.d("damage dealt", "pet element : ${petElement}")
             Log.d("damage dealt", "accept element: ${acceptElement}")
-            if (damage > 0 &&  (acceptElement == dict.STAGE_ACCEPT_ALL_ELEMENT || acceptElement == petElement)){
+            if (damage > 0 ){
                 val petID = petStatus[i]?.unitId!!
                 val pet = petInfo.getPetInfoById(petID)!!
                 val atkElement = pet.element
@@ -871,7 +884,7 @@ class gameActivity : AppCompatActivity() {
                 }
 
 
-                if((atkType == dict.ATK_TYPE_STAY && includeStay)|| atkType != dict.ATK_TYPE_STAY){
+                if(((atkType == dict.ATK_TYPE_STAY && includeStay)|| atkType != dict.ATK_TYPE_STAY )&&  (acceptElement == dict.STAGE_ACCEPT_ALL_ELEMENT || acceptElement == petElement)){
                     damageHistory[atkElement] += damage
                     reportList.add(damageReport)
                     hitNum ++
@@ -1750,6 +1763,7 @@ class gameActivity : AppCompatActivity() {
         val dialog = menuDialog.newInstance()
         dialog.show(supportFragmentManager, "MenuDialog")
     }
+
 
 
 }

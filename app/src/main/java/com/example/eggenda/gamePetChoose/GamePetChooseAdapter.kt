@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.eggenda.R
+import com.example.eggenda.gamePlay.dict
 import com.example.eggenda.gamePlay.petInfo2
 
 
@@ -33,14 +34,11 @@ class GamePetChooseAdapter(private var characterList: IntArray,
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.game_item_frame, parent,false)
+            .inflate(R.layout.game_choose_pet_item_frame, parent,false)
         return ViewHolder(view)
     }
 
-    //hello
-
     override fun getItemCount(): Int {return filteredPetsList.size}
-
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         Log.d("GamePetChooseAdapter", "Binding position: $position")
@@ -54,22 +52,33 @@ class GamePetChooseAdapter(private var characterList: IntArray,
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val imageView: ImageView = itemView.findViewById(R.id.imageView)
         val petInfo  =  petInfo2()
-        val petInfoID = temp
-
 
         fun bind(petID: Int) {
+            val petDetails = petInfo.getPetInfoById(petID)
             imageView.setImageResource(petInfo.getPetInfoById(petID)?.imageId!!)     // Set the image resource
+
+            // Set the pet image
+            petDetails?.let {
+                imageView.setImageResource(it.imageId)
+//                 Change the item's background color based on pet properties
+                val backgroundColor = when (it.element) { // Assuming `type` is a property
+                    dict.ELEMENT_FIRE -> context.getColor(R.color.fire)
+                    dict.ELEMENT_WATER -> context.getColor(R.color.water)
+                    dict.ELEMENT_FOREST-> context.getColor(R.color.forest)
+                    else -> context.getColor(R.color.silver_rare)
+                }
+                itemView.setBackgroundColor(backgroundColor) // Apply background color
+            }
 
             // Set click listener on the item
             itemView.setOnClickListener {
                 //unselect it if the photos has already being chosen
                 if (selectedPetsID.contains(petID)) { onImageDeselected(petID)      //return pet info id
                 } else { onImageSelected(petID) }                                   //select if the image has not been selected
-            } //end of onclicklistener
+            }
 
             //trigger the long-click logic for showing details
             itemView.setOnLongClickListener {
-                val petInfoID = temp
                 onLongClick(petID)
                 true
             }
