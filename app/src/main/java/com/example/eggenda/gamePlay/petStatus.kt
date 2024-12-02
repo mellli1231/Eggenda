@@ -2,6 +2,7 @@ package com.example.eggenda.gamePlay
 
 class petStatus {
 
+    var element = dict.ELEMENT_FOREST
     var unitId:Int = -1
 
     var startPos:Int = -1

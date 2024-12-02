@@ -1,0 +1,76 @@
+Index: app/build.gradle.kts
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>plugins {\r\n    alias(libs.plugins.android.application)\r\n    alias(libs.plugins.kotlin.android)\r\n    kotlin(\"kapt\")\r\n    id(\"com.google.gms.google-services\")\r\n}\r\n\r\nandroid {\r\n    namespace = \"com.example.eggenda\"\r\n    compileSdk = 35\r\n\r\n    defaultConfig {\r\n        applicationId = \"com.example.eggenda\"\r\n        minSdk = 24\r\n        targetSdk = 34\r\n        versionCode = 1\r\n        versionName = \"1.0\"\r\n\r\n        testInstrumentationRunner = \"androidx.test.runner.AndroidJUnitRunner\"\r\n    }\r\n\r\n    buildTypes {\r\n        release {\r\n            isMinifyEnabled = false\r\n            proguardFiles(\r\n                getDefaultProguardFile(\"proguard-android-optimize.txt\"),\r\n                \"proguard-rules.pro\"\r\n            )\r\n        }\r\n    }\r\n    compileOptions {\r\n        sourceCompatibility = JavaVersion.VERSION_1_8\r\n        targetCompatibility = JavaVersion.VERSION_1_8\r\n    }\r\n    kotlinOptions {\r\n        jvmTarget = \"1.8\"\r\n    }\r\n    buildFeatures {\r\n        viewBinding = true\r\n    }\r\n\r\n    composeOptions {\r\n        kotlinCompilerExtensionVersion = \"1.5.1\"\r\n    }\r\n    bundle {\r\n        language {\r\n            enableSplit = false\r\n        }\r\n    }\r\n}\r\n\r\ndependencies {\r\n\r\n    //add firebase database\r\n    implementation(platform(libs.firebase.bom))\r\n    implementation(libs.firebase.analytics)\r\n    implementation(libs.firebase.database.ktx)\r\n    implementation(libs.androidx.core.ktx)\r\n    implementation(libs.androidx.appcompat)\r\n    implementation(libs.material)\r\n    implementation(libs.androidx.constraintlayout)\r\n    implementation(libs.androidx.lifecycle.livedata.ktx)\r\n    implementation(libs.androidx.lifecycle.viewmodel.ktx)\r\n    implementation(libs.androidx.navigation.fragment.ktx)\r\n    implementation(libs.androidx.navigation.ui.ktx)\r\n    implementation(libs.androidx.activity)\r\n    implementation(libs.firebase.crashlytics.buildtools)\r\n    implementation(libs.gson)\r\n    implementation(libs.androidx.room.common)\r\n    implementation(libs.play.services.maps)\r\n    implementation(libs.androidx.room.ktx)\r\n    implementation(libs.firebase.database.ktx)\r\n    implementation(libs.firebase.auth.ktx)\r\n    testImplementation(libs.junit)\r\n    androidTestImplementation(libs.androidx.junit)\r\n    androidTestImplementation(libs.androidx.espresso.core)\r\n\r\n    implementation(libs.androidx.exifinterface)\r\n    implementation(libs.androidx.preference.ktx)\r\n\r\n    implementation(libs.androidx.room.runtime)\r\n    kapt(libs.androidx.room.compiler)\r\n    implementation(libs.jbcrypt)\r\n\r\n\r\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/build.gradle.kts b/app/build.gradle.kts
+--- a/app/build.gradle.kts	(revision 999bcdd15c77f8d2828b05868c6848bd1771350c)
++++ b/app/build.gradle.kts	(date 1732511260668)
+@@ -81,6 +81,7 @@
+     implementation(libs.androidx.room.runtime)
+     kapt(libs.androidx.room.compiler)
+     implementation(libs.jbcrypt)
++    implementation("androidx.core:core-splashscreen:1.0.1")
+ 
+ 
+ }
+\ No newline at end of file
+Index: app/src/main/java/com/example/eggenda/MainActivity.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.example.eggenda\r\n\r\nimport android.content.Context\r\nimport android.content.Intent\r\nimport android.os.Bundle\r\nimport android.view.Menu\r\nimport com.google.android.material.snackbar.Snackbar\r\nimport com.google.android.material.navigation.NavigationView\r\nimport androidx.navigation.findNavController\r\nimport androidx.navigation.ui.AppBarConfiguration\r\nimport androidx.navigation.ui.navigateUp\r\nimport androidx.navigation.ui.setupActionBarWithNavController\r\nimport androidx.navigation.ui.setupWithNavController\r\nimport androidx.drawerlayout.widget.DrawerLayout\r\nimport androidx.appcompat.app.AppCompatActivity\r\nimport com.example.eggenda.databinding.ActivityMainBinding\r\nimport com.example.eggenda.ui.account.LoginActivity\r\nimport com.google.firebase.database.DatabaseReference\r\nimport com.google.firebase.database.FirebaseDatabase\r\nimport java.util.Locale\r\n\r\nclass MainActivity : AppCompatActivity() {\r\n\r\n    private lateinit var appBarConfiguration: AppBarConfiguration\r\n    private lateinit var binding: ActivityMainBinding\r\n\r\n    override fun onCreate(savedInstanceState: Bundle?) {\r\n        super.onCreate(savedInstanceState)\r\n\r\n        //start login page if user is not logged in\r\n        val id = UserPref.getId(this)\r\n        val sharedPreferences = getSharedPreferences(\"user_${id}\", MODE_PRIVATE)\r\n        val isLoggedIn = sharedPreferences.getBoolean(\"isLoggedIn\", false)\r\n\r\n        if(!isLoggedIn) {\r\n            val intent = Intent(this, LoginActivity::class.java)\r\n            startActivity(intent)\r\n            finish()\r\n        }\r\n        // Apply the selected language using LocaleHelper\r\n        println(\"getting persisted data in MainActivity\")\r\n        LocaleHelper.getPersistedData(this, Locale.getDefault().language)\r\n            ?.let { LocaleHelper.setLocale(this, it) }\r\n\r\n        binding = ActivityMainBinding.inflate(layoutInflater)\r\n        setContentView(binding.root)\r\n\r\n        setSupportActionBar(binding.appBarMain.toolbar)\r\n\r\n        // Mail icon in home screen\r\n//        binding.appBarMain.fab.setOnClickListener { view ->\r\n//            Snackbar.make(view, \"Replace with your own action\", Snackbar.LENGTH_LONG)\r\n//                .setAction(\"Action\", null)\r\n//                .setAnchorView(R.id.fab).show()\r\n//        }\r\n        val drawerLayout: DrawerLayout = binding.drawerLayout\r\n        val navView: NavigationView = binding.navView\r\n        val navController = findNavController(R.id.nav_host_fragment_content_main)\r\n        // Passing each menu ID as a set of Ids because each\r\n        // menu should be considered as top level destinations.\r\n        appBarConfiguration = AppBarConfiguration(\r\n            setOf(\r\n                R.id.nav_home, R.id.nav_gallery,  R.id.nav_game, R.id.nav_settings\r\n            ), drawerLayout\r\n        )\r\n        setupActionBarWithNavController(navController, appBarConfiguration)\r\n        navView.setupWithNavController(navController)\r\n    }\r\n\r\n    override fun onSupportNavigateUp(): Boolean {\r\n        val navController = findNavController(R.id.nav_host_fragment_content_main)\r\n        return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()\r\n    }\r\n\r\n    override fun attachBaseContext(newBase: Context) {\r\n        // Set the locale using LocaleHelper based on the persisted language preference\r\n        val currentLanguage = LocaleHelper.getLanguage(newBase)\r\n        if (Locale.getDefault().language != currentLanguage) {\r\n            println(\"calling localeHelper from attachBaseContext\")\r\n            LocaleHelper.setLocale(newBase, currentLanguage)\r\n        }\r\n        super.attachBaseContext(LocaleHelper.onAttach(newBase))\r\n    }\r\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/com/example/eggenda/MainActivity.kt b/app/src/main/java/com/example/eggenda/MainActivity.kt
+--- a/app/src/main/java/com/example/eggenda/MainActivity.kt	(revision 999bcdd15c77f8d2828b05868c6848bd1771350c)
++++ b/app/src/main/java/com/example/eggenda/MainActivity.kt	(date 1732512118162)
+@@ -13,6 +13,7 @@
+ import androidx.navigation.ui.setupWithNavController
+ import androidx.drawerlayout.widget.DrawerLayout
+ import androidx.appcompat.app.AppCompatActivity
++import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+ import com.example.eggenda.databinding.ActivityMainBinding
+ import com.example.eggenda.ui.account.LoginActivity
+ import com.google.firebase.database.DatabaseReference
+Index: .idea/compiler.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<project version=\"4\">\r\n  <component name=\"CompilerConfiguration\">\r\n    <bytecodeTargetLevel target=\"21\" />\r\n  </component>\r\n</project>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/compiler.xml b/.idea/compiler.xml
+--- a/.idea/compiler.xml	(revision 999bcdd15c77f8d2828b05868c6848bd1771350c)
++++ b/.idea/compiler.xml	(date 1732511308577)
+@@ -1,6 +1,6 @@
+ <?xml version="1.0" encoding="UTF-8"?>
+ <project version="4">
+   <component name="CompilerConfiguration">
+-    <bytecodeTargetLevel target="21" />
++    <bytecodeTargetLevel target="17" />
+   </component>
+ </project>
+\ No newline at end of file
+Index: .idea/misc.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<project version=\"4\">\r\n  <component name=\"ExternalStorageConfigurationManager\" enabled=\"true\" />\r\n  <component name=\"ProjectRootManager\" version=\"2\" languageLevel=\"JDK_21\" default=\"true\" project-jdk-name=\"jbr-21\" project-jdk-type=\"JavaSDK\">\r\n    <output url=\"file://$PROJECT_DIR$/build/classes\" />\r\n  </component>\r\n</project>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/misc.xml b/.idea/misc.xml
+--- a/.idea/misc.xml	(revision 999bcdd15c77f8d2828b05868c6848bd1771350c)
++++ b/.idea/misc.xml	(date 1732511484730)
+@@ -1,7 +1,7 @@
+ <?xml version="1.0" encoding="UTF-8"?>
+ <project version="4">
+   <component name="ExternalStorageConfigurationManager" enabled="true" />
+-  <component name="ProjectRootManager" version="2" languageLevel="JDK_21" default="true" project-jdk-name="jbr-21" project-jdk-type="JavaSDK">
++  <component name="ProjectRootManager" version="2" languageLevel="JDK_17" default="true" project-jdk-name="jbr-17" project-jdk-type="JavaSDK">
+     <output url="file://$PROJECT_DIR$/build/classes" />
+   </component>
+ </project>
+\ No newline at end of file

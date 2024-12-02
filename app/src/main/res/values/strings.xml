@@ -1,21 +1,21 @@
 <resources>
-    <string name="app_name">Eggenda</string>
-    <string name="navigation_drawer_open">Open navigation drawer</string>
-    <string name="navigation_drawer_close">Close navigation drawer</string>
-    <string name="nav_header_title">Android Studio</string>
-    <string name="nav_header_subtitle">android.studio@android.com</string>
-    <string name="nav_header_desc">Navigation header</string>
+    <string name="app_name" translatable="false">Eggenda</string>
+    <string name="navigation_drawer_open" translatable="false">Open navigation drawer</string>
+    <string name="navigation_drawer_close" translatable="false">Close navigation drawer</string>
+    <string name="nav_header_title" translatable="false">Android Studio</string>
+    <string name="nav_header_subtitle" translatable="false">android.studio@android.com</string>
+    <string name="nav_header_desc" translatable="false">Navigation header</string>
     <string name="action_settings">Settings</string>
 
     <string name="menu_home">Home</string>
     <string name="menu_gallery">Gallery</string>
-    <string name="menu_slideshow">Slideshow</string>
+    <string name="menu_slideshow" translatable="false">Slideshow</string>
     <string name="gallery_choice">Choose from Gallery</string>
     <string name="photo_choice">Take a Photo</string>
     <string name="settings_title">Settings</string>
     <string name="game_start">Start</string>
     <string name="game_label">Game</string>
-    <string name="display_name">John Smith</string>
+    <string name="display_name" translatable="false">John Smith</string>
     <string name="hatch_progress">Hatch Progress: ??%</string>
     <string name="new_quest">New Quest</string>
     <string name="quest_board">Quest Board</string>
@@ -53,7 +53,7 @@
     <string name="country_hint" translatable="false">ex. Canada</string>
     <string name="save_button">Save</string>
     <string name="cancel_button">Cancel</string>
-    <string name="logout">Log Out\n</string>
+    <string name="logout">Log Out</string>
     <string name="terms_conditions_details" translatable="false">terms and conditions</string>
     <string name="game">Start Game</string>
     <string name="password_hint">Password</string>
@@ -70,7 +70,7 @@
     <string name="quests">Quests</string>
     <string name="eggs">Eggs</string>
     <string name="pets">Pets</string>
-    <string name="character">Character</string>
+    <string name="character" translatable="false">Character</string>
     <string name="points">Points</string>
 
 
@@ -80,11 +80,20 @@
     <string name="atk_type_bounce">Bounce</string>
 
     <string name="atk_count_des">Count</string>
+    <string name="resume">RESUME</string>
     <string name="expired">Expired</string>
     <string name="incorrect_password">Incorrect password</string>
     <string name="user_doesn_t_exist">User doesn\'t exist</string>
     <string name="username_is_empty">Username is Empty</string>
-    <string name="delete">Delete</string>
+    <string name="customization">Customization</string>
+    <string name="showcase">Showcase</string>
+    <string name="rankings">Rankings</string>
+    <string name="rank_header1">Your Journey to the</string>
+    <string name="rank_header2">Top Starts Here!</string>
+    <string name="your_settings_so_that_you_are_comfortable">Your settings so that you are comfortable</string>
+    <string name="about">About Us</string>
+    <string name="about_description">Our Eggenda team is motivated to make you happy! We wish to help you produce a healthy work-life balance as we celebrate achievements - both professional and personal. Explore our website to learn more about us and our journey!</string>
+    <string name="discover_us">Discover Us</string>
 
     <string-array name="language_options">
         <item>English</item>

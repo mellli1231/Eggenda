@@ -12,14 +12,15 @@ class GalleryViewModel : ViewModel() {
     private val _allPets  = MutableLiveData<IntArray>()
     val allPets : LiveData<IntArray> get() = _allPets
 
-//    class GalleryViewModelFactory(private val maxAmountPets: SharedPreferenceManager) : ViewModelProvider.Factory {
-//        override fun <T : ViewModel> create(modelClass: Class<T>): T {
-//            if (modelClass.isAssignableFrom(GalleryViewModel::class.java)) {
-//                @Suppress("UNCHECKED_CAST")
-//                return GamePetChooseViewModel(maxAmountPets) as T
-//            }
-//            throw IllegalArgumentException("Unknown ViewModel class")
-//        }
-//    }
+    private val _currentSelectedPet = MutableLiveData<Int?>() // Null means no pet is selected
+    val currentSelectedPet: LiveData<Int?> = _currentSelectedPet
+
+    fun selectPet(petId: Int?) {
+        _currentSelectedPet.value = petId
+    }
+
+    fun clearSelection() {
+        _currentSelectedPet.value = null
+    }
 
 }

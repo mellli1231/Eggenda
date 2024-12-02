@@ -47,6 +47,7 @@ class GamePetChooseAdapter(private var characterList: IntArray,
         val petInfo = petInfo2()
         val petId = petInfo.getPetInfoById(filteredPetsList[position])?.id!!
         petId?.let { holder.bind(it) }
+        sharedPreferenceManager.saveFilteredPetsAmount(filteredPetsList.size)
     }
 
 
@@ -54,6 +55,7 @@ class GamePetChooseAdapter(private var characterList: IntArray,
         val imageView: ImageView = itemView.findViewById(R.id.imageView)
         val petInfo  =  petInfo2()
         val petInfoID = temp
+
 
         fun bind(petID: Int) {
             imageView.setImageResource(petInfo.getPetInfoById(petID)?.imageId!!)     // Set the image resource

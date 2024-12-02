@@ -8,6 +8,7 @@ import android.view.View
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.ViewSwitcher
 import androidx.activity.ComponentActivity
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -94,7 +95,8 @@ class GamePetChooseMainActivity : AppCompatActivity(){
 
         //set the character 3 in a row
         characterRecyclerView = findViewById(R.id.game_characterchoose_recyclerView)
-        characterRecyclerView.layoutManager = GridLayoutManager(this, 5)
+        val filteredAmt = sharedPreferenceManager.getFilteredPetsAmount()
+        characterRecyclerView.layoutManager = GridLayoutManager(this, filteredAmt)
 
         //set adapter for showing pets
         petsAdapter = GamePetChooseAdapter(
@@ -125,19 +127,26 @@ class GamePetChooseMainActivity : AppCompatActivity(){
         })
 
 
+        //variables to set
+        val  viewSwitcher : ViewSwitcher = findViewById(R.id.viewSwitcher)
+        //preset the format
+        viewSwitcher.setDisplayedChild(1)
+
         // Observe currently selected pet
         petsViewModel.currentSelectedPet.observe(this) { petId ->
-            //set the chosen image
+
             val petChosenImage = findViewById<ImageView>(R.id.game_pet_choose_image)
+
 
             if (petId == null) {
                 // No pet selected, return to the initalized format
-                petChosenImage.setImageResource(R.drawable.game_choose_nth_3)
+                viewSwitcher.setDisplayedChild(1)
                 petChosenImage.setOnLongClickListener(null)
             } else {
                 // Pet selected, display the image
                 petChosenImage.setImageResource(petInfo.getPetInfoById(petId)?.imageId ?: R.layout.gallery_pet_items_frame)
                 petChosenImage.visibility = View.VISIBLE
+                viewSwitcher.setDisplayedChild(0)
 
                 //set a long click so it can show the info of the pet
                 petChosenImage.setOnLongClickListener{

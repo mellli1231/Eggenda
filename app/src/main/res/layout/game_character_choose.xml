@@ -26,6 +26,7 @@
             android:layout_height="wrap_content"
             android:text="Innocent Sapling"
             android:textSize="20dp"
+            android:fontFamily="@font/titan_one"
             app:layout_constraintBottom_toTopOf="@+id/monsterBoxHorLine"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.185"
@@ -52,25 +53,68 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <ImageView
-        android:id="@+id/game_pet_choose_image"
-        android:layout_width="150dp"
-        android:layout_height="150dp"
+    <ViewSwitcher
+        android:id="@+id/viewSwitcher"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         app:layout_constraintBottom_toTopOf="@+id/infoHorLine"
         app:layout_constraintEnd_toStartOf="@+id/chooseVerLine"
         app:layout_constraintStart_toStartOf="@+id/chooseVerLine"
-        app:layout_constraintTop_toTopOf="@+id/infoHorLine"
-        app:layout_constraintVertical_bias="0.413"
-        app:srcCompat="@drawable/game_choose_nth_3" />
+        app:layout_constraintTop_toTopOf="@+id/infoHorLine">
+
+        <!-- TextView to display text -->
+        <ImageView
+            android:id="@+id/game_pet_choose_image"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:layout_gravity="center"
+            app:layout_constraintBottom_toTopOf="@+id/infoHorLine"
+            app:layout_constraintEnd_toStartOf="@+id/chooseVerLine"
+            app:layout_constraintStart_toStartOf="@+id/chooseVerLine"
+            app:layout_constraintTop_toTopOf="@+id/infoHorLine"
+            app:layout_constraintVertical_bias="0.413" />
+
+        <TextView
+            android:id="@+id/game_pet_choose_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/titan_one"
+            android:text="Please Choose a Pet"
+            android:layout_gravity="center"
+            android:textSize="30sp" />
+    </ViewSwitcher>
+
+<!--    <ImageView-->
+<!--        android:id="@+id/game_pet_choose_image"-->
+<!--        android:layout_width="150dp"-->
+<!--        android:layout_height="150dp"-->
+<!--        app:layout_constraintBottom_toTopOf="@+id/infoHorLine"-->
+<!--        app:layout_constraintEnd_toStartOf="@+id/chooseVerLine"-->
+<!--        app:layout_constraintStart_toStartOf="@+id/chooseVerLine"-->
+<!--        app:layout_constraintTop_toTopOf="@+id/infoHorLine"-->
+<!--        app:layout_constraintVertical_bias="0.413"-->
+<!--        app:srcCompat="@drawable/game_choose_nth_3" />-->
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Choose Your Pets to Fight"
+        android:fontFamily="@font/titan_one"
+        android:textSize="20dp"
+        app:layout_constraintBottom_toTopOf="@+id/guideline12"
+        app:layout_constraintEnd_toStartOf="@+id/chooseVerLine"
+        app:layout_constraintStart_toStartOf="@+id/chooseVerLine"
+        app:layout_constraintTop_toTopOf="@+id/guideline12" />
+
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:background="@color/disabled_color"
-        app:layout_constraintBottom_toTopOf="@+id/chooseBoxHorLine"
+        android:layout_width="match_parent"
+        android:layout_height="160dp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/chooseBoxHorLine">
+        app:layout_constraintTop_toBottomOf="@+id/textView2">
 
 
         <androidx.recyclerview.widget.RecyclerView
@@ -78,23 +122,22 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.498"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:spanCount="15">
 
         </androidx.recyclerview.widget.RecyclerView>
 
-
     </androidx.constraintlayout.widget.ConstraintLayout>
-
 
     <TextView
         android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Pets to fight"
+        android:fontFamily="@font/titan_one"
         android:textSize="20dp"
         app:layout_constraintBottom_toTopOf="@+id/guideline18"
         app:layout_constraintEnd_toStartOf="@+id/chooseVerLine"
@@ -105,7 +148,6 @@
         android:id="@+id/constraintLayout4"
         android:layout_width="match_parent"
         android:layout_height="80dp"
-        android:background="@color/disabled_color"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
@@ -129,8 +171,8 @@
 
     <Button
         android:id="@+id/fight_start"
-        android:layout_width="108dp"
-        android:layout_height="61dp"
+        android:layout_width="105dp"
+        android:layout_height="40dp"
         android:layout_marginBottom="16dp"
         android:background="@drawable/game_start_button"
         android:enabled="false"
@@ -148,7 +190,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_begin="235dp" />
+        app:layout_constraintGuide_begin="212dp" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/chooseVerLine"
@@ -176,7 +218,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_begin="92dp" />
+        app:layout_constraintGuide_begin="78dp" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline18"
@@ -184,6 +226,13 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         app:layout_constraintGuide_begin="553dp" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline12"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_begin="318dp" />
 
     <!--    <TextView-->
     <!--        android:layout_width="wrap_content"-->

@@ -15,7 +15,7 @@
         android:layout_marginHorizontal="9dp"
         android:orientation="horizontal">
 
-        <ImageView
+        <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/profile_pic"
             android:layout_width="50dp"
             android:layout_height="50dp"
@@ -23,10 +23,12 @@
             android:layout_marginEnd="8dp"
             android:layout_gravity="center"
             android:scaleType="centerCrop" />
-        <TextView
+
+        <com.example.eggenda.OutlinedText
             android:id="@+id/display_name"
-            android:textColor="#4A3109"
+            android:textColor="@color/white"
             android:textSize="20sp"
+            android:paddingStart="2dp"
             android:layout_height="wrap_content"
             android:layout_width="0dp"
             android:layout_weight="1"
@@ -142,13 +144,13 @@
         android:layout_marginHorizontal="10dp"
         android:orientation="vertical" >
 
-        <TextView
+        <com.example.eggenda.OutlinedText
             android:id="@+id/qb_title"
-            android:textColor="#4A3109"
+            android:textColor="@color/white"
             android:textStyle="bold"
             android:textSize="20sp"
             android:paddingStart="5dp"
-            android:paddingEnd="0dp"
+            android:paddingEnd="2dp"
             android:layout_gravity="start"
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"

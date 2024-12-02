@@ -7,46 +7,28 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-        <!-- Back Button -->
-        <Button
-            android:id="@+id/back_button"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:background="@drawable/back_arrow"
-            android:paddingHorizontal="9dp"
-            android:layout_marginTop="20dp"
-            android:layout_marginBottom="20dp"
-            android:layout_marginHorizontal="32dp" />
-
-        <Button
-            android:id="@+id/delete_quest"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
-            android:layout_marginStart="210dp"
-            android:text="@string/delete"
-            android:textSize="12sp"
-            android:fontFamily="@font/titan_one"
-            android:visibility="gone" /> <!-- Hidden by default -->
-    </LinearLayout>
+    <!-- Back Button -->
+    <Button
+        android:id="@+id/back_button"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:background="@drawable/back_arrow"
+        android:paddingHorizontal="9dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="20dp"
+        android:layout_marginHorizontal="32dp" />
 
     <!-- Header and Subtitle -->
-    <EditText
-        android:id="@+id/quest_title"
-        android:textColor="#000000"
-        android:textSize="35sp"
+    <com.example.eggenda.OutlinedText
+        android:id="@+id/nq_header"
+        android:textColor="@color/white"
+        android:textSize="40sp"
         android:layout_marginBottom="9dp"
         android:layout_marginStart="33dp"
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
         android:fontFamily="@font/titan_one"
-        android:hint="@string/new_quest"
-        android:enabled="true"
-        />
+        android:text="@string/nq_title" />
 
     <TextView
         android:id="@+id/nq_subtitle"
@@ -72,29 +54,27 @@
             android:id="@+id/nq_selected_date"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="4dp"
             android:layout_weight="1"
-            android:focusable="false"
-            android:clickable="false"
+            android:layout_marginEnd="4dp"
             android:orientation="vertical">
 
             <TextView
                 android:id="@+id/nq_deadline"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="9dp"
-                android:fontFamily="@font/titan_one"
-                android:text="@string/deadline"
                 android:textColor="#4A3109"
-                android:textSize="16sp" />
+                android:textSize="16sp"
+                android:layout_marginBottom="9dp"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:fontFamily="@font/titan_one"
+                android:text="@string/deadline" />
 
             <TextView
                 android:id="@+id/nq_date"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/date"
                 android:textColor="#4A3109"
-                android:textSize="16sp" />
+                android:textSize="16sp"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:text="@string/date" />
         </LinearLayout>
 
         <ImageView

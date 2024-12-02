@@ -5,10 +5,12 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
@@ -42,7 +44,6 @@ class GalleryFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-
         //inflate the layout for the gallery fragment
         _binding = FragmentGalleryBinding.inflate(inflater, container, false)
         sharedPreferenceManager = SharedPreferenceManager(requireContext())
@@ -55,6 +56,9 @@ class GalleryFragment : Fragment() {
         characterRecyclerView = root.findViewById(R.id.gallery_characterchoose_recyclerView)
         characterRecyclerView.layoutManager = GridLayoutManager(requireContext(), 3)
 
+        //the mutuable list that can save the list of the pets ,that can send to the game part
+        val selectedPetID =  MutableLiveData<Int?>()
+
 //        val factory = GalleryViewModel.GalleryViewModelFactory(sharedPreferenceManager)
         galleryViewModel = ViewModelProvider(this)[GalleryViewModel::class.java]
 
@@ -65,11 +69,11 @@ class GalleryFragment : Fragment() {
         //initalized classes and views
         characterRecyclerView = root.findViewById(R.id.gallery_characterchoose_recyclerView)
 
-
         //set the adapter to show the pets
         petsAdapter = GalleryAdapter(
             allPetsArrayID,
             sharedPreferenceManager,
+            {petId -> galleryViewModel.selectPet(petId)},
             {petId -> showPetDetailDialog(petId)})
 
         petsAdapter.notifyDataSetChanged()
@@ -79,6 +83,34 @@ class GalleryFragment : Fragment() {
             Log.d("Gallery Fragment", "allPets updated: $photos")
             petsAdapter.updatePetsChoose(photos)
         })
+
+
+        galleryViewModel.currentSelectedPet.observe(viewLifecycleOwner){ petId ->
+
+            //set the chosen image
+            val petChosenImage = root.findViewById<ImageView>(R.id.gallery_pet_show)
+            val petChoosenText = root.findViewById<TextView>(R.id.gallery_pet_name)
+
+            if (petId == null) {
+                // No pet selected, return to the initalized format
+                petChosenImage.setImageResource(R.drawable.game_choose_nth_3)
+                petChoosenText.text = "Please Select a Pet!"
+                petChosenImage.setOnLongClickListener(null)
+            } else {
+                // Pet selected, display the image
+                petChosenImage.setImageResource(petInfo.getPetInfoById(petId)?.imageId ?: R.layout.gallery_pet_items_frame)
+                petChoosenText.text = petInfo.getPetInfoById(petId)?.name
+                petChosenImage.visibility = View.VISIBLE
+
+                //set a long click so it can show the info of the pet
+                petChosenImage.setOnLongClickListener{
+                    showPetDetailDialog(petId)
+                    true
+                }
+            }
+
+        }
+
 
 
         return root

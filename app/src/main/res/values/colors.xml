@@ -17,10 +17,17 @@
     <color name="fire">#EEFF5959</color>
     <color name="water">#EE66A0FF</color>
     <color name="forest">#EE87FFAB</color>
-    <color name="disabled_color">#A0A0A0</color>
+    <color name="disabled_color">#D7D7D7</color>
+<!--    <color name="disabled_color">#A0A0A0</color>-->
     <color name="link">#1f9acf</color>
     <color name="red">#FD2222</color>
     <color name="strike_through_color">@color/bold_yellow</color> <!-- Red for strike-through -->
     <color name="normal_text_color">#FF0000</color>    <!-- Black for normal text -->
     <color name="brown">#4A310A</color>
+    <color name="light_brown">#CC4A310A</color>
+    <color name="dialog_btn_norm">#99DB9B</color>
+    <color name="dialog_btn_norm1">#60AF60</color>
+    <color name="dialog_btn_chosen">#FF8181</color>
+    <color name="dialog_btn_chosen1">#D44848</color>
+    <color name="yellow_subbackground">#EAD7BF</color>
 </resources>

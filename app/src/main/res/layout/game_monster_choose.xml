@@ -8,10 +8,23 @@
     android:fitsSystemWindows="true">
 
     <Button
+        android:id="@+id/game_monster_info_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/titan_one"
+        android:text="Stage Info"
+        app:layout_constraintBottom_toTopOf="@+id/monster_status_bar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/frameLayout"
+        app:layout_constraintVertical_bias="0.222" />
+
+    <Button
         android:id="@+id/game_monster_go"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="go!"
+        android:fontFamily="@font/titan_one"
         app:layout_constraintBottom_toTopOf="@+id/guideline6"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -19,10 +32,10 @@
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline6"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="1dp"
+        android:layout_height="1dp"
         android:orientation="horizontal"
-        app:layout_constraintGuide_begin="661dp" />
+        app:layout_constraintGuide_begin="659dp" />
 
     <FrameLayout
         android:id="@+id/frameLayout"
@@ -55,7 +68,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_begin="276dp" />
+        app:layout_constraintGuide_begin="236dp" />
 
     <ImageView
         android:id="@+id/back_button"
@@ -82,6 +95,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="5dp"
         android:text="TextView"
+        android:fontFamily="@font/titan_one"
         android:textSize="34sp"
         app:layout_constraintBottom_toTopOf="@+id/frameLayout"
         app:layout_constraintEnd_toEndOf="@+id/frameLayout"
@@ -92,18 +106,75 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="5dp"
         android:text="TextView"
+        android:fontFamily="@font/titan_one"
         android:textSize="34sp"
         app:layout_constraintBottom_toTopOf="@+id/boss_title"
         app:layout_constraintEnd_toEndOf="@+id/frameLayout"
         app:layout_constraintStart_toStartOf="@+id/frameLayout" />
 
-    <Button
-        android:id="@+id/button2"
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/monster_status_bar"
+        android:layout_width="260dp"
+        android:layout_height="40dp"
+        android:background="@drawable/monster_status_bg"
+        app:layout_constraintBottom_toTopOf="@+id/guideline2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.496"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/guideline2"
+        app:layout_constraintVertical_bias="1.0">
+
+        <ImageView
+            android:id="@+id/monster_status_icon"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.059"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/monster_status_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/titan_one"
+            android:text="Not Yet Defeated!"
+            android:textSize="20dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.304"
+            app:layout_constraintStart_toEndOf="@+id/monster_status_icon"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Button"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_begin="460dp" />
+
+    <TextView
+        android:id="@+id/monster_pets_warning"
+        android:layout_width="290dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:fontFamily="@font/titan_one"
+        android:text="Warning : \n The number of pets selected is insufficient to challenge the boss!"
+        android:textColor="@color/fire"
+        android:textSize="18dp"
+        android:visibility="invisible"
         app:layout_constraintBottom_toTopOf="@+id/game_monster_go"
-        app:layout_constraintEnd_toEndOf="@+id/game_monster_go"
-        app:layout_constraintStart_toStartOf="@+id/game_monster_go" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.495"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/monster_status_bar"
+        app:layout_constraintVertical_bias="0.25" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

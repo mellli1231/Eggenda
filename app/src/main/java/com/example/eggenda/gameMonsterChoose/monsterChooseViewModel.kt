@@ -1,5 +1,6 @@
 package com.example.eggenda.gameMonsterChoose
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -36,6 +37,7 @@ class monsterChooseViewModel : ViewModel(){
     fun updateAmount(newAmount: Int){
         _amount.value = newAmount
     }
+
 
 
 }

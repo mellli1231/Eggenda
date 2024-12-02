@@ -28,13 +28,26 @@ import com.example.eggenda.databinding.DialogHatchBinding
 import com.example.eggenda.databinding.FragmentHomeBinding
 import com.example.eggenda.gamePetChoose.SharedPreferenceManager
 import com.example.eggenda.gamePlay.gameActivity
+import com.example.eggenda.services.NotifyService
+import com.example.eggenda.Util
 import com.example.eggenda.ui.database.entryDatabase.EntryDatabase
 import com.example.eggenda.ui.database.entryDatabase.EntryDatabaseDao
 import com.example.eggenda.ui.database.entryDatabase.EntryRepo
 import com.example.eggenda.ui.database.entryDatabase.EntryViewModel
 import com.example.eggenda.ui.database.entryDatabase.EntryViewModelFactory
+import com.example.eggenda.ui.database.userDatabase.UserDatabase
+import com.example.eggenda.ui.database.userDatabase.UserDatabaseDao
+import com.example.eggenda.ui.database.userDatabase.UserRepository
+import com.example.eggenda.ui.database.userDatabase.UserViewModel
+import com.example.eggenda.ui.database.userDatabase.UserViewModelFactory
 import com.example.eggenda.ui.task.ConfirmTasksActivity
 import com.example.eggenda.ui.task.TaskAdapter
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.MutableData
+import com.google.firebase.database.Transaction
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.CoroutineScope
@@ -66,6 +79,15 @@ class HomeFragment : Fragment() {
     private lateinit var entryViewModel: EntryViewModel
     private lateinit var viewModelFactory: EntryViewModelFactory
 
+    private lateinit var udatabase: UserDatabase
+    private lateinit var udatabaseDao: UserDatabaseDao
+    private lateinit var userViewModel: UserViewModel
+    private lateinit var repository: UserRepository
+    private lateinit var userViewModelFactory: UserViewModelFactory
+    private lateinit var FBdatabase: FirebaseDatabase
+    private lateinit var myRef: DatabaseReference
+    private var id: String=""
+
 
     @SuppressLint("SetTextI18n")
     override fun onCreateView(
@@ -77,12 +99,25 @@ class HomeFragment : Fragment() {
         sharedPreferenceManager = SharedPreferenceManager(requireContext())
         val root: View = binding.root
         val petOwnership = loadPetOwnership()
-//        sharedPreferenceManager = SharedPreferenceManager(requireContext())
+//        sharedPreferenceManager = SharedPreferenceManager(requireContext())klh
+
+        // Get permission for notifications
+        Util.checkPermissions(this)
 
         //get username and id
         val user = UserPref.getUsername(requireContext())
-        val id = UserPref.getId(requireContext())
+        id = UserPref.getId(requireContext()).toString()
         println("user: ${user}, id: ${id}")
+
+        //load database to retrieve gained points
+        FBdatabase = FirebaseDatabase.getInstance()
+        myRef = FBdatabase.reference.child("users")
+        udatabase = UserDatabase.getInstance(requireContext())
+        udatabaseDao = udatabase.userDatabaseDao
+        repository = UserRepository(udatabaseDao)
+        userViewModelFactory = UserViewModelFactory(repository)
+        userViewModel = ViewModelProvider(this, userViewModelFactory)[UserViewModel::class.java]
+
 
         //load profile picture
         val sharedPreferences = requireContext().getSharedPreferences("user_${id}", Context.MODE_PRIVATE)
@@ -180,7 +215,9 @@ class HomeFragment : Fragment() {
 
     private fun loadPetOwnership(): Array<Int> {
         val sharedPreferences = requireContext().getSharedPreferences("eggenda_prefs", Context.MODE_PRIVATE)
-        val json = sharedPreferences.getString(PET_OWNERSHIP_KEY, null)
+        //orig
+//        val json = sharedPreferences.getString(PET_OWNERSHIP_KEY, null)
+        val json = requireContext().getSharedPreferences("user_${UserPref.getId(requireContext())}", Context.MODE_PRIVATE).getString(PET_OWNERSHIP_KEY, null)
         return if (json != null) {
             val type = object : TypeToken<Array<Int>>() {}.type
             Gson().fromJson(json, type)
@@ -280,7 +317,48 @@ class HomeFragment : Fragment() {
             }
             saveExperienceProgress()
             updateProgress()
+
+            if (currentExperience == maxExperience) {
+                startHatchNotificationService()
+            }
         }
+
+        CoroutineScope(Dispatchers.IO).launch {
+            repository.updatePoints(id, amount) //update room database
+
+            //update firebase database
+            myRef.child(id).child("points").runTransaction(object: Transaction.Handler {
+                override fun doTransaction(mutableData: MutableData): Transaction.Result {
+                    val curr = mutableData.getValue(Int::class.java)
+                    if (curr != null) {
+                        mutableData.value = curr + amount
+                    }
+                    return Transaction.success(mutableData)
+                }
+
+                override fun onComplete(databaseError: DatabaseError?, committed: Boolean, dataSnapshot: DataSnapshot?) {
+                    if(databaseError != null) {
+                        println("Error updating points: ${databaseError.message}")
+                    } else {
+                        println("Points updated in firebase")
+                    }
+                }
+            })
+        }
+        //adding to database just to test, temporary as well
+
+
+
+
+
+
+    }
+
+    // Helper function to start notification for ready-to-hatch egg
+    private fun startHatchNotificationService() {
+        val intent = Intent(requireContext(), NotifyService::class.java)
+        intent.putExtra("notification_type", "hatch")
+        requireContext().startService(intent)
     }
 
     // Eventually, we won't need this either
@@ -310,15 +388,15 @@ class HomeFragment : Fragment() {
 
         // Set the pet image based on petIndex
         when (petIndex) {
-            0 -> dialogBinding.petImageView.setImageResource(R.drawable.pet_a_babyowlbear)
-            1 -> dialogBinding.petImageView.setImageResource(R.drawable.pet_b_ambushmouseviper)
-            2 -> dialogBinding.petImageView.setImageResource(R.drawable.pet_b_evilwater)
-            3 -> dialogBinding.petImageView.setImageResource(R.drawable.pet_c_animatednutcracker)
+            6 -> dialogBinding.petImageView.setImageResource(R.drawable.pet_a_babyowlbear)
+            7 -> dialogBinding.petImageView.setImageResource(R.drawable.pet_b_ambushmouseviper)
+            1 -> dialogBinding.petImageView.setImageResource(R.drawable.pet_b_evilwater)
+            8 -> dialogBinding.petImageView.setImageResource(R.drawable.pet_c_animatednutcracker)
             4 -> dialogBinding.petImageView.setImageResource(R.drawable.pet_c_deepseamerman)
-            5 -> dialogBinding.petImageView.setImageResource(R.drawable.pet_c_flamingskull)
-            6 -> dialogBinding.petImageView.setImageResource(R.drawable.pet_c_glutinousbunny)
-            7 -> dialogBinding.petImageView.setImageResource(R.drawable.pet_c_healingsprite)
-            8 -> dialogBinding.petImageView.setImageResource(R.drawable.pet_c_lilmothy)
+            2 -> dialogBinding.petImageView.setImageResource(R.drawable.pet_c_flamingskull)
+            0 -> dialogBinding.petImageView.setImageResource(R.drawable.pet_c_glutinousbunny)
+            5 -> dialogBinding.petImageView.setImageResource(R.drawable.pet_c_healingsprite)
+            3 -> dialogBinding.petImageView.setImageResource(R.drawable.pet_c_lilmothy)
             9 -> dialogBinding.petImageView.setImageResource(R.drawable.pet_c_shyraccoon)
         }
 

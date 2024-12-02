@@ -8,10 +8,12 @@ import android.content.DialogInterface
 import android.content.Intent
 import android.content.SharedPreferences
 import android.content.SharedPreferences.Editor
+import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -29,15 +31,12 @@ import com.example.eggenda.ui.database.userDatabase.UserViewModel
 import com.example.eggenda.ui.database.userDatabase.UserViewModelFactory
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedPreferenceChangeListener{
     companion object {
         const val DIALOG_KEY = "dialog"
-        const val TERMS_CONDITIONS_DIALOG = 0
+        const val ABOUT_DIALOG = 0
         const val LOGOUT_DIALOG = 1
     }
     private lateinit var sharedPreferences: SharedPreferences
@@ -96,10 +95,10 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
             true
         }
 
-        val termsConditions: Preference? = findPreference("terms")
-        termsConditions?.setOnPreferenceClickListener {
+        val about: Preference? = findPreference("about")
+        about?.setOnPreferenceClickListener {
             println("terms and conditions clicked")
-            showMyDialogFragment(TERMS_CONDITIONS_DIALOG)
+            showMyDialogFragment(ABOUT_DIALOG)
 
             true
         }
@@ -144,15 +143,21 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
             val dialogId = bundle?.getInt(DIALOG_KEY)
             val builder = AlertDialog.Builder(requireActivity())
 
-            if (dialogId == TERMS_CONDITIONS_DIALOG) {
+            if (dialogId == ABOUT_DIALOG) {
                 val view: View = requireActivity().layoutInflater.inflate(
-                    R.layout.dialog_terms_conditions,
+                    R.layout.dialog_about,
                     null
                 )
                 builder.setView(view)
-                builder.setTitle(R.string.conditions_header)
-
-                builder.setNegativeButton(R.string.cancel_button, this)
+                builder.setTitle(R.string.about)
+                val website: Button = view.findViewById(R.id.website_button)
+                website.setOnClickListener {
+                    val url = "https://eggenda-website.vercel.app/"
+                    val intent = Intent(Intent.ACTION_VIEW).apply {
+                        data = Uri.parse(url)
+                    }
+                    startActivity(intent)
+                }
                 ret = builder.create()
             }
             else if (dialogId == LOGOUT_DIALOG) {
@@ -226,5 +231,11 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
     override fun onPause() {
         super.onPause()
         sharedPreferences.unregisterOnSharedPreferenceChangeListener(this)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        val color = ContextCompat.getColor(requireContext(), R.color.yellow)
+        view.setBackgroundColor(color)
     }
 }

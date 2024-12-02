@@ -23,6 +23,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.eggenda.MainActivity
 import com.example.eggenda.R
+import com.example.eggenda.gameMonsterChoose.GameMonsterDialogFragment
 import com.example.eggenda.gamePetChoose.SharedPreferenceManager
 import com.example.eggenda.ui.home.HomeFragment
 import kotlinx.coroutines.CoroutineScope
@@ -175,8 +176,11 @@ class gameActivity : AppCompatActivity() {
             player_hpBarView.isInvisible = true
         }
 
-
-
+        //set boss image that can long click and see their info
+        bossView.setOnLongClickListener{
+            showMonsterDetailDialog(selectedStage)
+            true
+        }
 
 
         //board UI
@@ -233,10 +237,15 @@ class gameActivity : AppCompatActivity() {
 
         //temp restart
         tempRestart = findViewById(R.id.temp_restart)
+//        tempRestart.setOnClickListener {
+//            viewModel.updateGameRunState(dict.GAME_NOT_START)
+//            recreate()
+//        }
         tempRestart.setOnClickListener {
-            viewModel.updateGameRunState(dict.GAME_NOT_START)
-            recreate()
+            showMenuDialog()
         }
+
+
 
         //buffers initialization
         turnBuffer = 1
@@ -631,6 +640,9 @@ class gameActivity : AppCompatActivity() {
                 pet.stayNum = 0
                 pet.bounceNum = 0
             }
+            Log.d("stay","id: ${chosenPetId[i]}")
+            Log.d("stay","stay: ${petStatus[i]!!.stayNum}")
+
         }
     }
 
@@ -1485,6 +1497,7 @@ class gameActivity : AppCompatActivity() {
         val unitsOnBoard: Array<petStatus?> = arrayOfNulls<petStatus?>(deckSize)
         for (i in 0..deckSize-1) {
             unitsOnBoard[i] = petStatus().apply {
+                element = petInfo.getPetInfoById(chosenPetId[i])!!.element
                 unitId = chosenPetId[i]
                 location = dict.onDECK
                 startPos = dict.outsideBoard
@@ -1723,6 +1736,19 @@ class gameActivity : AppCompatActivity() {
             targetboard?.masterFrame?.isInvisible = false
             targetboard?.masterFrame?.alpha = alpha
         }
+    }
+
+    //set the show dialog funciton
+    private fun showMonsterDetailDialog(stageId:Int){
+        val dialog = GameMonsterDialogFragment.newInstance(stageId)
+        dialog.show(supportFragmentManager, "MonsterChooseDialog")
+
+    }
+
+    //set the menu dialog funciton
+    private fun showMenuDialog(){
+        val dialog = menuDialog.newInstance()
+        dialog.show(supportFragmentManager, "MenuDialog")
     }
 
 
