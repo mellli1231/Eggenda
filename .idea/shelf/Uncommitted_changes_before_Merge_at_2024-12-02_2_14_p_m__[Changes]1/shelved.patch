@@ -1,0 +1,1074 @@
+Index: app/src/main/java/com/example/eggenda/gamePlay/petInfo2.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.example.eggenda.gamePlay\r\n\r\nimport com.example.eggenda.R\r\nimport kotlin.math.abs\r\n\r\nclass petInfo2 {\r\n\r\n    private val TOTAL = 10\r\n\r\n    private val GLUTINOUS_BUNNY= 0\r\n    private val EVIL_WATER = 1\r\n    private val FLAMING_SKULL = 2\r\n    private val LIL_MOTHY = 3\r\n    private val SHY_RACCOON = 4\r\n    private val HEALING_SPRITE = 5\r\n    private val BABY_OWLBEAR = 6\r\n    private val AMBUSH_MOUSEVIPER = 7\r\n    private val ANIMATED_NUTCRACKER = 8\r\n    private val DEEPSEA_MERMAN = 9\r\n\r\n    fun getPetInfoById(id: Int):Pet?{\r\n        val petMap: Map<Int, () -> Pet> = mapOf(\r\n            // TODO\r\n            BABY_OWLBEAR to {babyOwlbear()},\r\n            AMBUSH_MOUSEVIPER to {ambushMouseviper()},\r\n            EVIL_WATER to {evilWater()},\r\n            ANIMATED_NUTCRACKER to {animatedNutcracker()},\r\n            DEEPSEA_MERMAN to {deepseaMerman()},\r\n            FLAMING_SKULL to {flamingSkull()},\r\n            GLUTINOUS_BUNNY to {glutinousBunny()},\r\n            HEALING_SPRITE to {healingSprite()},\r\n            LIL_MOTHY to {lilMothman()},\r\n            SHY_RACCOON to {shyRaccoon()}\r\n\r\n        )\r\n        return petMap[id]?.invoke()\r\n    }\r\n\r\n    fun getTotalPetAmount():Int{return TOTAL}\r\n\r\n    interface Pet{\r\n        val id: Int\r\n        val name: String\r\n        val imageId: Int\r\n        val element: Int\r\n        val attackType: Int\r\n        val damage: Int\r\n        val count: Int\r\n        val skillName: String\r\n        val description: String\r\n        val rarity: Int\r\n\r\n        fun dealDamage(petStatus: Array<petStatus?>,petOrder:Int,deckSize:Int):Int\r\n        fun attackCountdown(petStatus: Array<petStatus?>,petOrder:Int,deckSize:Int):Int\r\n        fun condition(petStatus: Array<petStatus?>,petOrder:Int,deckSize:Int):String\r\n        fun nextDamage(petStatus: Array<petStatus?>,petOrder:Int,deckSize:Int):String\r\n        fun resetAfterDamage():Boolean\r\n    }\r\n\r\n    private class glutinousBunny :Pet {\r\n        override val id: Int = 0\r\n        override val name: String = \"Glutinous Bunny\"\r\n        override val imageId: Int = R.drawable.pet_c_glutinousbunny\r\n        override val element: Int = dict.ELEMENT_FOREST\r\n        override val attackType: Int = dict.ATK_TYPE_STAY\r\n        override val damage: Int = -30\r\n        override val count: Int = 2\r\n        override val skillName :String =\"Sleepy...\"\r\n        override val description: String = \"Heals \"+(damage * -1)+\" hp every \"+count +\" turns\\n\" +\r\n                \"when it stays on the board.\"\r\n        override val rarity: Int = dict.RARITY_NORMAL\r\n\r\n        override fun dealDamage(petStatus: Array<petStatus?>, petOrder: Int,deckSize:Int): Int {\r\n            if(petStatus[petOrder]!!.stayNum != 0 && petStatus[petOrder]!!.stayNum % count == 0 && petStatus[petOrder]!!.location == dict.onBoard) {\r\n\r\n                return damage\r\n            }\r\n            return 0////\r\n        }\r\n\r\n        override fun attackCountdown(petStatus: Array<petStatus?>, petOrder: Int,deckSize:Int): Int {\r\n            if(petStatus[petOrder]!!.location == dict.onDECK){\r\n                return 0\r\n            }\r\n//        return (petStatus[petOrder]!!.stayNum % (catInfo.count) )\r\n            return count - petStatus[petOrder]!!.stayNum % (count+1)\r\n        }\r\n\r\n        override fun condition(petStatus: Array<petStatus?>, petOrder: Int,deckSize:Int): String {\r\n            if(petStatus[petOrder]!!.location == dict.onDECK){\r\n                return count.toString()+\" more turn(s) to stay on the board \"\r\n            }\r\n            else{\r\n                return attackCountdown(petStatus, petOrder,deckSize).toString()+\" more turn(s) to stay on the board\"\r\n            }\r\n\r\n        }\r\n\r\n        override fun nextDamage(petStatus: Array<petStatus?>,petOrder:Int,deckSize:Int): String {\r\n            return \"Heals \"+(damage * -1).toString()+\" hp\"\r\n        }\r\n\r\n        override fun resetAfterDamage(): Boolean {\r\n            return true\r\n        }\r\n\r\n    }\r\n\r\n    private class evilWater() :Pet {\r\n        override val id: Int = 1\r\n        override val name: String = \"Evil Water\"\r\n        override val imageId: Int = R.drawable.pet_b_evilwater\r\n        override val element: Int = dict.ELEMENT_WATER\r\n        override val attackType: Int = dict.ATK_TYPE_RETURN\r\n        override val damage: Int = 20\r\n        override val count: Int = 1\r\n        override val skillName :String =\"Fragile!\"\r\n        override val description: String = \"Deal \"+damage.toString()+\" \"+dict.ELEMENT_STRING[element]+\" damages\\n\" +\r\n                \"when it is knocked out from the board\\n\" +\r\n                \"on the next turn after it is placed on the board.\"\r\n        override val rarity: Int = dict.RARITY_NORMAL\r\n\r\n        override fun dealDamage(petStatus: Array<petStatus?>, petOrder: Int,deckSize:Int): Int {\r\n            if(petStatus[petOrder]!!.stayNum == count && petStatus[petOrder]!!.location == dict.onDECK ) {\r\n                return damage\r\n            }\r\n            return 0\r\n        }\r\n\r\n        override fun attackCountdown(petStatus: Array<petStatus?>, petOrder: Int,deckSize:Int): Int {\r\n            val stayNum = petStatus[petOrder]!!.stayNum\r\n            if( stayNum <= 1 ){\r\n                return count - stayNum\r\n            }\r\n            return -1\r\n        }\r\n\r\n        override fun condition(petStatus: Array<petStatus?>, petOrder: Int,deckSize:Int): String {\r\n            if(petStatus[petOrder]!!.location == dict.onDECK){\r\n                return \"Knocked out from the board after\\n\" +\r\n                        \"1 more turn it stays on the board \"\r\n            }\r\n            else{\r\n                val count = attackCountdown(petStatus, petOrder,deckSize)\r\n                var countStr = \"∞\"\r\n                if(count >= 0){\r\n                    countStr = count.toString()\r\n                }\r\n                return \"Knocked out from the board after\\n\" +\r\n                        countStr+\" more turn it stays on the board \"\r\n            }\r\n        }\r\n\r\n        override fun nextDamage(petStatus: Array<petStatus?>,petOrder:Int,deckSize:Int): String {\r\n            val count = attackCountdown(petStatus, petOrder,deckSize)\r\n            if(count >= 0){\r\n                return damage.toString()+\" \" +dict.ELEMENT_STRING[element]+\" damages\"\r\n            }\r\n            return \"0 \" +dict.ELEMENT_STRING[element]+\" damages\"\r\n        }\r\n\r\n        override fun resetAfterDamage(): Boolean {\r\n            return true\r\n        }\r\n    }\r\n\r\n    private class flamingSkull :Pet {\r\n        override val id: Int = 2\r\n        override val name: String = \"Flaming Skull\"\r\n        override val imageId: Int = R.drawable.pet_c_flamingskull\r\n        override val element: Int =  dict.ELEMENT_FIRE\r\n        override val attackType: Int = dict.ATK_TYPE_BOUNCE\r\n        override val damage: Int = 40\r\n        override val count: Int = 2\r\n        override val skillName:String = \"You can't catch me!\"\r\n        override val description: String = \"Deal \"+damage+\" \"+dict.ELEMENT_STRING[element]+\" damage\\n\" +\r\n                \"after every \"+count+ \" position change when it is on the board.\"\r\n        override val rarity: Int = dict.RARITY_RARE\r\n\r\n        override fun dealDamage(petStatus: Array<petStatus?>, petOrder: Int,deckSize:Int): Int {\r\n            val skullStatus = petStatus[petOrder]!!\r\n            if(skullStatus.bounceNum !=0 && skullStatus.bounceNum % count == 0 && skullStatus.location == dict.onBoard) {\r\n                return damage\r\n            }\r\n            return 0\r\n        }\r\n\r\n        override fun attackCountdown(petStatus: Array<petStatus?>, petOrder: Int,deckSize:Int): Int {\r\n            return count - petStatus[petOrder]!!.bounceNum\r\n        }\r\n\r\n        override fun condition(petStatus: Array<petStatus?>, petOrder: Int,deckSize:Int): String {\r\n            if(petStatus[petOrder]!!.location == dict.onDECK){\r\n                return count.toString()+\" more bounce when it stay on the board\\n\"\r\n            }\r\n            else{\r\n                val count = attackCountdown(petStatus, petOrder,deckSize)\r\n                return count.toString()+\" more bounce when it stay on the board\\n\"\r\n            }\r\n        }\r\n\r\n        override fun nextDamage(petStatus: Array<petStatus?>, petOrder: Int,deckSize:Int): String {\r\n            return damage.toString()+\" \"+dict.ELEMENT_STRING[element]+\" damages\"\r\n        }\r\n\r\n        override fun resetAfterDamage(): Boolean {\r\n            return true\r\n        }\r\n    }\r\n\r\n\r\n\r\n\r\n\r\n    private class lilMothman :Pet {\r\n        override val id: Int = 3\r\n        override val name: String = \"Lil' Mothman\"\r\n        override val imageId: Int = R.drawable.pet_c_lilmothy\r\n        override val element: Int =  dict.ELEMENT_FIRE\r\n        override val attackType: Int = dict.ATK_TYPE_STAY\r\n        override val damage: Int = 20\r\n        override val count: Int = 1\r\n        override val skillName: String = \"Math is important! \"\r\n//        override val description: String = \"dealing 9, 16, 21, 24, 25, 24, 21, 16, 9\\n\"+dict.ELEMENT_STRING[element]+\" damages sequentially \\n\" +\r\n//                \"after it placed on the board\"\r\n        override val description: String =\"Let x = number of turns it stays on the board,\\n\" +\r\n        \"deals (x mod 10) * (10 - (x mod 10) ) \"+ dict.ELEMENT_STRING[element]+\" damages\"\r\n        override val rarity: Int = dict.RARITY_LEGENDARY\r\n\r\n        override fun dealDamage(petStatus: Array<petStatus?>, petOrder: Int,deckSize:Int): Int {\r\n            if(petStatus[petOrder]!!.location == dict.onBoard){\r\n                val stayNum = petStatus[petOrder]!!.stayNum\r\n                return (stayNum % 10) * (10 - stayNum % 10)\r\n//                return 0\r\n            }\r\n            return 0\r\n            //he\r\n        }\r\n\r\n        override fun attackCountdown(petStatus: Array<petStatus?>, petOrder: Int,deckSize:Int): Int {\r\n            if(petStatus[petOrder]!!.location == dict.onBoard && petStatus[petOrder]!!.stayNum >0 ){\r\n                return 0\r\n            }\r\n            return 1\r\n        }\r\n\r\n        override fun condition(petStatus: Array<petStatus?>, petOrder: Int,deckSize:Int): String {\r\n            if(petStatus[petOrder]!!.location == dict.onDECK){\r\n                return count.toString()+\" more turns to stay on the board\\n\"\r\n            }\r\n            else{\r\n                val count = attackCountdown(petStatus, petOrder,deckSize)\r\n                return count.toString()+\" more turns to stay on the board\\n\"\r\n            }\r\n        }\r\n\r\n        override fun nextDamage(petStatus: Array<petStatus?>, petOrder: Int,deckSize:Int): String {\r\n            if(petStatus[petOrder]!!.location == dict.onDECK){\r\n                return \" 9 fire damages\"\r\n            }\r\n            else{\r\n                return dealDamage(petStatus, petOrder,deckSize).toString()+\" \"+dict.ELEMENT_STRING[element]+\" damages\"\r\n            }\r\n        }\r\n\r\n        override fun resetAfterDamage(): Boolean {\r\n            return false\r\n        }\r\n    }\r\n    private class shyRaccoon :Pet {\r\n        override val id: Int = 4\r\n        override val name: String = \"Shy Raccoon\"\r\n        override val imageId: Int = R.drawable.pet_c_shyraccoon\r\n        override val element: Int =  dict.ELEMENT_WATER\r\n        override val attackType: Int = dict.ATK_TYPE_STAY\r\n        override val damage: Int = 30\r\n        override val count: Int = 1\r\n        override val skillName: String = \"Hello...\"\r\n        override val description: String = \"Deal (\"+damage+\"x the number of pet on board) \"+dict.ELEMENT_STRING[element]+\" damages\\n\" +\r\n                \"on the \"+count+ \"th turn\\n\" +\r\n                \"after it is placed on the board\"\r\n        override val rarity: Int = dict.RARITY_LEGENDARY\r\n\r\n        override fun dealDamage(petStatus: Array<petStatus?>, petOrder: Int,deckSize:Int): Int {\r\n            var petOnBoard = 0\r\n            for(i in 0..<deckSize){\r\n                if(petStatus[i]!!.location == dict.onBoard){\r\n                    petOnBoard++\r\n                }\r\n            }\r\n            if(attackCountdown(petStatus, petOrder,deckSize) == 0){\r\n                return damage * petOnBoard\r\n            }\r\n            return 0\r\n        }\r\n\r\n        override fun attackCountdown(petStatus: Array<petStatus?>, petOrder: Int,deckSize:Int): Int {\r\n            if(petStatus[petOrder]!!.stayNum < 2  && petStatus[petOrder]!!.location == dict.onBoard){\r\n                return count - petStatus[petOrder]!!.stayNum\r\n            }\r\n            else if (petStatus[petOrder]!!.location == dict.onDECK){\r\n                return count\r\n            }\r\n            return -1\r\n        }\r\n\r\n        override fun condition(petStatus: Array<petStatus?>, petOrder: Int,deckSize:Int): String {\r\n            if(petStatus[petOrder]!!.location == dict.onDECK){\r\n                return count.toString()+\" more turns to stay on the board\\n\"\r\n            }\r\n            else{\r\n                val count = attackCountdown(petStatus, petOrder,deckSize)\r\n                var countStr = \"∞\"\r\n                if(count >= 0){\r\n                    countStr = count.toString()\r\n                }\r\n                return  countStr+\" more turns to stay on the board\\n\"\r\n            }\r\n        }\r\n\r\n        override fun nextDamage(petStatus: Array<petStatus?>, petOrder: Int,deckSize:Int): String {\r\n            val count = attackCountdown(petStatus, petOrder,deckSize)\r\n            var petOnBoard = 0\r\n            for(i in 0..<deckSize){\r\n                if(petStatus[i]!!.location == dict.onBoard){\r\n                    petOnBoard++\r\n                }\r\n            }\r\n            if(attackCountdown(petStatus, petOrder,deckSize) != -1){\r\n                val mulDmg = petOnBoard * damage\r\n                return mulDmg.toString()+\" \" +dict.ELEMENT_STRING[element]+\" damages\"\r\n            }\r\n            return \"0 \" +dict.ELEMENT_STRING[element]+\" damages\"\r\n        }\r\n\r\n        override fun resetAfterDamage(): Boolean {\r\n            return false\r\n        }\r\n\r\n    }\r\n\r\n    private class healingSprite :Pet {\r\n        // TODO: make pet unique\r\n        override val id: Int = 5\r\n        override val name: String = \"Healing Sprite\"\r\n        override val imageId: Int = R.drawable.pet_c_healingsprite\r\n        override val element: Int = dict.ELEMENT_WATER\r\n        override val attackType: Int = dict.ATK_TYPE_STAY\r\n        override val damage: Int = -20\r\n        override val count: Int = 4\r\n        override val skillName :String =\"Light of the hospital\"\r\n        override val description: String = \"Heals \"+(damage * -1)+\" hp if there are \"+count+\" pets on the board\"\r\n        override val rarity: Int = dict.RARITY_NORMAL\r\n\r\n        override fun dealDamage(petStatus: Array<petStatus?>, petOrder: Int,deckSize:Int): Int {\r\n            var temp = 0\r\n            for(i in 0..<deckSize){\r\n                if (petStatus[i]?.location == dict.onBoard){\r\n                    temp ++\r\n                }\r\n            }\r\n            if(temp == count) {\r\n\r\n                return damage\r\n            }\r\n            return 0\r\n        }\r\n\r\n        override fun attackCountdown(petStatus: Array<petStatus?>, petOrder: Int,deckSize:Int): Int {\r\n//        return (petStatus[petOrder]!!.stayNum % (catInfo.count) )\r\n            var temp = 0\r\n            for(i in 0..<deckSize){\r\n                if (petStatus[i]?.location == dict.onBoard){\r\n                    temp ++\r\n                }\r\n            }\r\n            return abs(temp - count)\r\n        }\r\n\r\n        override fun condition(petStatus: Array<petStatus?>, petOrder: Int,deckSize:Int): String {\r\n            var temp = 0\r\n            for(i in 0..<deckSize){\r\n                if (petStatus[i]?.location == dict.onBoard){\r\n                    temp ++\r\n                }\r\n            }\r\n            if(temp > count){\r\n                return (temp - count).toString()+\" pets to knock out from the board.\"\r\n            }\r\n            else{\r\n                return (count - temp).toString()+\" pets to put on the board.\"\r\n            }\r\n\r\n        }\r\n\r\n        override fun nextDamage(petStatus: Array<petStatus?>,petOrder:Int,deckSize:Int): String {\r\n            return \"Heals \"+(damage * -1).toString()+\" hp\"\r\n        }\r\n\r\n        override fun resetAfterDamage(): Boolean {\r\n            return false\r\n        }\r\n\r\n    }\r\n\r\n    private class babyOwlbear :Pet {\r\n        // TODO: make this pet unique\r\n        override val id: Int = 6\r\n        override val name: String = \"Baby Owlbear\"\r\n        override val imageId: Int = R.drawable.pet_a_babyowlbear\r\n        override val element: Int = dict.ELEMENT_FOREST\r\n        override val attackType: Int = dict.ATK_TYPE_RETURN\r\n        override val damage: Int = 15\r\n        override val count: Int = 0\r\n        override val skillName :String =\"Good place to eat...\"\r\n        override val description: String = \"Deals number of turns it stay on the board x \"+damage+dict.ELEMENT_STRING[element]+\" damage\\n\" +\r\n                \"when it is knocked out from the board.\"\r\n        override val rarity: Int = dict.RARITY_NORMAL\r\n\r\n        override fun dealDamage(petStatus: Array<petStatus?>, petOrder: Int,deckSize:Int): Int {\r\n            if(petStatus[petOrder]!!.stayNum > 0 && petStatus[petOrder]!!.location == dict.onDECK ) {\r\n                return damage * petStatus[petOrder]!!.stayNum\r\n            }\r\n            return 0\r\n        }\r\n\r\n        override fun attackCountdown(petStatus: Array<petStatus?>, petOrder: Int,deckSize:Int): Int {\r\n            if(petStatus[petOrder]!!.location == dict.onDECK){\r\n                return 1\r\n            }\r\n\r\n            return 0\r\n        }\r\n\r\n        override fun condition(petStatus: Array<petStatus?>, petOrder: Int,deckSize:Int): String {\r\n\r\n            return count.toString()+\" more turn(s) to stay on the board \"\r\n\r\n        }\r\n\r\n        override fun nextDamage(petStatus: Array<petStatus?>,petOrder:Int,deckSize:Int): String {\r\n            return \"Deals \"+(damage * petStatus[petOrder]!!.stayNum ).toString()+\" damage\"\r\n        }\r\n\r\n        override fun resetAfterDamage(): Boolean {\r\n            return true\r\n        }\r\n    }\r\n\r\n    private class ambushMouseviper() :Pet {\r\n        // TODO: make this pet unique\r\n        override val id: Int = 7\r\n        override val name: String = \"Ambush Mouseviper\"\r\n        override val imageId: Int = R.drawable.pet_b_ambushmouseviper\r\n        override val element: Int = dict.ELEMENT_FOREST\r\n        override val attackType: Int = dict.ATK_TYPE_RETURN\r\n        override val damage: Int = 30\r\n        override val count: Int = 2\r\n        override val skillName :String =\"Toxic\"\r\n        override val description: String = \"Deal \"+damage.toString()+\" \"+dict.ELEMENT_STRING[element]+\" damages\\n\" +\r\n                \"after every \"+count+\" turns\"\r\n        override val rarity: Int = dict.RARITY_NORMAL\r\n\r\n        override fun dealDamage(petStatus: Array<petStatus?>, petOrder: Int,deckSize:Int): Int {\r\n            if(petStatus[petOrder]!!.stayNum != 0 && petStatus[petOrder]!!.stayNum % count == 0 && petStatus[petOrder]!!.location == dict.onBoard) {\r\n                return damage\r\n            }\r\n            return 0\r\n        }\r\n\r\n        override fun attackCountdown(petStatus: Array<petStatus?>, petOrder: Int,deckSize:Int): Int {\r\n//            val stayNum = petStatus[petOrder]!!.stayNum\r\n//            if( stayNum <= 1 ){\r\n//                return count - stayNum\r\n//            }\r\n//            return -1\r\n\r\n            if(petStatus[petOrder]!!.location == dict.onDECK){\r\n                return 0\r\n            }\r\n//        return (petStatus[petOrder]!!.stayNum % (catInfo.count) )\r\n            return count - petStatus[petOrder]!!.stayNum % (count+1)\r\n        }\r\n\r\n        override fun condition(petStatus: Array<petStatus?>, petOrder: Int,deckSize:Int): String {\r\n//            if(petStatus[petOrder]!!.location == dict.onDECK){\r\n//                return \"Knocked out from the board after\\n\" +\r\n//                        \"1 more turn it stays on the board \"\r\n//            }\r\n//            else{\r\n//                val count = attackCountdown(petStatus, petOrder,deckSize)\r\n//                var countStr = \"∞\"\r\n//                if(count >= 0){\r\n//                    countStr = count.toString()\r\n//                }\r\n//                return \"Knocked out from the board after\\n\" +\r\n//                        countStr+\" more turn it stays on the board \"\r\n//            }\r\n\r\n            if(petStatus[petOrder]!!.location == dict.onDECK){\r\n                return count.toString()+\" more turn(s) to stay on the board \"\r\n            }\r\n            else{\r\n                return attackCountdown(petStatus, petOrder,deckSize).toString()+\" more turn(s) to stay on the board\"\r\n            }\r\n        }\r\n\r\n        override fun nextDamage(petStatus: Array<petStatus?>,petOrder:Int,deckSize:Int): String {\r\n//            val count = attackCountdown(petStatus, petOrder,deckSize)\r\n//            if(count >= 0){\r\n//                return damage.toString()+\" \" +dict.ELEMENT_STRING[element]+\" damages\"\r\n//            }\r\n//            return \"0 \" +dict.ELEMENT_STRING[element]+\" damages\"\r\n            return \"Deals \"+(damage ).toString()+dict.ELEMENT_STRING[element]+\" damages\\n\"\r\n        }\r\n\r\n        override fun resetAfterDamage(): Boolean {\r\n            return true\r\n        }\r\n    }\r\n\r\n    private class animatedNutcracker() :Pet {\r\n        // TODO: make this pet unique\r\n        override val id: Int = 8\r\n        override val name: String = \"Animated Nutcracker\"\r\n        override val imageId: Int = R.drawable.pet_c_animatednutcracker\r\n        override val element: Int = dict.ELEMENT_FIRE\r\n        override val attackType: Int = dict.ATK_TYPE_STAY\r\n        override val damage: Int = 100\r\n        override val count: Int = 0\r\n        override val skillName :String =\"Nut Cracker!\"\r\n        override val description: String = \"Deal \"+damage.toString()+\" \"+dict.ELEMENT_STRING[element]+\" damages\\n\" +\r\n                \"if there is no pets on the deck when this pet is placed on the board\"\r\n        override val rarity: Int = dict.RARITY_NORMAL\r\n\r\n        override fun dealDamage(petStatus: Array<petStatus?>, petOrder: Int,deckSize:Int): Int {\r\n            var petOnBoard = 0\r\n            for(i in 0..<deckSize){\r\n                if(petStatus[i]!!.location == dict.onBoard){\r\n                    petOnBoard++\r\n                }\r\n            }\r\n            if(petStatus[petOrder]!!.stayNum == 0 && petOnBoard == deckSize && petStatus[petOrder]!!.location == dict.onBoard){\r\n                return damage\r\n            }\r\n            return 0\r\n\r\n        }\r\n\r\n        override fun attackCountdown(petStatus: Array<petStatus?>, petOrder: Int,deckSize:Int): Int {\r\n            val stayNum = petStatus[petOrder]!!.stayNum\r\n            if( petStatus[petOrder]!!.location == dict.onBoard && stayNum == 0){\r\n                return 0\r\n            }\r\n            else if(petStatus[petOrder]!!.location == dict.onDECK){\r\n                return 1\r\n            }\r\n            return -1\r\n        }\r\n\r\n        override fun condition(petStatus: Array<petStatus?>, petOrder: Int,deckSize:Int): String {\r\n            if(petStatus[petOrder]!!.location == dict.onDECK){\r\n                return \"0 more turn to stay on the board\\n\"\r\n            }\r\n            else{\r\n                val count = attackCountdown(petStatus, petOrder,deckSize)\r\n                var countStr = \"∞\"\r\n                if(count >= 0){\r\n                    countStr = count.toString()\r\n                }\r\n                return  countStr+\" more turn to stays on the board \"\r\n\r\n            }\r\n        }\r\n\r\n        override fun nextDamage(petStatus: Array<petStatus?>,petOrder:Int,deckSize:Int): String {\r\n//            var petOnBoard = 0\r\n//            for(i in 0..<deckSize){\r\n//                if(petStatus[i]!!.location == dict.onBoard){\r\n//                    petOnBoard++\r\n//                }\r\n//            }\r\n            if(attackCountdown(petStatus, petOrder,deckSize) != -1){\r\n//                val mulDmg = petOnBoard * damage\r\n                return damage.toString()+\" \" +dict.ELEMENT_STRING[element]+\" damages\"\r\n            }\r\n            return \"0 \" +dict.ELEMENT_STRING[element]+\" damages\"\r\n        }\r\n\r\n        override fun resetAfterDamage(): Boolean {\r\n            return false\r\n        }\r\n    }\r\n\r\n    private class deepseaMerman() :Pet {\r\n        // TODO: make this pet unique\r\n        override val id: Int = 9\r\n        override val name: String = \"Deap-sea Merman\"\r\n        override val imageId: Int = R.drawable.pet_c_deepseamerman\r\n        override val element: Int = dict.ELEMENT_WATER\r\n        override val attackType: Int = dict.ATK_TYPE_RETURN\r\n        override val damage: Int = 15\r\n        override val count: Int = 1\r\n        override val skillName :String =\"Golden Fork\"\r\n        override val description: String = \"Deal \"+damage.toString()+\"x water pets on the board \"+dict.ELEMENT_STRING[element]+\" damages\\n\" +\r\n                \"after it is placed on the board.\"\r\n        override val rarity: Int = dict.RARITY_NORMAL\r\n\r\n        override fun dealDamage(petStatus: Array<petStatus?>, petOrder: Int,deckSize:Int): Int {\r\n\r\n            var petOnBoard = 0\r\n            for(i in 0..<deckSize){\r\n                if(petStatus[i]!!.location == dict.onBoard && petStatus[i]!!.element == dict.ELEMENT_WATER){\r\n                    petOnBoard++\r\n                }\r\n            }\r\n            if(attackCountdown(petStatus, petOrder,deckSize) == 0 && petStatus[petOrder]!!.location == dict.onBoard){\r\n                return damage * petOnBoard\r\n            }\r\n            return 0\r\n\r\n        }\r\n\r\n        override fun attackCountdown(petStatus: Array<petStatus?>, petOrder: Int,deckSize:Int): Int {\r\n            val stayNum = petStatus[petOrder]!!.stayNum\r\n            if( stayNum == 0 ){\r\n                return stayNum\r\n            }\r\n            return -1\r\n        }\r\n\r\n        override fun condition(petStatus: Array<petStatus?>, petOrder: Int,deckSize:Int): String {\r\n            if(petStatus[petOrder]!!.location == dict.onDECK){\r\n                return \"0 more turn to stay on the board\\n\"\r\n            }\r\n            else{\r\n                val count = attackCountdown(petStatus, petOrder,deckSize)\r\n                var countStr = \"∞\"\r\n                if(count >= 0){\r\n                    countStr = count.toString()\r\n                }\r\n                return  countStr+\" more turn to stays on the board \"\r\n\r\n            }\r\n        }\r\n\r\n        override fun nextDamage(petStatus: Array<petStatus?>,petOrder:Int,deckSize:Int): String {\r\n            var petOnBoard = 0\r\n            for(i in 0..<deckSize){\r\n                if(petStatus[i]!!.location == dict.onBoard && petStatus[i]!!.element == dict.ELEMENT_WATER){\r\n                    petOnBoard++\r\n                }\r\n            }\r\n            if(attackCountdown(petStatus, petOrder,deckSize) != -1){\r\n                val mulDmg = petOnBoard * damage\r\n                return mulDmg.toString()+\" \" +dict.ELEMENT_STRING[element]+\" damages\"\r\n            }\r\n            return \"0 \" +dict.ELEMENT_STRING[element]+\" damages\"\r\n        }\r\n\r\n        override fun resetAfterDamage(): Boolean {\r\n            return false\r\n        }\r\n    }\r\n\r\n\r\n\r\n\r\n\r\n\r\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/com/example/eggenda/gamePlay/petInfo2.kt b/app/src/main/java/com/example/eggenda/gamePlay/petInfo2.kt
+--- a/app/src/main/java/com/example/eggenda/gamePlay/petInfo2.kt	(revision c78f9c401aa910a9f0730238c52ce0a212b0fe9a)
++++ b/app/src/main/java/com/example/eggenda/gamePlay/petInfo2.kt	(date 1733177681723)
+@@ -49,6 +49,7 @@
+         val skillName: String
+         val description: String
+         val rarity: Int
++        val backgroundId: Int
+ 
+         fun dealDamage(petStatus: Array<petStatus?>,petOrder:Int,deckSize:Int):Int
+         fun attackCountdown(petStatus: Array<petStatus?>,petOrder:Int,deckSize:Int):Int
+@@ -69,6 +70,7 @@
+         override val description: String = "Heals "+(damage * -1)+" hp every "+count +" turns\n" +
+                 "when it stays on the board."
+         override val rarity: Int = dict.RARITY_NORMAL
++        override val backgroundId: Int = R.drawable.background_bunny_happyplains
+ 
+         override fun dealDamage(petStatus: Array<petStatus?>, petOrder: Int,deckSize:Int): Int {
+             if(petStatus[petOrder]!!.stayNum != 0 && petStatus[petOrder]!!.stayNum % count == 0 && petStatus[petOrder]!!.location == dict.onBoard) {
+@@ -119,6 +121,7 @@
+                 "when it is knocked out from the board\n" +
+                 "on the next turn after it is placed on the board."
+         override val rarity: Int = dict.RARITY_NORMAL
++        override val backgroundId: Int = R.drawable.background_evilwater_lab
+ 
+         override fun dealDamage(petStatus: Array<petStatus?>, petOrder: Int,deckSize:Int): Int {
+             if(petStatus[petOrder]!!.stayNum == count && petStatus[petOrder]!!.location == dict.onDECK ) {
+@@ -176,6 +179,7 @@
+         override val description: String = "Deal "+damage+" "+dict.ELEMENT_STRING[element]+" damage\n" +
+                 "after every "+count+ " position change when it is on the board."
+         override val rarity: Int = dict.RARITY_RARE
++        override val backgroundId: Int = R.drawable.background_flameskull_darkdungeons
+ 
+         override fun dealDamage(petStatus: Array<petStatus?>, petOrder: Int,deckSize:Int): Int {
+             val skullStatus = petStatus[petOrder]!!
+@@ -226,6 +230,7 @@
+         override val description: String ="Let x = number of turns it stays on the board,\n" +
+         "deals (x mod 10) * (10 - (x mod 10) ) "+ dict.ELEMENT_STRING[element]+" damages"
+         override val rarity: Int = dict.RARITY_LEGENDARY
++        override val backgroundId: Int = R.drawable.background_mothman_deadlands
+ 
+         override fun dealDamage(petStatus: Array<petStatus?>, petOrder: Int,deckSize:Int): Int {
+             if(petStatus[petOrder]!!.location == dict.onBoard){
+@@ -280,6 +285,7 @@
+                 "on the "+count+ "th turn\n" +
+                 "after it is placed on the board"
+         override val rarity: Int = dict.RARITY_LEGENDARY
++        override val backgroundId: Int = R.drawable.background_raccoon_housetrash
+ 
+         override fun dealDamage(petStatus: Array<petStatus?>, petOrder: Int,deckSize:Int): Int {
+             var petOnBoard = 0
+@@ -351,6 +357,7 @@
+         override val skillName :String ="Light of the hospital"
+         override val description: String = "Heals "+(damage * -1)+" hp if there are "+count+" pets on the board"
+         override val rarity: Int = dict.RARITY_NORMAL
++        override val backgroundId: Int = R.drawable.background_sprite_spiritrealm
+ 
+         override fun dealDamage(petStatus: Array<petStatus?>, petOrder: Int,deckSize:Int): Int {
+             var temp = 0
+@@ -416,6 +423,7 @@
+         override val description: String = "Deals number of turns it stay on the board x "+damage+dict.ELEMENT_STRING[element]+" damage\n" +
+                 "when it is knocked out from the board."
+         override val rarity: Int = dict.RARITY_NORMAL
++        override val backgroundId: Int = R.drawable.background_owlbear_temperateforest
+ 
+         override fun dealDamage(petStatus: Array<petStatus?>, petOrder: Int,deckSize:Int): Int {
+             if(petStatus[petOrder]!!.stayNum > 0 && petStatus[petOrder]!!.location == dict.onDECK ) {
+@@ -460,6 +468,7 @@
+         override val description: String = "Deal "+damage.toString()+" "+dict.ELEMENT_STRING[element]+" damages\n" +
+                 "after every "+count+" turns"
+         override val rarity: Int = dict.RARITY_NORMAL
++        override val backgroundId: Int = R.drawable.background_mouseviper_noidea
+ 
+         override fun dealDamage(petStatus: Array<petStatus?>, petOrder: Int,deckSize:Int): Int {
+             if(petStatus[petOrder]!!.stayNum != 0 && petStatus[petOrder]!!.stayNum % count == 0 && petStatus[petOrder]!!.location == dict.onBoard) {
+@@ -532,6 +541,7 @@
+         override val description: String = "Deal "+damage.toString()+" "+dict.ELEMENT_STRING[element]+" damages\n" +
+                 "if there is no pets on the deck when this pet is placed on the board"
+         override val rarity: Int = dict.RARITY_NORMAL
++        override val backgroundId: Int  = R.drawable.background_nutcracker_homelyhome
+ 
+         override fun dealDamage(petStatus: Array<petStatus?>, petOrder: Int,deckSize:Int): Int {
+             var petOnBoard = 0
+@@ -605,6 +615,7 @@
+         override val description: String = "Deal "+damage.toString()+"x water pets on the board "+dict.ELEMENT_STRING[element]+" damages\n" +
+                 "after it is placed on the board."
+         override val rarity: Int = dict.RARITY_NORMAL
++        override val backgroundId: Int = R.drawable.background_merman_deepseacaverns
+ 
+         override fun dealDamage(petStatus: Array<petStatus?>, petOrder: Int,deckSize:Int): Int {
+ 
+Index: .idea/shelf/Uncommitted_changes_before_Update_at_2024-11-24_4_27_p_m__[Changes]/shelved.patch
+===================================================================
+diff --git a/.idea/shelf/Uncommitted_changes_before_Update_at_2024-11-24_4_27_p_m__[Changes]/shelved.patch b/.idea/shelf/Uncommitted_changes_before_Update_at_2024-11-24_4_27_p_m__[Changes]/shelved.patch
+deleted file mode 100644
+--- a/.idea/shelf/Uncommitted_changes_before_Update_at_2024-11-24_4_27_p_m__[Changes]/shelved.patch	(revision c78f9c401aa910a9f0730238c52ce0a212b0fe9a)
++++ /dev/null	(revision c78f9c401aa910a9f0730238c52ce0a212b0fe9a)
+@@ -1,888 +0,0 @@
+-Index: app/src/main/res/layout/fragment_gallery.xml
+-IDEA additional info:
+-Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+-<+><?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n\r\n<androidx.constraintlayout.widget.ConstraintLayout xmlns:android=\"http://schemas.android.com/apk/res/android\"\r\n    xmlns:app=\"http://schemas.android.com/apk/res-auto\"\r\n    xmlns:tools=\"http://schemas.android.com/tools\"\r\n    android:layout_width=\"match_parent\"\r\n    android:layout_height=\"match_parent\"\r\n    android:background=\"@color/yellow\"\r\n    android:paddingTop=\"20dp\"\r\n    tools:context=\".ui.gallery.GalleryFragment\">\r\n\r\n<!--    <TextView-->\r\n<!--        android:id=\"@+id/gallery_text_view\"-->\r\n<!--        android:layout_width=\"wrap_content\"-->\r\n<!--        android:layout_height=\"wrap_content\"-->\r\n<!--        android:text=\"Pet Gallery\"-->\r\n<!--        app:layout_constraintEnd_toEndOf=\"parent\"-->\r\n<!--        app:layout_constraintHorizontal_bias=\"0.154\"-->\r\n<!--        app:layout_constraintStart_toStartOf=\"parent\"-->\r\n<!--        tools:layout_editor_absoluteY=\"80dp\" />-->\r\n\r\n    <androidx.recyclerview.widget.RecyclerView\r\n        android:id=\"@+id/gallery_characterchoose_recyclerView\"\r\n        android:layout_width=\"wrap_content\"\r\n        android:layout_height=\"wrap_content\"\r\n        android:layout_weight=\"1\"\r\n        app:layout_constraintBottom_toTopOf=\"@+id/guideline8\"\r\n        app:layout_constraintEnd_toEndOf=\"parent\"\r\n        app:layout_constraintStart_toStartOf=\"parent\"\r\n        app:layout_constraintTop_toTopOf=\"@+id/guideline8\" />\r\n\r\n    <androidx.constraintlayout.widget.Guideline\r\n        android:id=\"@+id/guideline8\"\r\n        android:layout_width=\"wrap_content\"\r\n        android:layout_height=\"wrap_content\"\r\n        android:orientation=\"horizontal\"\r\n        app:layout_constraintGuide_begin=\"300dp\" />\r\n\r\n    <!-- New TextView for the message -->\r\n    <TextView\r\n        android:id=\"@+id/long_hold_message\"\r\n        android:layout_width=\"0dp\"\r\n        android:layout_height=\"wrap_content\"\r\n        android:text=\"Long-hold to view pet information\"\r\n        android:textSize=\"18sp\"\r\n        android:textColor=\"@android:color/black\"\r\n        android:fontFamily=\"@font/titan_one\"\r\n        android:gravity=\"center\"\r\n        app:layout_constraintStart_toStartOf=\"parent\"\r\n        app:layout_constraintEnd_toEndOf=\"parent\"\r\n        app:layout_constraintBottom_toBottomOf=\"parent\"\r\n        android:padding=\"16dp\" />\r\n\r\n</androidx.constraintlayout.widget.ConstraintLayout>\r\n\r\n
+-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+-<+>UTF-8
+-===================================================================
+-diff --git a/app/src/main/res/layout/fragment_gallery.xml b/app/src/main/res/layout/fragment_gallery.xml
+---- a/app/src/main/res/layout/fragment_gallery.xml	(revision e8ca78089929fdbc6a4c3f6a6d71d3fc219aef3a)
+-+++ b/app/src/main/res/layout/fragment_gallery.xml	(date 1732493455717)
+-@@ -9,47 +9,107 @@
+-     android:paddingTop="20dp"
+-     tools:context=".ui.gallery.GalleryFragment">
+- 
+--<!--    <TextView-->
+--<!--        android:id="@+id/gallery_text_view"-->
+--<!--        android:layout_width="wrap_content"-->
+--<!--        android:layout_height="wrap_content"-->
+--<!--        android:text="Pet Gallery"-->
+--<!--        app:layout_constraintEnd_toEndOf="parent"-->
+--<!--        app:layout_constraintHorizontal_bias="0.154"-->
+--<!--        app:layout_constraintStart_toStartOf="parent"-->
+--<!--        tools:layout_editor_absoluteY="80dp" />-->
+-+
+-+    <TextView
+-+        android:id="@+id/gallery_pet_name"
+-+        android:layout_width="wrap_content"
+-+        android:layout_height="wrap_content"
+-+        android:fontFamily="@font/titan_one"
+-+        android:text="Please Select a Pet!"
+-+        android:textSize="34sp"
+-+        app:layout_constraintBottom_toTopOf="@+id/gallery_pet_show"
+-+        app:layout_constraintEnd_toStartOf="@+id/guideline9"
+-+        app:layout_constraintStart_toStartOf="@+id/guideline9" />
+-+
+-+    <ImageView
+-+        android:id="@+id/gallery_pet_show"
+-+        android:layout_width="250dp"
+-+        android:layout_height="250dp"
+-+        android:src="@drawable/game_choose_nth_3"
+-+        app:layout_constraintBottom_toTopOf="@+id/guideline4"
+-+        app:layout_constraintEnd_toStartOf="@+id/guideline9"
+-+        app:layout_constraintHorizontal_bias="0.65"
+-+        app:layout_constraintStart_toStartOf="@+id/guideline9"
+-+        app:layout_constraintTop_toTopOf="@+id/guideline4"
+-+        app:layout_constraintVertical_bias="0.49" />
+-+
+-+   <androidx.constraintlayout.widget.ConstraintLayout
+-+       android:layout_width="match_parent"
+-+       android:layout_height="340dp"
+-+       android:background="@color/yellow_subbackground"
+-+       app:layout_constraintBottom_toTopOf="@+id/guideline8"
+-+       app:layout_constraintEnd_toEndOf="parent"
+-+       app:layout_constraintHorizontal_bias="1.0"
+-+       app:layout_constraintStart_toStartOf="parent"
+-+       app:layout_constraintTop_toTopOf="@+id/guideline8">
+-+
+-+       <TextView
+-+           android:id="@+id/textView3"
+-+           android:layout_width="wrap_content"
+-+           android:layout_height="wrap_content"
+-+           android:fontFamily="@font/titan_one"
+-+           android:text="Pet Gallery"
+-+           android:textSize="34sp"
+-+           app:layout_constraintEnd_toEndOf="parent"
+-+           app:layout_constraintStart_toStartOf="parent"
+-+           app:layout_constraintTop_toTopOf="parent" />
+- 
+--    <androidx.recyclerview.widget.RecyclerView
+--        android:id="@+id/gallery_characterchoose_recyclerView"
+--        android:layout_width="wrap_content"
+--        android:layout_height="wrap_content"
+--        android:layout_weight="1"
+--        app:layout_constraintBottom_toTopOf="@+id/guideline8"
+--        app:layout_constraintEnd_toEndOf="parent"
+--        app:layout_constraintStart_toStartOf="parent"
+--        app:layout_constraintTop_toTopOf="@+id/guideline8" />
+-+       <androidx.recyclerview.widget.RecyclerView
+-+           android:id="@+id/gallery_characterchoose_recyclerView"
+-+           android:layout_width="wrap_content"
+-+           android:layout_height="wrap_content"
+-+           android:layout_marginTop="30dp"
+-+           android:layout_weight="1"
+-+           android:scrollbars="vertical"
+-+           app:layout_constraintBottom_toBottomOf="parent"
+-+           app:layout_constraintEnd_toEndOf="parent"
+-+           app:layout_constraintHorizontal_bias="0.498"
+-+           app:layout_constraintStart_toStartOf="parent"
+-+           app:layout_constraintTop_toBottomOf="@+id/textView3"
+-+           app:layout_constraintVertical_bias="0.051" />
+-+
+-+
+-+   </androidx.constraintlayout.widget.ConstraintLayout>
+- 
+-     <androidx.constraintlayout.widget.Guideline
+-         android:id="@+id/guideline8"
+-         android:layout_width="wrap_content"
+-         android:layout_height="wrap_content"
+-         android:orientation="horizontal"
+--        app:layout_constraintGuide_begin="300dp" />
+-+        app:layout_constraintGuide_begin="505dp" />
+-+
+- 
+-     <!-- New TextView for the message -->
+-+
+-     <TextView
+-         android:id="@+id/long_hold_message"
+-         android:layout_width="0dp"
+-         android:layout_height="wrap_content"
+--        android:text="Long-hold to view pet information"
+--        android:textSize="18sp"
+--        android:textColor="@android:color/black"
+-+        android:layout_marginBottom="4dp"
+-         android:fontFamily="@font/titan_one"
+-         android:gravity="center"
+--        app:layout_constraintStart_toStartOf="parent"
+-+        android:padding="6dp"
+-+        android:text="Long-hold Photo to view pet information"
+-+        android:textColor="@android:color/black"
+-+        android:textSize="18sp"
+-+        app:layout_constraintBottom_toBottomOf="parent"
+-         app:layout_constraintEnd_toEndOf="parent"
+--        app:layout_constraintBottom_toBottomOf="parent"
+--        android:padding="16dp" />
+-+        app:layout_constraintHorizontal_bias="1.0"
+-+        app:layout_constraintStart_toStartOf="parent" />
+-+
+-+    <androidx.constraintlayout.widget.Guideline
+-+        android:id="@+id/guideline4"
+-+        android:layout_width="wrap_content"
+-+        android:layout_height="wrap_content"
+-+        android:orientation="horizontal"
+-+        app:layout_constraintGuide_begin="158dp" />
+-+
+-+    <androidx.constraintlayout.widget.Guideline
+-+        android:id="@+id/guideline9"
+-+        android:layout_width="wrap_content"
+-+        android:layout_height="wrap_content"
+-+        android:orientation="vertical"
+-+        app:layout_constraintGuide_begin="216dp" />
+- 
+- </androidx.constraintlayout.widget.ConstraintLayout>
+- 
+-Index: app/src/main/java/com/example/eggenda/ui/gallery/GalleryViewModel.kt
+-IDEA additional info:
+-Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+-<+>package com.example.eggenda.ui.gallery\r\n\r\nimport androidx.lifecycle.LiveData\r\nimport androidx.lifecycle.MutableLiveData\r\nimport androidx.lifecycle.ViewModel\r\nimport androidx.lifecycle.ViewModelProvider\r\nimport com.example.eggenda.gamePetChoose.GamePetChooseViewModel\r\nimport com.example.eggenda.gamePetChoose.SharedPreferenceManager\r\n\r\nclass GalleryViewModel : ViewModel() {\r\n    //getting Int array from pets Info\r\n    private val _allPets  = MutableLiveData<IntArray>()\r\n    val allPets : LiveData<IntArray> get() = _allPets\r\n\r\n//    class GalleryViewModelFactory(private val maxAmountPets: SharedPreferenceManager) : ViewModelProvider.Factory {\r\n//        override fun <T : ViewModel> create(modelClass: Class<T>): T {\r\n//            if (modelClass.isAssignableFrom(GalleryViewModel::class.java)) {\r\n//                @Suppress(\"UNCHECKED_CAST\")\r\n//                return GamePetChooseViewModel(maxAmountPets) as T\r\n//            }\r\n//            throw IllegalArgumentException(\"Unknown ViewModel class\")\r\n//        }\r\n//    }\r\n\r\n}
+-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+-<+>UTF-8
+-===================================================================
+-diff --git a/app/src/main/java/com/example/eggenda/ui/gallery/GalleryViewModel.kt b/app/src/main/java/com/example/eggenda/ui/gallery/GalleryViewModel.kt
+---- a/app/src/main/java/com/example/eggenda/ui/gallery/GalleryViewModel.kt	(revision e8ca78089929fdbc6a4c3f6a6d71d3fc219aef3a)
+-+++ b/app/src/main/java/com/example/eggenda/ui/gallery/GalleryViewModel.kt	(date 1732492836415)
+-@@ -12,14 +12,15 @@
+-     private val _allPets  = MutableLiveData<IntArray>()
+-     val allPets : LiveData<IntArray> get() = _allPets
+- 
+--//    class GalleryViewModelFactory(private val maxAmountPets: SharedPreferenceManager) : ViewModelProvider.Factory {
+--//        override fun <T : ViewModel> create(modelClass: Class<T>): T {
+--//            if (modelClass.isAssignableFrom(GalleryViewModel::class.java)) {
+--//                @Suppress("UNCHECKED_CAST")
+--//                return GamePetChooseViewModel(maxAmountPets) as T
+--//            }
+--//            throw IllegalArgumentException("Unknown ViewModel class")
+--//        }
+--//    }
+-+    private val _currentSelectedPet = MutableLiveData<Int?>() // Null means no pet is selected
+-+    val currentSelectedPet: LiveData<Int?> = _currentSelectedPet
+-+
+-+    fun selectPet(petId: Int?) {
+-+        _currentSelectedPet.value = petId
+-+    }
+-+
+-+    fun clearSelection() {
+-+        _currentSelectedPet.value = null
+-+    }
+- 
+- }
+-\ No newline at end of file
+-Index: app/src/main/java/com/example/eggenda/ui/gallery/GalleryAdapter.kt
+-IDEA additional info:
+-Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+-<+>package com.example.eggenda.ui.gallery\r\n\r\nimport android.util.Log\r\nimport android.view.LayoutInflater\r\nimport android.view.View\r\nimport android.view.ViewGroup\r\nimport android.widget.ImageView\r\nimport androidx.recyclerview.widget.RecyclerView\r\nimport com.example.eggenda.R\r\nimport com.example.eggenda.ui.gallery.GalleryAdapter.ViewHolder\r\nimport com.example.eggenda.gamePetChoose.SharedPreferenceManager\r\nimport com.example.eggenda.gamePlay.petInfo2\r\n\r\nclass GalleryAdapter(private var characterList : IntArray,\r\n                     private val sharedPreferenceManager: SharedPreferenceManager,\r\n                     private val onLongClick : (Int) -> Unit\r\n):RecyclerView.Adapter<GalleryAdapter.ViewHolder>(){\r\n\r\n    private val ownedPetsTemp = sharedPreferenceManager.getPetOwnership()   //ArrayList <Int>\r\n    private val ownedPets : IntArray = ownedPetsTemp.toIntArray()           //change it to Int Array\r\n\r\n    private var temp : Int = 0\r\n\r\n    //filter out the unlocked character list\r\n//    private var filteredPetsList = characterList.filterIndexed { index, _->\r\n//        index < ownedPets.size && ownedPets[index] == 1\r\n//    } .also { Log.d(\"FilteredPets\", \"filteredPetsList size: ${it.size}\") }\r\n\r\n    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {\r\n        val view = LayoutInflater.from(parent.context)\r\n            .inflate(R.layout.gallery_pet_items_frame, parent, false)\r\n        return ViewHolder(view)\r\n    }\r\n\r\n    override fun getItemCount(): Int {return characterList.size }\r\n\r\n    override fun onBindViewHolder(holder: ViewHolder, position: Int) {\r\n        Log.d(\"Gallery Fragment\", \"Binding position: $position\")\r\n        val petInfo = petInfo2()\r\n        val petId = petInfo.getPetInfoById(characterList[position])?.id!!\r\n        petId?.let { holder.bind(it) }\r\n    }\r\n\r\n\r\n    inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {\r\n        val imageView: ImageView = itemView.findViewById(R.id.imageView)\r\n        private val overlayView: View = itemView.findViewById(R.id.petOverlay)\r\n        val petInfo  =  petInfo2()\r\n\r\n        fun bind(petID: Int) {\r\n            imageView.setImageResource(petInfo.getPetInfoById(petID)?.imageId!!)     // Set the image resource\r\n\r\n            if(ownedPets[petID] == 0){\r\n                //pets is unowned, show gray overlay and enable clicks\r\n                overlayView.visibility = View.VISIBLE\r\n                itemView.isClickable = false\r\n                itemView.isEnabled = false\r\n\r\n            }\r\n            else {\r\n                // Pet is owned, hide gray overlay and enable clicks\r\n                overlayView.visibility = View.GONE\r\n                itemView.isClickable = true\r\n                itemView.isEnabled = true\r\n            }\r\n            //trigger the long-click logic for showing details\r\n            itemView.setOnLongClickListener {\r\n                val petInfoID = temp\r\n                onLongClick(petID)\r\n                true\r\n            }\r\n        } //end of bind funciton\r\n    }\r\n\r\n\r\n    fun updatePetsChoose(newImages: IntArray) {\r\n        characterList = newImages\r\n//        filteredPetsList = characterList.filterIndexed { index, _ ->\r\n//            index < ownedPets.size && ownedPets[index] == 1\r\n//        }\r\n        notifyDataSetChanged()\r\n    }\r\n\r\n\r\n}
+-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+-<+>UTF-8
+-===================================================================
+-diff --git a/app/src/main/java/com/example/eggenda/ui/gallery/GalleryAdapter.kt b/app/src/main/java/com/example/eggenda/ui/gallery/GalleryAdapter.kt
+---- a/app/src/main/java/com/example/eggenda/ui/gallery/GalleryAdapter.kt	(revision e8ca78089929fdbc6a4c3f6a6d71d3fc219aef3a)
+-+++ b/app/src/main/java/com/example/eggenda/ui/gallery/GalleryAdapter.kt	(date 1732492226060)
+-@@ -5,6 +5,8 @@
+- import android.view.View
+- import android.view.ViewGroup
+- import android.widget.ImageView
+-+import android.widget.TextView
+-+import androidx.lifecycle.MutableLiveData
+- import androidx.recyclerview.widget.RecyclerView
+- import com.example.eggenda.R
+- import com.example.eggenda.ui.gallery.GalleryAdapter.ViewHolder
+-@@ -13,22 +15,26 @@
+- 
+- class GalleryAdapter(private var characterList : IntArray,
+-                      private val sharedPreferenceManager: SharedPreferenceManager,
+-+                     private val onPetClick: (Int) -> Unit,
+-                      private val onLongClick : (Int) -> Unit
+- ):RecyclerView.Adapter<GalleryAdapter.ViewHolder>(){
+- 
+-     private val ownedPetsTemp = sharedPreferenceManager.getPetOwnership()   //ArrayList <Int>
+--    private val ownedPets : IntArray = ownedPetsTemp.toIntArray()           //change it to Int Array
+--
+--    private var temp : Int = 0
+--
+--    //filter out the unlocked character list
+--//    private var filteredPetsList = characterList.filterIndexed { index, _->
+--//        index < ownedPets.size && ownedPets[index] == 1
+--//    } .also { Log.d("FilteredPets", "filteredPetsList size: ${it.size}") }
+-+    private var ownedPets : IntArray = ownedPetsTemp.toIntArray()           //change it to Int Array
+- 
+-     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+-         val view = LayoutInflater.from(parent.context)
+-             .inflate(R.layout.gallery_pet_items_frame, parent, false)
+-+
+-+        //check if the owned pets size is not as same as total size
+-+        if(ownedPets.size < characterList.size){
+-+            val intList =ownedPets.toMutableList()  // Convert to a mutable list
+-+            intList.add(0)                          // Add an integer
+-+            ownedPets = intList.toIntArray()
+-+            val temp : Array<Int> = intList.toTypedArray()
+-+            sharedPreferenceManager.savePetOwnership(temp)
+-+        }
+-+
+-         return ViewHolder(view)
+-     }
+- 
+-@@ -42,8 +48,10 @@
+-     }
+- 
+- 
+-+
+-     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+-         val imageView: ImageView = itemView.findViewById(R.id.imageView)
+-+//        val textView : TextView = itemView.findViewById(R.id.)
+-         private val overlayView: View = itemView.findViewById(R.id.petOverlay)
+-         val petInfo  =  petInfo2()
+- 
+-@@ -51,21 +59,24 @@
+-             imageView.setImageResource(petInfo.getPetInfoById(petID)?.imageId!!)     // Set the image resource
+- 
+-             if(ownedPets[petID] == 0){
+--                //pets is unowned, show gray overlay and enable clicks
+-+                // Pet is owned, hide gray overlay and enable clicks
+-+                overlayView.alpha = 0.5f  // 50% transparency
+-                 overlayView.visibility = View.VISIBLE
+--                itemView.isClickable = false
+--                itemView.isEnabled = false
+- 
+-             }
+-             else {
+-                 // Pet is owned, hide gray overlay and enable clicks
+-                 overlayView.visibility = View.GONE
+--                itemView.isClickable = true
+--                itemView.isEnabled = true
+-             }
+-+
+-+            // Set click listener on the item
+-+            itemView.setOnClickListener {
+-+               onPetClick(petID)
+-+            } //end of onclicklistener
+-+
+-+
+-             //trigger the long-click logic for showing details
+-             itemView.setOnLongClickListener {
+--                val petInfoID = temp
+-                 onLongClick(petID)
+-                 true
+-             }
+-Index: app/src/main/res/layout/game_monster_choose.xml
+-IDEA additional info:
+-Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+-<+><?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<androidx.constraintlayout.widget.ConstraintLayout xmlns:android=\"http://schemas.android.com/apk/res/android\"\r\n    xmlns:app=\"http://schemas.android.com/apk/res-auto\"\r\n    xmlns:tools=\"http://schemas.android.com/tools\"\r\n    android:layout_width=\"match_parent\"\r\n    android:layout_height=\"match_parent\"\r\n    android:background=\"@color/yellow\"\r\n    android:fitsSystemWindows=\"true\">\r\n\r\n    <Button\r\n        android:id=\"@+id/game_monster_go\"\r\n        android:layout_width=\"wrap_content\"\r\n        android:layout_height=\"wrap_content\"\r\n        android:text=\"go!\"\r\n        app:layout_constraintBottom_toTopOf=\"@+id/guideline6\"\r\n        app:layout_constraintEnd_toEndOf=\"parent\"\r\n        app:layout_constraintStart_toStartOf=\"parent\"\r\n        app:layout_constraintTop_toTopOf=\"@+id/guideline6\" />\r\n\r\n    <androidx.constraintlayout.widget.Guideline\r\n        android:id=\"@+id/guideline6\"\r\n        android:layout_width=\"wrap_content\"\r\n        android:layout_height=\"wrap_content\"\r\n        android:orientation=\"horizontal\"\r\n        app:layout_constraintGuide_begin=\"661dp\" />\r\n\r\n    <FrameLayout\r\n        android:id=\"@+id/frameLayout\"\r\n        android:layout_width=\"250dp\"\r\n        android:layout_height=\"250dp\"\r\n        android:background=\"@drawable/game_element_frame_fire\"\r\n        app:layout_constraintBottom_toTopOf=\"@+id/guideline11\"\r\n        app:layout_constraintEnd_toEndOf=\"parent\"\r\n        app:layout_constraintHorizontal_bias=\"0.495\"\r\n        app:layout_constraintStart_toStartOf=\"parent\"\r\n        app:layout_constraintTop_toTopOf=\"@+id/guideline11\">\r\n\r\n        <ImageView\r\n            android:id=\"@+id/bossView\"\r\n            android:layout_width=\"wrap_content\"\r\n            android:layout_height=\"wrap_content\"\r\n            app:srcCompat=\"@drawable/game_enemy_stamp\" />\r\n\r\n        <ImageView\r\n            android:id=\"@+id/bossDefeatCover\"\r\n            android:layout_width=\"match_parent\"\r\n            android:layout_height=\"match_parent\"\r\n            app:srcCompat=\"@drawable/game_monster_defeat\" />\r\n\r\n\r\n    </FrameLayout>\r\n\r\n    <androidx.constraintlayout.widget.Guideline\r\n        android:id=\"@+id/guideline11\"\r\n        android:layout_width=\"wrap_content\"\r\n        android:layout_height=\"wrap_content\"\r\n        android:orientation=\"horizontal\"\r\n        app:layout_constraintGuide_begin=\"276dp\" />\r\n\r\n    <ImageView\r\n        android:id=\"@+id/back_button\"\r\n        android:layout_width=\"80dp\"\r\n        android:layout_height=\"80dp\"\r\n        app:layout_constraintBottom_toBottomOf=\"@+id/frameLayout\"\r\n        app:layout_constraintEnd_toStartOf=\"@+id/frameLayout\"\r\n        app:layout_constraintTop_toTopOf=\"@+id/frameLayout\"\r\n        app:srcCompat=\"@drawable/back_arrow\" />\r\n\r\n    <ImageView\r\n        android:id=\"@+id/next_button\"\r\n        android:layout_width=\"80dp\"\r\n        android:layout_height=\"80dp\"\r\n        app:layout_constraintBottom_toBottomOf=\"@+id/frameLayout\"\r\n        app:layout_constraintStart_toEndOf=\"@+id/frameLayout\"\r\n        app:layout_constraintTop_toTopOf=\"@+id/frameLayout\"\r\n        app:srcCompat=\"@drawable/back_arrow\"\r\n        android:scaleX=\"-1\"/>\r\n\r\n    <TextView\r\n        android:id=\"@+id/boss_title\"\r\n        android:layout_width=\"wrap_content\"\r\n        android:layout_height=\"wrap_content\"\r\n        android:layout_marginBottom=\"5dp\"\r\n        android:text=\"TextView\"\r\n        android:fontFamily=\"@font/titan_one\"\r\n        android:textSize=\"34sp\"\r\n        app:layout_constraintBottom_toTopOf=\"@+id/frameLayout\"\r\n        app:layout_constraintEnd_toEndOf=\"@+id/frameLayout\"\r\n        app:layout_constraintStart_toStartOf=\"@+id/frameLayout\" />\r\n    <TextView\r\n        android:id=\"@+id/stage_Title\"\r\n        android:layout_width=\"wrap_content\"\r\n        android:layout_height=\"wrap_content\"\r\n        android:layout_marginBottom=\"5dp\"\r\n        android:text=\"TextView\"\r\n        android:fontFamily=\"@font/titan_one\"\r\n        android:textSize=\"34sp\"\r\n        app:layout_constraintBottom_toTopOf=\"@+id/boss_title\"\r\n        app:layout_constraintEnd_toEndOf=\"@+id/frameLayout\"\r\n        app:layout_constraintStart_toStartOf=\"@+id/frameLayout\" />\r\n\r\n\r\n    <androidx.constraintlayout.widget.ConstraintLayout\r\n        android:id=\"@+id/monster_status_bar\"\r\n        android:layout_width=\"260dp\"\r\n        android:layout_height=\"40dp\"\r\n        android:background=\"@drawable/monster_status_bg\"\r\n        app:layout_constraintBottom_toTopOf=\"@+id/guideline2\"\r\n        app:layout_constraintEnd_toEndOf=\"parent\"\r\n        app:layout_constraintStart_toStartOf=\"parent\"\r\n        app:layout_constraintTop_toTopOf=\"@+id/guideline2\"\r\n        app:layout_constraintVertical_bias=\"0.425\">\r\n\r\n        <ImageView\r\n            android:id=\"@+id/monster_status_icon\"\r\n            android:layout_width=\"30dp\"\r\n            android:layout_height=\"30dp\"\r\n            android:src=\"@drawable/game_monster_cross\"\r\n            app:layout_constraintBottom_toBottomOf=\"parent\"\r\n            app:layout_constraintEnd_toEndOf=\"parent\"\r\n            app:layout_constraintHorizontal_bias=\"0.059\"\r\n            app:layout_constraintStart_toStartOf=\"parent\"\r\n            app:layout_constraintTop_toTopOf=\"parent\" />\r\n\r\n        <TextView\r\n            android:id=\"@+id/monster_status_text\"\r\n            android:layout_width=\"wrap_content\"\r\n            android:layout_height=\"wrap_content\"\r\n            android:fontFamily=\"@font/titan_one\"\r\n            android:text=\"Not Yet Defeated!\"\r\n            android:textSize=\"20dp\"\r\n            app:layout_constraintBottom_toBottomOf=\"parent\"\r\n            app:layout_constraintEnd_toEndOf=\"parent\"\r\n            app:layout_constraintStart_toEndOf=\"@+id/monster_status_icon\"\r\n            app:layout_constraintTop_toTopOf=\"parent\" />\r\n\r\n\r\n    </androidx.constraintlayout.widget.ConstraintLayout>\r\n\r\n    <androidx.constraintlayout.widget.Guideline\r\n        android:id=\"@+id/guideline2\"\r\n        android:layout_width=\"wrap_content\"\r\n        android:layout_height=\"wrap_content\"\r\n        android:orientation=\"horizontal\"\r\n        app:layout_constraintGuide_begin=\"445dp\" />\r\n\r\n</androidx.constraintlayout.widget.ConstraintLayout>
+-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+-<+>UTF-8
+-===================================================================
+-diff --git a/app/src/main/res/layout/game_monster_choose.xml b/app/src/main/res/layout/game_monster_choose.xml
+---- a/app/src/main/res/layout/game_monster_choose.xml	(revision e8ca78089929fdbc6a4c3f6a6d71d3fc219aef3a)
+-+++ b/app/src/main/res/layout/game_monster_choose.xml	(date 1732493797086)
+-@@ -131,6 +131,7 @@
+-             android:textSize="20dp"
+-             app:layout_constraintBottom_toBottomOf="parent"
+-             app:layout_constraintEnd_toEndOf="parent"
+-+            app:layout_constraintHorizontal_bias="0.304"
+-             app:layout_constraintStart_toEndOf="@+id/monster_status_icon"
+-             app:layout_constraintTop_toTopOf="parent" />
+- 
+-Index: app/src/main/java/com/example/eggenda/ui/gallery/GalleryFragment.kt
+-IDEA additional info:
+-Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+-<+>package com.example.eggenda.ui.gallery\r\n\r\nimport android.os.Bundle\r\nimport android.util.Log\r\nimport android.view.LayoutInflater\r\nimport android.view.View\r\nimport android.view.ViewGroup\r\nimport android.widget.TextView\r\nimport androidx.activity.enableEdgeToEdge\r\nimport androidx.fragment.app.DialogFragment\r\nimport androidx.fragment.app.Fragment\r\nimport androidx.lifecycle.Observer\r\nimport androidx.lifecycle.ViewModelProvider\r\nimport androidx.recyclerview.widget.GridLayoutManager\r\nimport androidx.recyclerview.widget.RecyclerView\r\nimport com.example.eggenda.R\r\nimport com.example.eggenda.databinding.FragmentGalleryBinding\r\nimport com.example.eggenda.gamePetChoose.GamePetChooseViewModel\r\nimport com.example.eggenda.gamePetChoose.PetChooseDialogFragment\r\nimport com.example.eggenda.gamePetChoose.SharedPreferenceManager\r\nimport com.example.eggenda.gamePlay.petInfo2\r\nimport com.google.firebase.crashlytics.buildtools.reloc.org.apache.commons.io.input.ObservableInputStream\r\n\r\nclass GalleryFragment : Fragment() {\r\n\r\n    private lateinit var sharedPreferenceManager: SharedPreferenceManager\r\n    private lateinit var petInfo: petInfo2\r\n    private lateinit var galleryViewModel: GalleryViewModel\r\n    private lateinit var allPetsArrayID : IntArray\r\n    private lateinit var petsAdapter: GalleryAdapter\r\n    private lateinit var characterRecyclerView: RecyclerView\r\n\r\n    private var _binding: FragmentGalleryBinding? = null\r\n\r\n\r\n    // This property is only valid between onCreateView and\r\n    // onDestroyView.edrqwe\r\n    private val binding get() = _binding!!\r\n\r\n    override fun onCreateView(\r\n        inflater: LayoutInflater,\r\n        container: ViewGroup?,\r\n        savedInstanceState: Bundle?\r\n    ): View {\r\n\r\n        //inflate the layout for the gallery fragment\r\n        _binding = FragmentGalleryBinding.inflate(inflater, container, false)\r\n        sharedPreferenceManager = SharedPreferenceManager(requireContext())\r\n        petInfo = petInfo2()\r\n\r\n        val binding = FragmentGalleryBinding.inflate(inflater, container, false)\r\n        val root: View = binding.root\r\n        characterRecyclerView = binding.galleryCharacterchooseRecyclerView\r\n\r\n        characterRecyclerView = root.findViewById(R.id.gallery_characterchoose_recyclerView)\r\n        characterRecyclerView.layoutManager = GridLayoutManager(requireContext(), 3)\r\n\r\n//        val factory = GalleryViewModel.GalleryViewModelFactory(sharedPreferenceManager)\r\n        galleryViewModel = ViewModelProvider(this)[GalleryViewModel::class.java]\r\n\r\n        //initialize pets array that has in the code in int array\r\n        //here should take it from pet info class\r\n        allPetsArrayID = intArrayOf(0,1,2,3,4,5,6,7,8,9)\r\n\r\n        //initalized classes and views\r\n        characterRecyclerView = root.findViewById(R.id.gallery_characterchoose_recyclerView)\r\n\r\n\r\n        //set the adapter to show the pets\r\n        petsAdapter = GalleryAdapter(\r\n            allPetsArrayID,\r\n            sharedPreferenceManager,\r\n            {petId -> showPetDetailDialog(petId)})\r\n\r\n        petsAdapter.notifyDataSetChanged()\r\n        characterRecyclerView.adapter = petsAdapter\r\n\r\n        galleryViewModel.allPets.observe(viewLifecycleOwner, Observer { photos ->\r\n            Log.d(\"Gallery Fragment\", \"allPets updated: $photos\")\r\n            petsAdapter.updatePetsChoose(photos)\r\n        })\r\n\r\n\r\n        return root\r\n    }\r\n\r\n    private fun showPetDetailDialog(petId: Int) {\r\n        // Show a dialog with pet details\r\n        val dialog = PetChooseDialogFragment.newInstance(petId)\r\n        dialog.show(parentFragmentManager, \"PetChooseDialog\")\r\n    }\r\n\r\n    override fun onDestroyView() {\r\n        super.onDestroyView()\r\n        _binding = null\r\n    }\r\n}
+-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+-<+>UTF-8
+-===================================================================
+-diff --git a/app/src/main/java/com/example/eggenda/ui/gallery/GalleryFragment.kt b/app/src/main/java/com/example/eggenda/ui/gallery/GalleryFragment.kt
+---- a/app/src/main/java/com/example/eggenda/ui/gallery/GalleryFragment.kt	(revision e8ca78089929fdbc6a4c3f6a6d71d3fc219aef3a)
+-+++ b/app/src/main/java/com/example/eggenda/ui/gallery/GalleryFragment.kt	(date 1732492918886)
+-@@ -5,10 +5,12 @@
+- import android.view.LayoutInflater
+- import android.view.View
+- import android.view.ViewGroup
+-+import android.widget.ImageView
+- import android.widget.TextView
+- import androidx.activity.enableEdgeToEdge
+- import androidx.fragment.app.DialogFragment
+- import androidx.fragment.app.Fragment
+-+import androidx.lifecycle.MutableLiveData
+- import androidx.lifecycle.Observer
+- import androidx.lifecycle.ViewModelProvider
+- import androidx.recyclerview.widget.GridLayoutManager
+-@@ -42,7 +44,6 @@
+-         container: ViewGroup?,
+-         savedInstanceState: Bundle?
+-     ): View {
+--
+-         //inflate the layout for the gallery fragment
+-         _binding = FragmentGalleryBinding.inflate(inflater, container, false)
+-         sharedPreferenceManager = SharedPreferenceManager(requireContext())
+-@@ -55,6 +56,9 @@
+-         characterRecyclerView = root.findViewById(R.id.gallery_characterchoose_recyclerView)
+-         characterRecyclerView.layoutManager = GridLayoutManager(requireContext(), 3)
+- 
+-+        //the mutuable list that can save the list of the pets ,that can send to the game part
+-+        val selectedPetID =  MutableLiveData<Int?>()
+-+
+- //        val factory = GalleryViewModel.GalleryViewModelFactory(sharedPreferenceManager)
+-         galleryViewModel = ViewModelProvider(this)[GalleryViewModel::class.java]
+- 
+-@@ -65,11 +69,11 @@
+-         //initalized classes and views
+-         characterRecyclerView = root.findViewById(R.id.gallery_characterchoose_recyclerView)
+- 
+--
+-         //set the adapter to show the pets
+-         petsAdapter = GalleryAdapter(
+-             allPetsArrayID,
+-             sharedPreferenceManager,
+-+            {petId -> galleryViewModel.selectPet(petId)},
+-             {petId -> showPetDetailDialog(petId)})
+- 
+-         petsAdapter.notifyDataSetChanged()
+-@@ -81,6 +85,34 @@
+-         })
+- 
+- 
+-+        galleryViewModel.currentSelectedPet.observe(viewLifecycleOwner){ petId ->
+-+
+-+            //set the chosen image
+-+            val petChosenImage = root.findViewById<ImageView>(R.id.gallery_pet_show)
+-+            val petChoosenText = root.findViewById<TextView>(R.id.gallery_pet_name)
+-+
+-+            if (petId == null) {
+-+                // No pet selected, return to the initalized format
+-+                petChosenImage.setImageResource(R.drawable.game_choose_nth_3)
+-+                petChoosenText.text = "Please Select a Pet!"
+-+                petChosenImage.setOnLongClickListener(null)
+-+            } else {
+-+                // Pet selected, display the image
+-+                petChosenImage.setImageResource(petInfo.getPetInfoById(petId)?.imageId ?: R.layout.gallery_pet_items_frame)
+-+                petChoosenText.text = petInfo.getPetInfoById(petId)?.name
+-+                petChosenImage.visibility = View.VISIBLE
+-+
+-+                //set a long click so it can show the info of the pet
+-+                petChosenImage.setOnLongClickListener{
+-+                    showPetDetailDialog(petId)
+-+                    true
+-+                }
+-+            }
+-+
+-+        }
+-+
+-+
+-+
+-         return root
+-     }
+- 
+-Index: app/src/main/java/com/example/eggenda/gameMonsterChoose/GameMonsterChooseMainActivity.kt
+-IDEA additional info:
+-Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+-<+>package com.example.eggenda.gameMonsterChoose\r\n\r\nimport android.content.Intent\r\nimport android.media.Image\r\nimport android.os.Bundle\r\nimport android.util.Log\r\nimport android.widget.Button\r\nimport android.widget.ImageView\r\nimport android.widget.TextView\r\nimport androidx.activity.enableEdgeToEdge\r\nimport androidx.appcompat.app.AppCompatActivity\r\nimport androidx.appcompat.app.AppCompatDelegate\r\nimport androidx.core.view.isInvisible\r\nimport androidx.lifecycle.Observer\r\nimport com.example.eggenda.R\r\nimport com.example.eggenda.gamePetChoose.GamePetChooseMainActivity\r\nimport com.example.eggenda.gamePetChoose.PetChooseDialogFragment\r\nimport com.example.eggenda.gamePetChoose.SharedPreferenceManager\r\nimport com.example.eggenda.gamePlay.stageInfo\r\n\r\nclass GameMonsterChooseMainActivity : AppCompatActivity () {\r\n\r\n    private lateinit var button: Button\r\n    private lateinit var sharedPreferenceManager: SharedPreferenceManager\r\n    private lateinit var stageInfo: stageInfo\r\n\r\n\r\n    private lateinit var viewModel: monsterChooseViewModel\r\n    private var stageId: Int = 0\r\n\r\n    private lateinit var stageTitle:TextView\r\n    private lateinit var bossTitle:TextView\r\n    private lateinit var backBtn:ImageView\r\n    private lateinit var nextBtn:ImageView\r\n    private lateinit var bossImage:ImageView\r\n    private lateinit var bossDefeatCover:ImageView  //add cover to boss image if the boss is defeated\r\n    private lateinit var stageDoneArrayList: ArrayList<Int>\r\n    private var amount = 0\r\n\r\n    override fun onCreate(savedInstanceState: Bundle?) {\r\n        super.onCreate(savedInstanceState)\r\n        enableEdgeToEdge()\r\n        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)\r\n        setContentView(R.layout.game_monster_choose)\r\n        sharedPreferenceManager = SharedPreferenceManager(this)\r\n        stageInfo = stageInfo()\r\n        viewModel = monsterChooseViewModel()\r\n\r\n        stageTitle = findViewById(R.id.stage_Title)\r\n        bossTitle = findViewById(R.id.boss_title)\r\n        backBtn = findViewById(R.id.back_button)\r\n        nextBtn = findViewById(R.id.next_button)\r\n        bossImage = findViewById(R.id.bossView)\r\n        bossDefeatCover = findViewById(R.id.bossDefeatCover)\r\n\r\n\r\n        //handle stageDone\r\n        stageDoneArrayList = sharedPreferenceManager.getStageDone()\r\n        if(stageDoneArrayList.size != stageInfo.stageTotalNum){\r\n            stageDoneArrayList = getNewStageDone(stageDoneArrayList, stageInfo.stageTotalNum)\r\n            sharedPreferenceManager.saveStageDone(stageDoneArrayList)\r\n        }\r\n\r\n\r\n        viewModel.chosenStageID.observe(this, Observer { newStageId->\r\n            if(newStageId == 0 ){\r\n                backBtn.isInvisible = true\r\n            }\r\n            else{\r\n                backBtn.isInvisible = false\r\n            }\r\n            if(newStageId  == stageInfo.stageTotalNum - 1){\r\n                nextBtn.isInvisible = true\r\n            }\r\n            else{\r\n                nextBtn.isInvisible = false\r\n            }\r\n            val selectedStage = stageInfo.StageInfoMap(newStageId)!!\r\n            val stageStr = \"Stage \"+(newStageId + 1).toString()+\":\"\r\n            val bossStr = selectedStage.name\r\n            if(stageDoneArrayList[newStageId] == 1){\r\n                bossDefeatCover.isInvisible = false\r\n            }\r\n            else{\r\n                bossDefeatCover.isInvisible = true\r\n            }\r\n            stageTitle.text = stageStr\r\n            bossTitle.text = bossStr\r\n            bossImage.setImageResource(selectedStage.bossImageId)\r\n            viewModel.updateAmount(selectedStage.deckSize)\r\n\r\n        })\r\n\r\n        bossImage.setOnLongClickListener {\r\n            val stageId = viewModel.chosenStageID.value ?: 0\r\n            showPetDetailDialog(stageId)\r\n            true\r\n        }\r\n\r\n        backBtn.setOnClickListener{\r\n            viewModel.subtractChosenStageID()\r\n        }\r\n        nextBtn.setOnClickListener{\r\n            viewModel.addChosenStageID()\r\n        }\r\n\r\n        button = findViewById(R.id.game_monster_go)\r\n\r\n        button.setOnClickListener {\r\n\r\n            //for pet amount\r\n            sharedPreferenceManager.savePetsAmount(viewModel.getAmount())\r\n            val retrievedList = sharedPreferenceManager.getPetOwnership()\r\n            val intArrayhihi : IntArray = retrievedList.toIntArray()\r\n            Log.d(\"Retrieved List\", \"IntArray: ${intArrayhihi.joinToString(\",\")}\")\r\n\r\n            //for stage id\r\n            Log.d(\"stageID\", \"chosen: ${viewModel.getChosenStageID()}\")\r\n            sharedPreferenceManager.saveStageChoose(viewModel.getChosenStageID())\r\n\r\n            Log.d(\"stageID\", \"saved: ${sharedPreferenceManager.getStageChoose()}\")\r\n            val intent = Intent(this, GamePetChooseMainActivity::class.java)\r\n            startActivity(intent)\r\n            finish()\r\n        }\r\n\r\n    }\r\n\r\n    private fun getNewStageDone(oldStageDone: ArrayList<Int>, stageCount: Int):ArrayList<Int>{\r\n        val ret = ArrayList<Int>()\r\n        for(i in 1..stageCount){\r\n            ret.add(0)\r\n        }\r\n        var index = 0\r\n        while(index < oldStageDone.size && index < stageCount){\r\n            ret[index] = oldStageDone[index]\r\n            index ++\r\n        }\r\n        return ret\r\n    }\r\n\r\n    //set the show dialog funciton\r\n    private fun showPetDetailDialog(stageId:Int){\r\n        val dialog = GameMonsterDialogFragment.newInstance(stageId)\r\n        dialog.show(supportFragmentManager, \"MonsterChooseDialog\")\r\n\r\n    }\r\n\r\n\r\n\r\n\r\n}
+-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+-<+>UTF-8
+-===================================================================
+-diff --git a/app/src/main/java/com/example/eggenda/gameMonsterChoose/GameMonsterChooseMainActivity.kt b/app/src/main/java/com/example/eggenda/gameMonsterChoose/GameMonsterChooseMainActivity.kt
+---- a/app/src/main/java/com/example/eggenda/gameMonsterChoose/GameMonsterChooseMainActivity.kt	(revision e8ca78089929fdbc6a4c3f6a6d71d3fc219aef3a)
+-+++ b/app/src/main/java/com/example/eggenda/gameMonsterChoose/GameMonsterChooseMainActivity.kt	(date 1732494428777)
+-@@ -17,6 +17,7 @@
+- import com.example.eggenda.gamePetChoose.PetChooseDialogFragment
+- import com.example.eggenda.gamePetChoose.SharedPreferenceManager
+- import com.example.eggenda.gamePlay.stageInfo
+-+import org.w3c.dom.Text
+- 
+- class GameMonsterChooseMainActivity : AppCompatActivity () {
+- 
+-@@ -33,9 +34,11 @@
+-     private lateinit var backBtn:ImageView
+-     private lateinit var nextBtn:ImageView
+-     private lateinit var bossImage:ImageView
+--    private lateinit var bossDefeatCover:ImageView  //add cover to boss image if the boss is defeated
+-+    private lateinit var bossChallengeCover :ImageView  //add cover to boss image if the boss is not challengable at ths moment
+-     private lateinit var stageDoneArrayList: ArrayList<Int>
+--    private var amount = 0
+-+    private lateinit var monsterStatusIcon : ImageView
+-+    private lateinit var monsterStatusText : TextView
+-+    private lateinit var ownedPetsList : ArrayList<Int> // to check if the pets are enough for play or not
+- 
+-     override fun onCreate(savedInstanceState: Bundle?) {
+-         super.onCreate(savedInstanceState)
+-@@ -51,8 +54,9 @@
+-         backBtn = findViewById(R.id.back_button)
+-         nextBtn = findViewById(R.id.next_button)
+-         bossImage = findViewById(R.id.bossView)
+--        bossDefeatCover = findViewById(R.id.bossDefeatCover)
+--
+-+        bossChallengeCover = findViewById(R.id.bossDefeatCover)
+-+        monsterStatusIcon = findViewById(R.id.monster_status_icon)
+-+        monsterStatusText = findViewById(R.id.monster_status_text)
+- 
+-         //handle stageDone
+-         stageDoneArrayList = sharedPreferenceManager.getStageDone()
+-@@ -61,6 +65,10 @@
+-             sharedPreferenceManager.saveStageDone(stageDoneArrayList)
+-         }
+- 
+-+        //handle the owned pets size whenever the pets is updated or not
+-+        ownedPetsList = sharedPreferenceManager.getPetOwnership()
+-+
+-+
+- 
+-         viewModel.chosenStageID.observe(this, Observer { newStageId->
+-             if(newStageId == 0 ){
+-@@ -78,11 +86,17 @@
+-             val selectedStage = stageInfo.StageInfoMap(newStageId)!!
+-             val stageStr = "Stage "+(newStageId + 1).toString()+":"
+-             val bossStr = selectedStage.name
+-+
+-+            //set the stage status bar
+-             if(stageDoneArrayList[newStageId] == 1){
+--                bossDefeatCover.isInvisible = false
+-+                monsterStatusIcon.setImageResource(R.drawable.game_monster_cross)
+-+                monsterStatusText.text = "Not Yet Defeated!"
+-+//                bossChallengeCover.isInvisible = false
+-             }
+-             else{
+--                bossDefeatCover.isInvisible = true
+-+                monsterStatusIcon.setImageResource(R.drawable.game_monster_tick)
+-+                monsterStatusText.text = "Finished!"
+-+//                bossChallengeCover.isInvisible = true
+-             }
+-             stageTitle.text = stageStr
+-             bossTitle.text = bossStr
+-Index: .idea/shelf/Uncommitted_changes_before_Update_at_2024-11-17_3_10_p_m___Changes_.xml
+-===================================================================
+-diff --git a/.idea/shelf/Uncommitted_changes_before_Update_at_2024-11-17_3_10_p_m___Changes_.xml b/.idea/shelf/Uncommitted_changes_before_Update_at_2024-11-17_3_10_p_m___Changes_.xml
+-deleted file mode 100644
+---- a/.idea/shelf/Uncommitted_changes_before_Update_at_2024-11-17_3_10_p_m___Changes_.xml	(revision e8ca78089929fdbc6a4c3f6a6d71d3fc219aef3a)
+-+++ /dev/null	(revision e8ca78089929fdbc6a4c3f6a6d71d3fc219aef3a)
+-@@ -1,8 +0,0 @@
+--<changelist name="Uncommitted_changes_before_Update_at_2024-11-17_3_10_p_m__[Changes]" date="1731885011290" recycled="true" deleted="true">
+--  <option name="PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_2024-11-17_3_10_p_m__[Changes]/shelved.patch" />
+--  <option name="DESCRIPTION" value="Uncommitted changes before Update at 2024-11-17 3:10 p.m. [Changes]" />
+--  <binary>
+--    <option name="AFTER_PATH" value="app/src/main/res/drawable/app_icon.png" />
+--    <option name="SHELVED_PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_2024-11-17_3_10_p_m__[Changes]/app_icon.png" />
+--  </binary>
+--</changelist>
+-\ No newline at end of file
+-Index: .idea/shelf/Uncommitted_changes_before_Update_at_2024-11-17_3_10_p_m__[Changes]/shelved.patch
+-===================================================================
+-diff --git a/.idea/shelf/Uncommitted_changes_before_Update_at_2024-11-17_3_10_p_m__[Changes]/shelved.patch b/.idea/shelf/Uncommitted_changes_before_Update_at_2024-11-17_3_10_p_m__[Changes]/shelved.patch
+-deleted file mode 100644
+---- a/.idea/shelf/Uncommitted_changes_before_Update_at_2024-11-17_3_10_p_m__[Changes]/shelved.patch	(revision e8ca78089929fdbc6a4c3f6a6d71d3fc219aef3a)
+-+++ /dev/null	(revision e8ca78089929fdbc6a4c3f6a6d71d3fc219aef3a)
+-@@ -1,291 +0,0 @@
+--Index: app/src/main/java/com/example/eggenda/ui/settings/ProfileActivity.kt
+--IDEA additional info:
+--Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+--<+>package com.example.eggenda.ui.settings\r\n\r\nimport android.app.Activity\r\nimport android.app.AlertDialog\r\nimport android.app.Dialog\r\nimport android.content.DialogInterface\r\nimport android.content.Intent\r\nimport android.content.SharedPreferences\r\nimport android.graphics.Bitmap\r\nimport android.graphics.BitmapFactory\r\nimport android.graphics.Matrix\r\nimport androidx.exifinterface.media.ExifInterface\r\nimport android.net.Uri\r\nimport android.os.Bundle\r\nimport android.provider.MediaStore\r\nimport android.view.View\r\nimport android.widget.Button\r\nimport android.widget.EditText\r\nimport android.widget.ImageView\r\nimport android.widget.Toast\r\nimport androidx.activity.result.ActivityResult\r\nimport androidx.activity.result.ActivityResultLauncher\r\nimport androidx.activity.result.contract.ActivityResultContracts\r\nimport androidx.appcompat.app.AppCompatActivity\r\nimport androidx.core.content.FileProvider\r\nimport androidx.fragment.app.DialogFragment\r\nimport androidx.lifecycle.ViewModelProvider\r\nimport com.example.eggenda.MyViewModel\r\nimport com.example.eggenda.R\r\nimport com.example.eggenda.Util\r\nimport java.io.File\r\n\r\nclass ProfileActivity: AppCompatActivity() {\r\n    companion object {\r\n        const val FEMALE = 0\r\n        const val MALE = 1\r\n        const val DIALOG_KEY = \"dialog\"\r\n        const val PHOTO_DIALOG = 4\r\n    }\r\n\r\n    private lateinit var userName: EditText\r\n    private lateinit var firstName: EditText\r\n    private lateinit var lastName: EditText\r\n    private lateinit var emailPhone: EditText\r\n    private lateinit var dateBirth: EditText\r\n    private lateinit var country: EditText\r\n    private lateinit var saveProfile: Button\r\n    private lateinit var cancelProfile: Button\r\n\r\n    private lateinit var imageView: ImageView\r\n    private lateinit var button: Button\r\n    private lateinit var tempImgUri: Uri\r\n    private lateinit var imgUri: Uri\r\n    private lateinit var myViewModel: MyViewModel\r\n    private lateinit var cameraResult: ActivityResultLauncher<Intent>\r\n    private val tempImgFileName = \"temp.jpg\"\r\n    private val imgFileName = \"profile.jpg\"\r\n    private var profileImagePath: String? = null\r\n    private lateinit var tempImgFile: File\r\n    private lateinit var profileImgFile: File\r\n    private var isPhotoChange: Boolean = false\r\n    private lateinit var sharedPreferences: SharedPreferences\r\n    private lateinit var galleryResult: ActivityResultLauncher<Intent>\r\n\r\n    override fun onCreate(savedInstanceState: Bundle?) {\r\n        super.onCreate(savedInstanceState)\r\n        setContentView(R.layout.profile)\r\n\r\n        //initialize variables\r\n        userName = findViewById(R.id.edit_username)\r\n        firstName = findViewById(R.id.edit_first_name)\r\n        lastName = findViewById(R.id.edit_last_name)\r\n        emailPhone = findViewById(R.id.edit_email_phone)\r\n        dateBirth = findViewById(R.id.edit_birth)\r\n        country = findViewById(R.id.edit_country)\r\n        imageView = findViewById(R.id.profile_photo)\r\n        button = findViewById(R.id.btnChangePhoto)\r\n        saveProfile = findViewById(R.id.save_profile)\r\n        cancelProfile = findViewById(R.id.cancel_profile)\r\n        sharedPreferences = getSharedPreferences(\"profile\", MODE_PRIVATE)\r\n\r\n        //retrieve saved data on startup\r\n        loadProfile()\r\n        println(\"profile successfully loaded onto screen\")\r\n\r\n        //Profile Photo setup\r\n        Util.checkPermissions(this)\r\n\r\n        tempImgFile = File(getExternalFilesDir(null), tempImgFileName)\r\n        tempImgUri = FileProvider.getUriForFile(this, \"com.example.eggenda\", tempImgFile)\r\n\r\n        profileImgFile = File(getExternalFilesDir(null), imgFileName)\r\n        imgUri = FileProvider.getUriForFile(this, \"com.example.eggenda\", profileImgFile)\r\n\r\n        //implement button prompting camera\r\n        button.setOnClickListener() {\r\n            println(\"change profile photo button clicked\")\r\n            showMyDialogFragment(PHOTO_DIALOG, \"Pick Profile Picture\")\r\n        }\r\n\r\n        //initialize gallery activity result\r\n        galleryResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->\r\n            if(result.resultCode == Activity.RESULT_OK) {\r\n                //get uri of image\r\n                result.data?.data?.let { uri ->\r\n                    //read image through input stream\r\n                    val inputStream = contentResolver.openInputStream(uri)\r\n                    //write image to tempImgFile\r\n                    tempImgFile.outputStream().use { outputStream->\r\n                        inputStream?.copyTo(outputStream)\r\n                    }\r\n                    //create bitmap\r\n                    val bitmap = Util.getBitmap(this, tempImgUri)\r\n                    setProfilePhoto(bitmap)\r\n                    println(\"Image successfully loaded onto screen\")\r\n                }\r\n            }\r\n        }\r\n\r\n        //initialize gallery activity result\r\n        cameraResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->\r\n            if (result.resultCode == Activity.RESULT_OK) {\r\n                println(\"first camera result call\")\r\n                //read image details and create bitmap\r\n                val exifInterface = ExifInterface(tempImgFile.absolutePath)\r\n                val orientation = exifInterface.getAttributeInt(ExifInterface.TAG_ORIENTATION, 1)\r\n                val bitmap = Util.getBitmap(this, tempImgUri)\r\n                println(\"orientation: $orientation\")\r\n\r\n                //rotate when needed\r\n                val matrix = Matrix()\r\n                when(orientation) {\r\n                    ExifInterface.ORIENTATION_ROTATE_90 -> matrix.postRotate(90f)\r\n                    ExifInterface.ORIENTATION_ROTATE_180 -> matrix.postRotate(180f)\r\n                    ExifInterface.ORIENTATION_ROTATE_270 -> matrix.postRotate(270f)\r\n                    ExifInterface.ORIENTATION_NORMAL, 1 -> {}\r\n                    else -> {\r\n                        matrix.postRotate(0f)\r\n                    }\r\n                }\r\n                //create correct orientation of image\r\n                val rotated = Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)\r\n                setProfilePhoto(rotated)\r\n            }\r\n        }\r\n\r\n        //\r\n        myViewModel = ViewModelProvider(this).get(MyViewModel::class.java)\r\n        myViewModel.userImage.observe(this) {\r\n            imageView.setImageBitmap(it)\r\n            println(\"new photo set to view\")\r\n        }\r\n\r\n        //save button feature\r\n        saveProfile.setOnClickListener {\r\n            saveProfile()\r\n            println(\"profile saved\")\r\n            Toast.makeText(this, \"Saved\", Toast.LENGTH_SHORT).show()\r\n            finish()\r\n        }\r\n\r\n        //cancel button feature\r\n        cancelProfile.setOnClickListener {\r\n            //don't save any changes\r\n            println(\"not saving profile\")\r\n            finish()\r\n        }\r\n    }\r\n\r\n    class MyRunsDialogFragment : DialogFragment(), DialogInterface.OnClickListener {\r\n        override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {\r\n            //get arguments and dialog details\r\n            lateinit var ret: Dialog\r\n            val bundle = arguments\r\n            val dialogId = bundle?.getInt(DIALOG_KEY)\r\n            val title = bundle?.getString(\"TITLE\") ?: \"My Title\"\r\n            val builder = AlertDialog.Builder(requireActivity())\r\n\r\n            if(dialogId == PHOTO_DIALOG) {\r\n                val view: View = requireActivity().layoutInflater.inflate(\r\n                    R.layout.dialog_photo,\r\n                    null\r\n                )\r\n                builder.setView(view)\r\n                builder.setTitle(title)\r\n\r\n                //get buttons\r\n                val galleryBtn : Button = view.findViewById(R.id.chooseGallery)\r\n                val photoBtn : Button = view.findViewById(R.id.choosePhoto)\r\n\r\n                //open gallery if button pressed\r\n                galleryBtn.setOnClickListener{\r\n                    (activity as? ProfileActivity)?.openGallery()\r\n                    dismiss()\r\n                }\r\n\r\n                //open camera if button pressed\r\n                photoBtn.setOnClickListener{\r\n                    (activity as? ProfileActivity)?.takePhoto()\r\n                    dismiss()\r\n                }\r\n                ret = builder.create()\r\n            }\r\n            return ret\r\n        }\r\n\r\n        //function when buttons are clicked\r\n        override fun onClick(dialog: DialogInterface, item: Int) {\r\n            if(item == Dialog.BUTTON_POSITIVE) {\r\n                Toast.makeText(activity, \"Input Saved\", Toast.LENGTH_LONG).show()\r\n                println(\"fragment positive button clicked\")\r\n            }\r\n            if(item == DialogInterface.BUTTON_NEGATIVE) {\r\n                Toast.makeText(activity, \"Input cancelled\", Toast.LENGTH_LONG).show()\r\n                println(\"fragment negative button clicked\")\r\n            }\r\n        }\r\n    }\r\n\r\n    //show dialog fragment\r\n    private fun showMyDialogFragment(dialogType: Int, title: String) {\r\n        val myDialog = MyRunsDialogFragment()\r\n        val bundle = Bundle().apply {\r\n            putInt(DIALOG_KEY, dialogType)\r\n            putString(\"TITLE\", title)\r\n        }\r\n        myDialog.arguments = bundle\r\n        myDialog.show(supportFragmentManager, \"my_dialog\")\r\n    }\r\n\r\n    //function to open gallery and call activity result to display photo\r\n    private fun openGallery() {\r\n        val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)\r\n        galleryResult.launch(intent)\r\n        println(\"gallery opened\")\r\n    }\r\n\r\n    //function to open camera and take photo then call activity result to display photo\r\n    private fun takePhoto() {\r\n        val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)\r\n        intent.putExtra(MediaStore.EXTRA_OUTPUT, tempImgUri)\r\n        cameraResult.launch(intent)\r\n        println(\"camera launched\")\r\n    }\r\n\r\n    //function to set profile photo onto screen\r\n    private fun setProfilePhoto(bitmap: Bitmap) {\r\n        println(\"set profile photo\")\r\n        myViewModel.userImage.value = bitmap\r\n        isPhotoChange = true\r\n        imageView.setImageBitmap(bitmap)\r\n    }\r\n\r\n    //function to load saved profile to screen\r\n    private fun loadProfile() {\r\n        profileImagePath = sharedPreferences.getString(\"profileImagePath\", null)\r\n\r\n        //load saved data\r\n        if (profileImagePath != null) {\r\n            val ogFile = File(profileImagePath!!)\r\n            if (ogFile.exists()) {\r\n                val bitmap = BitmapFactory.decodeFile(ogFile.absolutePath)\r\n                imageView.setImageBitmap(bitmap)\r\n            }\r\n        }\r\n\r\n        //get saved data\r\n        val savedUsername = sharedPreferences.getString(\"username\", \"\")\r\n        val savedfirstName = sharedPreferences.getString(\"firstName\", \"\")\r\n        val savedlastName = sharedPreferences.getString(\"lastName\", \"\")\r\n        val savedEmailPhone = sharedPreferences.getString(\"emailPhone\", \"\")\r\n        val savedBirth = sharedPreferences.getString(\"dateBirth\", \"\")\r\n        val savedCountry = sharedPreferences.getString(\"country\", \"\")\r\n\r\n        //load data onto screen\r\n        userName.setText(savedUsername)\r\n        firstName.setText(savedfirstName)\r\n        lastName.setText(savedlastName)\r\n        emailPhone.setText(savedEmailPhone)\r\n        dateBirth.setText(savedBirth)\r\n        country.setText(savedCountry)\r\n    }\r\n\r\n    //function to save profile settings\r\n    private fun saveProfile() {\r\n        //extract inputted data\r\n        val username = userName.text.toString()\r\n        val first = firstName.text.toString()\r\n        val last = lastName.text.toString()\r\n        val ep = emailPhone.text.toString()\r\n        val birth = dateBirth.text.toString()\r\n        val country2 = country.text.toString()\r\n\r\n        //only update file path if a photo was taken\r\n        if(isPhotoChange) {\r\n            tempImgFile.copyTo(profileImgFile, overwrite = true)\r\n            profileImagePath = profileImgFile.path\r\n        }\r\n\r\n        //log profile values\r\n        println(\"username: $username\")\r\n        println(\"first name: $first\")\r\n        println(\"last name: $last\")\r\n        println(\"email/phone: $ep\")\r\n        println(\"date of birth: $birth\")\r\n        println(\"country: $country2\")\r\n\r\n        //save changes\r\n        val editor = sharedPreferences.edit()\r\n        editor.putString(\"username\", username)\r\n        editor.putString(\"firstName\", first)\r\n        editor.putString(\"lastName\", last)\r\n        editor.putString(\"emailPhone\", ep)\r\n        editor.putString(\"dateBirth\", birth)\r\n        editor.putString(\"country\", country2)\r\n        editor.putString(\"profileImagePath\", profileImagePath)\r\n        editor.apply()\r\n    }\r\n}
+--Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+--<+>UTF-8
+--===================================================================
+--diff --git a/app/src/main/java/com/example/eggenda/ui/settings/ProfileActivity.kt b/app/src/main/java/com/example/eggenda/ui/settings/ProfileActivity.kt
+----- a/app/src/main/java/com/example/eggenda/ui/settings/ProfileActivity.kt	(revision 0a42b132300258816e221681938e46ceb836ac79)
+--+++ b/app/src/main/java/com/example/eggenda/ui/settings/ProfileActivity.kt	(date 1731035688128)
+--@@ -32,8 +32,6 @@
+-- 
+-- class ProfileActivity: AppCompatActivity() {
+--     companion object {
+---        const val FEMALE = 0
+---        const val MALE = 1
+--         const val DIALOG_KEY = "dialog"
+--         const val PHOTO_DIALOG = 4
+--     }
+--Index: app/src/main/res/layout/profile.xml
+--IDEA additional info:
+--Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+--<+><?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<ScrollView\r\n    xmlns:android=\"http://schemas.android.com/apk/res/android\"\r\n    android:layout_width=\"match_parent\"\r\n    android:layout_height=\"match_parent\"\r\n    android:background=\"@color/yellow\">\r\n\r\n    <LinearLayout\r\n        android:layout_width=\"match_parent\"\r\n        android:layout_height=\"wrap_content\"\r\n        android:orientation=\"vertical\"\r\n        android:layout_marginHorizontal=\"20dp\">\r\n\r\n        <!--profile photo-->\r\n        <LinearLayout\r\n            android:layout_width=\"match_parent\"\r\n            android:layout_height=\"wrap_content\"\r\n            android:orientation=\"vertical\"\r\n            android:gravity=\"center\">\r\n\r\n            <ImageView\r\n                android:id=\"@+id/profile_photo\"\r\n                android:layout_width=\"wrap_content\"\r\n                android:layout_height=\"wrap_content\"\r\n                android:maxWidth=\"150dp\"\r\n                android:maxHeight=\"175dp\"\r\n                android:adjustViewBounds=\"true\"\r\n                android:layout_margin=\"10dp\"\r\n                android:src=\"@drawable/defaultprofile\"\r\n                android:scaleType=\"centerCrop\">\r\n            </ImageView>\r\n\r\n            <Button\r\n                android:id=\"@+id/btnChangePhoto\"\r\n                android:backgroundTint=\"@color/bold_yellow\"\r\n                android:layout_width=\"wrap_content\"\r\n                android:layout_height=\"wrap_content\"\r\n                android:layout_margin=\"5dp\"\r\n                android:text=\"@string/edit_button\"\r\n                android:textSize=\"18sp\"\r\n                android:fontFamily=\"@font/titan_one\"\r\n                />\r\n\r\n        </LinearLayout>\r\n\r\n        <!--username-->\r\n        <LinearLayout\r\n            android:layout_width=\"match_parent\"\r\n            android:layout_height=\"90dp\"\r\n            android:orientation=\"vertical\">\r\n\r\n            <TextView\r\n                android:layout_width=\"match_parent\"\r\n                android:layout_height=\"wrap_content\"\r\n                android:textColor=\"#4A3109\"\r\n                android:text=\"@string/username_header\"\r\n                android:textSize=\"16sp\"\r\n                android:fontFamily=\"@font/titan_one\"\r\n                />\r\n\r\n            <EditText\r\n                android:id=\"@+id/edit_username\"\r\n                android:layout_width=\"match_parent\"\r\n                android:layout_height=\"50dp\"\r\n                android:inputType=\"text\"\r\n                android:textSize=\"16sp\"\r\n                android:background=\"@drawable/edit_text_border\"\r\n                android:text=\"@string/username_hint\"\r\n                android:paddingStart=\"16dp\"\r\n                android:textColor=\"@color/dark_blue\"\r\n                android:fontFamily=\"@font/dangrek_font\"/>\r\n        </LinearLayout>\r\n\r\n        <!--first name-->\r\n        <LinearLayout\r\n            android:layout_width=\"match_parent\"\r\n            android:layout_height=\"90dp\"\r\n            android:orientation=\"vertical\">\r\n\r\n            <TextView\r\n                android:layout_width=\"match_parent\"\r\n                android:layout_height=\"wrap_content\"\r\n                android:textColor=\"#4A3109\"\r\n                android:text=\"@string/first_name_header\"\r\n                android:textSize=\"16sp\"\r\n                android:fontFamily=\"@font/titan_one\"/>\r\n\r\n            <EditText\r\n                android:id=\"@+id/edit_first_name\"\r\n                android:layout_width=\"match_parent\"\r\n                android:layout_height=\"50dp\"\r\n                android:inputType=\"text\"\r\n                android:textSize=\"16sp\"\r\n                android:background=\"@drawable/edit_text_border\"\r\n                android:text=\"@string/first_name_hint\"\r\n                android:paddingStart=\"16dp\"\r\n                android:textColor=\"@color/dark_blue\"\r\n                android:fontFamily=\"@font/dangrek_font\"/>\r\n        </LinearLayout>\r\n\r\n        <!--last name-->\r\n        <LinearLayout\r\n            android:layout_width=\"match_parent\"\r\n            android:layout_height=\"90dp\"\r\n            android:orientation=\"vertical\">\r\n\r\n            <TextView\r\n                android:layout_width=\"match_parent\"\r\n                android:layout_height=\"wrap_content\"\r\n                android:textColor=\"#4A3109\"\r\n                android:text=\"@string/last_name_header\"\r\n                android:textSize=\"16sp\"\r\n                android:fontFamily=\"@font/titan_one\"/>\r\n\r\n            <EditText\r\n                android:id=\"@+id/edit_last_name\"\r\n                android:layout_width=\"match_parent\"\r\n                android:layout_height=\"50dp\"\r\n                android:inputType=\"text\"\r\n                android:textSize=\"16sp\"\r\n                android:background=\"@drawable/edit_text_border\"\r\n                android:text=\"@string/last_name_hint\"\r\n                android:paddingStart=\"16dp\"\r\n                android:textColor=\"@color/dark_blue\"\r\n                android:fontFamily=\"@font/dangrek_font\"/>\r\n        </LinearLayout>\r\n\r\n        <!--email/phone-->\r\n        <LinearLayout\r\n            android:layout_width=\"match_parent\"\r\n            android:layout_height=\"90dp\"\r\n            android:orientation=\"vertical\">\r\n\r\n            <TextView\r\n                android:layout_width=\"match_parent\"\r\n                android:layout_height=\"wrap_content\"\r\n                android:textColor=\"#4A3109\"\r\n                android:text=\"@string/e_mail_phone_header\"\r\n                android:textSize=\"16sp\"\r\n                android:fontFamily=\"@font/titan_one\"/>\r\n\r\n            <EditText\r\n                android:id=\"@+id/edit_email_phone\"\r\n                android:layout_width=\"match_parent\"\r\n                android:layout_height=\"50dp\"\r\n                android:inputType=\"text\"\r\n                android:textSize=\"16sp\"\r\n                android:background=\"@drawable/edit_text_border\"\r\n                android:text=\"@string/e_mail_phone_hint\"\r\n                android:paddingStart=\"16dp\"\r\n                android:textColor=\"@color/dark_blue\"\r\n                android:fontFamily=\"@font/dangrek_font\"/>\r\n        </LinearLayout>\r\n\r\n        <!--Date of Birth-->\r\n        <LinearLayout\r\n            android:layout_width=\"match_parent\"\r\n            android:layout_height=\"90dp\"\r\n            android:orientation=\"vertical\">\r\n\r\n            <TextView\r\n                android:layout_width=\"match_parent\"\r\n                android:layout_height=\"wrap_content\"\r\n                android:textColor=\"#4A3109\"\r\n                android:text=\"@string/date_of_birth_header\"\r\n                android:textSize=\"16sp\"\r\n                android:fontFamily=\"@font/titan_one\"/>\r\n\r\n            <EditText\r\n                android:id=\"@+id/edit_birth\"\r\n                android:layout_width=\"match_parent\"\r\n                android:layout_height=\"50dp\"\r\n                android:inputType=\"text\"\r\n                android:textSize=\"16sp\"\r\n                android:background=\"@drawable/edit_text_border\"\r\n                android:text=\"@string/birth_hint\"\r\n                android:paddingStart=\"16dp\"\r\n                android:textColor=\"@color/dark_blue\"\r\n                android:fontFamily=\"@font/dangrek_font\"/>\r\n        </LinearLayout>\r\n\r\n        <!--country-->\r\n        <LinearLayout\r\n            android:layout_width=\"match_parent\"\r\n            android:layout_height=\"90dp\"\r\n            android:orientation=\"vertical\">\r\n\r\n            <TextView\r\n                android:layout_width=\"match_parent\"\r\n                android:layout_height=\"wrap_content\"\r\n                android:textColor=\"#4A3109\"\r\n                android:text=\"@string/country_header\"\r\n                android:textSize=\"16sp\"\r\n                android:fontFamily=\"@font/titan_one\"/>\r\n\r\n            <EditText\r\n                android:id=\"@+id/edit_country\"\r\n                android:layout_width=\"match_parent\"\r\n                android:layout_height=\"50dp\"\r\n                android:inputType=\"text\"\r\n                android:textSize=\"16sp\"\r\n                android:background=\"@drawable/edit_text_border\"\r\n                android:text=\"@string/country_hint\"\r\n                android:paddingStart=\"16dp\"\r\n                android:textColor=\"@color/dark_blue\"\r\n                android:fontFamily=\"@font/dangrek_font\"/>\r\n        </LinearLayout>\r\n\r\n        <LinearLayout\r\n            android:layout_width=\"match_parent\"\r\n            android:layout_height=\"wrap_content\"\r\n            android:orientation=\"horizontal\"\r\n            android:paddingBottom=\"16dp\">\r\n\r\n            <Button\r\n                android:layout_width=\"0dp\"\r\n                android:layout_height=\"wrap_content\"\r\n                android:layout_weight=\"0.5\"\r\n                android:layout_margin=\"16dp\"\r\n                android:id=\"@+id/save_profile\"\r\n                android:text=\"@string/save_button\"\r\n                android:textSize=\"18sp\"\r\n                android:fontFamily=\"@font/titan_one\"\r\n                android:backgroundTint=\"@color/bold_yellow\"/>\r\n\r\n            <Button\r\n                android:layout_width=\"0dp\"\r\n                android:layout_height=\"wrap_content\"\r\n                android:layout_weight=\"0.5\"\r\n                android:layout_margin=\"16dp\"\r\n                android:id=\"@+id/cancel_profile\"\r\n                android:text=\"@string/cancel_button\"\r\n                android:textSize=\"18sp\"\r\n                android:fontFamily=\"@font/titan_one\"\r\n                android:backgroundTint=\"@color/bold_yellow\"/>\r\n        </LinearLayout>\r\n\r\n    </LinearLayout>\r\n</ScrollView>\r\n
+--Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+--<+>UTF-8
+--===================================================================
+--diff --git a/app/src/main/res/layout/profile.xml b/app/src/main/res/layout/profile.xml
+----- a/app/src/main/res/layout/profile.xml	(revision 0a42b132300258816e221681938e46ceb836ac79)
+--+++ b/app/src/main/res/layout/profile.xml	(date 1731884065932)
+--@@ -65,7 +65,7 @@
+--                 android:inputType="text"
+--                 android:textSize="16sp"
+--                 android:background="@drawable/edit_text_border"
+---                android:text="@string/username_hint"
+--+                android:hint="@string/username_hint"
+--                 android:paddingStart="16dp"
+--                 android:textColor="@color/dark_blue"
+--                 android:fontFamily="@font/dangrek_font"/>
+--@@ -92,7 +92,7 @@
+--                 android:inputType="text"
+--                 android:textSize="16sp"
+--                 android:background="@drawable/edit_text_border"
+---                android:text="@string/first_name_hint"
+--+                android:hint="@string/first_name_hint"
+--                 android:paddingStart="16dp"
+--                 android:textColor="@color/dark_blue"
+--                 android:fontFamily="@font/dangrek_font"/>
+--@@ -119,7 +119,7 @@
+--                 android:inputType="text"
+--                 android:textSize="16sp"
+--                 android:background="@drawable/edit_text_border"
+---                android:text="@string/last_name_hint"
+--+                android:hint="@string/last_name_hint"
+--                 android:paddingStart="16dp"
+--                 android:textColor="@color/dark_blue"
+--                 android:fontFamily="@font/dangrek_font"/>
+--@@ -146,7 +146,7 @@
+--                 android:inputType="text"
+--                 android:textSize="16sp"
+--                 android:background="@drawable/edit_text_border"
+---                android:text="@string/e_mail_phone_hint"
+--+                android:hint="@string/e_mail_phone_hint"
+--                 android:paddingStart="16dp"
+--                 android:textColor="@color/dark_blue"
+--                 android:fontFamily="@font/dangrek_font"/>
+--@@ -173,7 +173,7 @@
+--                 android:inputType="text"
+--                 android:textSize="16sp"
+--                 android:background="@drawable/edit_text_border"
+---                android:text="@string/birth_hint"
+--+                android:hint="@string/birth_hint"
+--                 android:paddingStart="16dp"
+--                 android:textColor="@color/dark_blue"
+--                 android:fontFamily="@font/dangrek_font"/>
+--@@ -200,7 +200,7 @@
+--                 android:inputType="text"
+--                 android:textSize="16sp"
+--                 android:background="@drawable/edit_text_border"
+---                android:text="@string/country_hint"
+--+                android:hint="@string/country_hint"
+--                 android:paddingStart="16dp"
+--                 android:textColor="@color/dark_blue"
+--                 android:fontFamily="@font/dangrek_font"/>
+--Index: app/src/main/java/com/example/eggenda/MainActivity.kt
+--IDEA additional info:
+--Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+--<+>package com.example.eggenda\r\n\r\nimport android.content.Context\r\nimport android.os.Bundle\r\nimport android.view.Menu\r\nimport com.google.android.material.snackbar.Snackbar\r\nimport com.google.android.material.navigation.NavigationView\r\nimport androidx.navigation.findNavController\r\nimport androidx.navigation.ui.AppBarConfiguration\r\nimport androidx.navigation.ui.navigateUp\r\nimport androidx.navigation.ui.setupActionBarWithNavController\r\nimport androidx.navigation.ui.setupWithNavController\r\nimport androidx.drawerlayout.widget.DrawerLayout\r\nimport androidx.appcompat.app.AppCompatActivity\r\nimport com.example.eggenda.databinding.ActivityMainBinding\r\nimport java.util.Locale\r\n\r\nclass MainActivity : AppCompatActivity() {\r\n\r\n    private lateinit var appBarConfiguration: AppBarConfiguration\r\n    private lateinit var binding: ActivityMainBinding\r\n\r\n    override fun onCreate(savedInstanceState: Bundle?) {\r\n        super.onCreate(savedInstanceState)\r\n\r\n        // Apply the selected language using LocaleHelper\r\n        println(\"getting persisted data in MainActivity\")\r\n        LocaleHelper.getPersistedData(this, Locale.getDefault().language)\r\n            ?.let { LocaleHelper.setLocale(this, it) }\r\n\r\n        binding = ActivityMainBinding.inflate(layoutInflater)\r\n        setContentView(binding.root)\r\n\r\n        setSupportActionBar(binding.appBarMain.toolbar)\r\n\r\n        // Mail icon in home screen\r\n//        binding.appBarMain.fab.setOnClickListener { view ->\r\n//            Snackbar.make(view, \"Replace with your own action\", Snackbar.LENGTH_LONG)\r\n//                .setAction(\"Action\", null)\r\n//                .setAnchorView(R.id.fab).show()\r\n//        }\r\n        val drawerLayout: DrawerLayout = binding.drawerLayout\r\n        val navView: NavigationView = binding.navView\r\n        val navController = findNavController(R.id.nav_host_fragment_content_main)\r\n        // Passing each menu ID as a set of Ids because each\r\n        // menu should be considered as top level destinations.\r\n        appBarConfiguration = AppBarConfiguration(\r\n            setOf(\r\n                R.id.nav_home, R.id.nav_gallery, R.id.nav_slideshow, R.id.nav_game\r\n            ), drawerLayout\r\n        )\r\n        setupActionBarWithNavController(navController, appBarConfiguration)\r\n        navView.setupWithNavController(navController)\r\n    }\r\n\r\n    override fun onCreateOptionsMenu(menu: Menu): Boolean {\r\n        // Inflate the menu; this adds items to the action bar if it is present.\r\n        menuInflater.inflate(R.menu.main, menu)\r\n        return true\r\n    }\r\n\r\n    override fun onSupportNavigateUp(): Boolean {\r\n        val navController = findNavController(R.id.nav_host_fragment_content_main)\r\n        return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()\r\n    }\r\n\r\n    override fun attachBaseContext(newBase: Context) {\r\n        // Set the locale using LocaleHelper based on the persisted language preference\r\n        val currentLanguage = LocaleHelper.getLanguage(newBase)\r\n        if (Locale.getDefault().language != currentLanguage) {\r\n            println(\"calling localeHelper from attachBaseContext\")\r\n            LocaleHelper.setLocale(newBase, currentLanguage)\r\n        }\r\n        super.attachBaseContext(LocaleHelper.onAttach(newBase))\r\n    }\r\n}
+--Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+--<+>UTF-8
+--===================================================================
+--diff --git a/app/src/main/java/com/example/eggenda/MainActivity.kt b/app/src/main/java/com/example/eggenda/MainActivity.kt
+----- a/app/src/main/java/com/example/eggenda/MainActivity.kt	(revision 0a42b132300258816e221681938e46ceb836ac79)
+--+++ b/app/src/main/java/com/example/eggenda/MainActivity.kt	(date 1731884942366)
+--@@ -1,6 +1,7 @@
+-- package com.example.eggenda
+-- 
+-- import android.content.Context
+--+import android.content.Intent
+-- import android.os.Bundle
+-- import android.view.Menu
+-- import com.google.android.material.snackbar.Snackbar
+--@@ -13,6 +14,7 @@
+-- import androidx.drawerlayout.widget.DrawerLayout
+-- import androidx.appcompat.app.AppCompatActivity
+-- import com.example.eggenda.databinding.ActivityMainBinding
+--+import com.example.eggenda.ui.account.LoginActivity
+-- import java.util.Locale
+-- 
+-- class MainActivity : AppCompatActivity() {
+--@@ -23,6 +25,15 @@
+--     override fun onCreate(savedInstanceState: Bundle?) {
+--         super.onCreate(savedInstanceState)
+-- 
+--+        //start login page if user is not logged in
+--+        val sharedPreferences = getSharedPreferences("account", MODE_PRIVATE)
+--+        val isLoggedIn = sharedPreferences.getBoolean("isLoggedIn", false)
+--+
+--+        if(!isLoggedIn) {
+--+            val intent = Intent(this, LoginActivity::class.java)
+--+            startActivity(intent)
+--+            finish()
+--+        }
+--         // Apply the selected language using LocaleHelper
+--         println("getting persisted data in MainActivity")
+--         LocaleHelper.getPersistedData(this, Locale.getDefault().language)
+--Index: app/src/main/java/com/example/eggenda/ui/account/LoginActivity.kt
+--IDEA additional info:
+--Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+--<+>UTF-8
+--===================================================================
+--diff --git a/app/src/main/java/com/example/eggenda/ui/account/LoginActivity.kt b/app/src/main/java/com/example/eggenda/ui/account/LoginActivity.kt
+--new file mode 100644
+----- /dev/null	(date 1731884808367)
+--+++ b/app/src/main/java/com/example/eggenda/ui/account/LoginActivity.kt	(date 1731884808367)
+--@@ -0,0 +1,50 @@
+--+package com.example.eggenda.ui.account
+--+
+--+import android.content.Intent
+--+import android.content.SharedPreferences
+--+import android.os.Bundle
+--+import android.widget.Button
+--+import android.widget.EditText
+--+import android.widget.Toast
+--+import androidx.appcompat.app.AppCompatActivity
+--+import com.example.eggenda.MainActivity
+--+import com.example.eggenda.R
+--+
+--+class LoginActivity : AppCompatActivity() {
+--+    private lateinit var username: EditText
+--+    private lateinit var password: EditText
+--+    private lateinit var loginBtn: Button
+--+    private lateinit var sharedPreferences: SharedPreferences
+--+
+--+    override fun onCreate(savedInstanceState: Bundle?) {
+--+        super.onCreate(savedInstanceState)
+--+        setContentView(R.layout.activity_login)
+--+
+--+        username = findViewById(R.id.username_input)
+--+        password = findViewById(R.id.password_input)
+--+        loginBtn = findViewById(R.id.login_btn)
+--+        sharedPreferences = getSharedPreferences("account", MODE_PRIVATE)
+--+
+--+        //once decide to login
+--+        loginBtn.setOnClickListener {
+--+            val user = username.text.toString().trim()
+--+            val pw = password.text.toString().trim()
+--+
+--+            //if valid input then save username and password and keep logged in
+--+            if(user.isNotEmpty() && pw.isNotEmpty()) {
+--+                val editor = sharedPreferences.edit()
+--+                editor.putBoolean("isLoggedIn", true)
+--+                editor.putString("username", user)
+--+                editor.putString("password", pw)
+--+                editor.apply()
+--+
+--+                //start app
+--+                val intent = Intent(this, MainActivity::class.java)
+--+                startActivity(intent)
+--+                finish()
+--+            } else {
+--+                Toast.makeText(this, "Invalid Input", Toast.LENGTH_SHORT).show()
+--+            }
+--+        }
+--+    }
+--+}
+--\ No newline at end of file
+--Index: app/src/main/res/values/strings.xml
+--IDEA additional info:
+--Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+--<+><resources>\r\n    <string name=\"app_name\">Eggenda</string>\r\n    <string name=\"navigation_drawer_open\">Open navigation drawer</string>\r\n    <string name=\"navigation_drawer_close\">Close navigation drawer</string>\r\n    <string name=\"nav_header_title\">Android Studio</string>\r\n    <string name=\"nav_header_subtitle\">android.studio@android.com</string>\r\n    <string name=\"nav_header_desc\">Navigation header</string>\r\n    <string name=\"action_settings\">Settings</string>\r\n\r\n    <string name=\"menu_home\">Home</string>\r\n    <string name=\"menu_gallery\">Gallery</string>\r\n    <string name=\"menu_slideshow\">Slideshow</string>\r\n    <string name=\"gallery_choice\">Choose from Gallery</string>\r\n    <string name=\"photo_choice\">Take a Photo</string>\r\n    <string name=\"settings_title\">Settings</string>\r\n    <string name=\"game_start\">Start</string>\r\n    <string name=\"game_label\">Game</string>\r\n    <string name=\"display_name\">John Smith</string>\r\n    <string name=\"hatch_progress\">Hatch Progress: ??%</string>\r\n    <string name=\"new_quest\">New Quest</string>\r\n    <string name=\"quest_board\">Quest Board</string>\r\n    <string name=\"nq_title\">New Quest</string>\r\n    <string name=\"nq_subtitle\">Make your quest easier with our reminders</string>\r\n    <string name=\"deadline\">Deadline</string>\r\n    <string name=\"date\">DD/MM/YY</string>\r\n    <string name=\"accept\">Accept</string>\r\n    <string name=\"decline\">Decline</string>\r\n    <string name=\"experience\">Experience: 0/100</string>\r\n    <string name=\"gain_xp\">Gain XP</string>\r\n    <string name=\"task\">Task</string>\r\n    <string name=\"create_a_task\">Create a task</string>\r\n    <string name=\"time_limit\">Time Limit</string>\r\n    <string name=\"time_format\">HH:MM:SS</string>\r\n    <string name=\"details\">Details</string>\r\n    <string name=\"write_here\">Write here...</string>\r\n    <string name=\"attachments\">Attachments</string>\r\n    <string name=\"max_20mb\">Max 20mb</string>\r\n    <string name=\"user_profile_header\">User Profile</string>\r\n    <string name=\"language_header\">Language</string>\r\n    <string name=\"conditions_header\">Terms and Conditions</string>\r\n    <string name=\"edit_button\">Edit</string>\r\n    <string name=\"username_header\">Username</string>\r\n    <string name=\"username_hint\" translatable=\"false\">JohnSmith</string>\r\n    <string name=\"first_name_header\">First Name</string>\r\n    <string name=\"first_name_hint\" translatable=\"false\">John</string>\r\n    <string name=\"last_name_header\">Last Name</string>\r\n    <string name=\"last_name_hint\" translatable=\"false\">Smith</string>\r\n    <string name=\"e_mail_phone_header\">E-mail/Phone</string>\r\n    <string name=\"e_mail_phone_hint\" translatable=\"false\">E-mail/Phone</string>\r\n    <string name=\"date_of_birth_header\">Date of Birth</string>\r\n    <string name=\"birth_hint\" translatable=\"false\">dd/mm/yy</string>\r\n    <string name=\"country_header\">Country</string>\r\n    <string name=\"country_hint\" translatable=\"false\">ex. Canada</string>\r\n    <string name=\"save_button\">Save</string>\r\n    <string name=\"cancel_button\">Cancel</string>\r\n    <string name=\"logout\">Log Out\\n</string>\r\n    <string name=\"terms_conditions_details\" translatable=\"false\">terms and conditions</string>\r\n    <string name=\"game\">Start Game</string>\r\n\r\n    <string-array name=\"language_options\">\r\n        <item>English</item>\r\n        <item>Chinese</item>\r\n    </string-array>\r\n\r\n    <string-array name=\"language_values\">\r\n        <item>en</item>\r\n        <item>zh</item>\r\n    </string-array>\r\n\r\n</resources>
+--Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+--<+>UTF-8
+--===================================================================
+--diff --git a/app/src/main/res/values/strings.xml b/app/src/main/res/values/strings.xml
+----- a/app/src/main/res/values/strings.xml	(revision 0a42b132300258816e221681938e46ceb836ac79)
+--+++ b/app/src/main/res/values/strings.xml	(date 1731884226688)
+--@@ -56,6 +56,8 @@
+--     <string name="logout">Log Out\n</string>
+--     <string name="terms_conditions_details" translatable="false">terms and conditions</string>
+--     <string name="game">Start Game</string>
+--+    <string name="password_hint">Password</string>
+--+    <string name="login_button">Login</string>
+-- 
+--     <string-array name="language_options">
+--         <item>English</item>
+--Index: app/src/main/res/layout/activity_login.xml
+--IDEA additional info:
+--Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+--<+>UTF-8
+--===================================================================
+--diff --git a/app/src/main/res/layout/activity_login.xml b/app/src/main/res/layout/activity_login.xml
+--new file mode 100644
+----- /dev/null	(date 1731884263758)
+--+++ b/app/src/main/res/layout/activity_login.xml	(date 1731884263758)
+--@@ -0,0 +1,57 @@
+--+<?xml version="1.0" encoding="utf-8"?>
+--+<RelativeLayout
+--+    xmlns:android="http://schemas.android.com/apk/res/android"
+--+    xmlns:app="http://schemas.android.com/apk/res-auto"
+--+    xmlns:tools="http://schemas.android.com/tools"
+--+    android:layout_width="match_parent"
+--+    android:layout_height="match_parent"
+--+    android:background="@color/yellow"
+--+    android:gravity="center"
+--+    android:padding="16dp"
+--+    tools:context=".ui.account.LoginActivity">
+--+    
+--+    <LinearLayout
+--+        android:layout_width="match_parent"
+--+        android:layout_height="wrap_content"
+--+        android:gravity="center"
+--+        android:orientation="vertical">
+--+        
+--+        <ImageView
+--+            android:layout_width="160dp"
+--+            android:layout_height="160dp"
+--+            android:src="@drawable/app_icon"/>
+--+
+--+        <EditText
+--+            android:layout_width="match_parent"
+--+            android:layout_height="wrap_content"
+--+            android:hint="@string/username_header"
+--+            android:textSize="20sp"
+--+            android:background="@drawable/edit_text_border"
+--+            android:padding="18dp"
+--+            android:layout_marginVertical="16dp"
+--+            android:inputType="text"
+--+            android:id="@+id/username_input"
+--+            android:fontFamily="@font/dangrek_font"/>
+--+
+--+        <EditText
+--+            android:layout_width="match_parent"
+--+            android:layout_height="wrap_content"
+--+            android:hint="@string/password_hint"
+--+            android:textSize="20sp"
+--+            android:background="@drawable/edit_text_border"
+--+            android:padding="18dp"
+--+            android:inputType="textPassword"
+--+            android:id="@+id/password_input"
+--+            android:fontFamily="@font/dangrek_font"/>
+--+
+--+        <Button
+--+            android:id="@+id/login_btn"
+--+            android:layout_width="wrap_content"
+--+            android:layout_height="wrap_content"
+--+            android:text="@string/login_button"
+--+            android:textSize="24sp"
+--+            android:fontFamily="@font/titan_one"
+--+            android:padding="14dp"
+--+            android:layout_margin="16dp"/>
+--+    </LinearLayout>
+--+</RelativeLayout>
+--\ No newline at end of file
+--Index: app/src/main/java/com/example/eggenda/Util.kt
+--IDEA additional info:
+--Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+--<+>package com.example.eggenda\r\n\r\nimport android.Manifest\r\nimport android.app.Activity\r\nimport android.content.Context\r\nimport android.content.pm.PackageManager\r\nimport android.graphics.Bitmap\r\nimport android.graphics.BitmapFactory\r\nimport android.graphics.Matrix\r\nimport android.net.Uri\r\nimport androidx.core.app.ActivityCompat\r\nimport androidx.core.content.ContextCompat\r\n\r\nobject Util {\r\n    fun checkPermissions(activity: Activity?) {\r\n        if (ContextCompat.checkSelfPermission(activity!!, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {\r\n            ActivityCompat.requestPermissions(activity, arrayOf(Manifest.permission.CAMERA), 0)\r\n        }\r\n\r\n        if(ContextCompat.checkSelfPermission(activity!!, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {\r\n            ActivityCompat.requestPermissions(activity, arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE), 1)\r\n        }\r\n    }\r\n\r\n\r\n    fun getBitmap(context: Context, imgUri: Uri): Bitmap {\r\n        var bitmap = BitmapFactory.decodeStream(context.contentResolver.openInputStream(imgUri))\r\n        val matrix = Matrix()\r\n        var ret = Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)\r\n        return ret\r\n    }\r\n}
+--Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+--<+>UTF-8
+--===================================================================
+--diff --git a/app/src/main/java/com/example/eggenda/Util.kt b/app/src/main/java/com/example/eggenda/Util.kt
+----- a/app/src/main/java/com/example/eggenda/Util.kt	(revision 0a42b132300258816e221681938e46ceb836ac79)
+--+++ b/app/src/main/java/com/example/eggenda/Util.kt	(date 1731035688106)
+--@@ -22,7 +22,6 @@
+--         }
+--     }
+-- 
+---
+--     fun getBitmap(context: Context, imgUri: Uri): Bitmap {
+--         var bitmap = BitmapFactory.decodeStream(context.contentResolver.openInputStream(imgUri))
+--         val matrix = Matrix()
+-Index: .idea/misc.xml
+-IDEA additional info:
+-Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+-<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<project version=\"4\">\r\n  <component name=\"ExternalStorageConfigurationManager\" enabled=\"true\" />\r\n  <component name=\"ProjectRootManager\" version=\"2\" languageLevel=\"JDK_17\" default=\"true\" project-jdk-name=\"jbr-17\" project-jdk-type=\"JavaSDK\">\r\n    <output url=\"file://$PROJECT_DIR$/build/classes\" />\r\n  </component>\r\n</project>
+-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+-<+>UTF-8
+-===================================================================
+-diff --git a/.idea/misc.xml b/.idea/misc.xml
+---- a/.idea/misc.xml	(revision e8ca78089929fdbc6a4c3f6a6d71d3fc219aef3a)
+-+++ b/.idea/misc.xml	(date 1732491322689)
+-@@ -1,4 +1,3 @@
+--<?xml version="1.0" encoding="UTF-8"?>
+- <project version="4">
+-   <component name="ExternalStorageConfigurationManager" enabled="true" />
+-   <component name="ProjectRootManager" version="2" languageLevel="JDK_17" default="true" project-jdk-name="jbr-17" project-jdk-type="JavaSDK">
+-Index: .idea/deploymentTargetSelector.xml
+-IDEA additional info:
+-Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+-<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<project version=\"4\">\r\n  <component name=\"deploymentTargetSelector\">\r\n    <selectionStates>\r\n      <SelectionState runConfigName=\"app\">\r\n        <option name=\"selectionMode\" value=\"DROPDOWN\" />\r\n      </SelectionState>\r\n    </selectionStates>\r\n  </component>\r\n</project>
+-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+-<+>UTF-8
+-===================================================================
+-diff --git a/.idea/deploymentTargetSelector.xml b/.idea/deploymentTargetSelector.xml
+---- a/.idea/deploymentTargetSelector.xml	(revision e8ca78089929fdbc6a4c3f6a6d71d3fc219aef3a)
+-+++ b/.idea/deploymentTargetSelector.xml	(date 1732491695212)
+-@@ -4,6 +4,14 @@
+-     <selectionStates>
+-       <SelectionState runConfigName="app">
+-         <option name="selectionMode" value="DROPDOWN" />
+-+        <DropdownSelection timestamp="2024-11-24T23:35:41.458874Z">
+-+          <Target type="DEFAULT_BOOT">
+-+            <handle>
+-+              <DeviceId pluginId="LocalEmulator" identifier="path=C:\Users\User\.android\avd\Medium_Phone_API_31.avd" />
+-+            </handle>
+-+          </Target>
+-+        </DropdownSelection>
+-+        <DialogSelection />
+-       </SelectionState>
+-     </selectionStates>
+-   </component>
+-Index: .idea/gradle.xml
+-IDEA additional info:
+-Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+-<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<project version=\"4\">\r\n  <component name=\"GradleMigrationSettings\" migrationVersion=\"1\" />\r\n  <component name=\"GradleSettings\">\r\n    <option name=\"linkedExternalProjectsSettings\">\r\n      <GradleProjectSettings>\r\n        <option name=\"externalProjectPath\" value=\"$PROJECT_DIR$\" />\r\n        <option name=\"gradleJvm\" value=\"#GRADLE_LOCAL_JAVA_HOME\" />\r\n        <option name=\"modules\">\r\n          <set>\r\n            <option value=\"$PROJECT_DIR$\" />\r\n            <option value=\"$PROJECT_DIR$/app\" />\r\n          </set>\r\n        </option>\r\n        <option name=\"resolveExternalAnnotations\" value=\"false\" />\r\n      </GradleProjectSettings>\r\n    </option>\r\n  </component>\r\n</project>
+-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+-<+>UTF-8
+-===================================================================
+-diff --git a/.idea/gradle.xml b/.idea/gradle.xml
+---- a/.idea/gradle.xml	(revision e8ca78089929fdbc6a4c3f6a6d71d3fc219aef3a)
+-+++ b/.idea/gradle.xml	(date 1732485276971)
+-@@ -4,6 +4,7 @@
+-   <component name="GradleSettings">
+-     <option name="linkedExternalProjectsSettings">
+-       <GradleProjectSettings>
+-+        <option name="testRunner" value="CHOOSE_PER_TEST" />
+-         <option name="externalProjectPath" value="$PROJECT_DIR$" />
+-         <option name="gradleJvm" value="#GRADLE_LOCAL_JAVA_HOME" />
+-         <option name="modules">
+-Index: app/src/main/res/layout/gallery_pet_items_frame.xml
+-IDEA additional info:
+-Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+-<+><?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<FrameLayout xmlns:android=\"http://schemas.android.com/apk/res/android\"\r\n    xmlns:app=\"http://schemas.android.com/apk/res-auto\"\r\n    xmlns:tools=\"http://schemas.android.com/tools\"\r\n    android:id=\"@+id/gallery_unit_frame\"\r\n    android:layout_width=\"150dp\"\r\n    android:layout_height=\"150dp\"\r\n    android:background=\"@drawable/game_stroke_background\">\r\n\r\n    <ImageView\r\n        android:id=\"@+id/imageView\"\r\n        android:layout_width=\"match_parent\"\r\n        android:layout_height=\"match_parent\"\r\n        android:padding=\"4dp\"\r\n        android:scaleType=\"centerInside\"\r\n        />\r\n\r\n    <!-- Gray Overlay -->\r\n    <View\r\n        android:id=\"@+id/petOverlay\"\r\n        android:layout_width=\"match_parent\"\r\n        android:layout_height=\"match_parent\"\r\n        android:background=\"@color/disabled_color\"\r\n        android:visibility=\"gone\" />\r\n\r\n</FrameLayout>
+-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+-<+>UTF-8
+-===================================================================
+-diff --git a/app/src/main/res/layout/gallery_pet_items_frame.xml b/app/src/main/res/layout/gallery_pet_items_frame.xml
+---- a/app/src/main/res/layout/gallery_pet_items_frame.xml	(revision e8ca78089929fdbc6a4c3f6a6d71d3fc219aef3a)
+-+++ b/app/src/main/res/layout/gallery_pet_items_frame.xml	(date 1732440625968)
+-@@ -3,8 +3,8 @@
+-     xmlns:app="http://schemas.android.com/apk/res-auto"
+-     xmlns:tools="http://schemas.android.com/tools"
+-     android:id="@+id/gallery_unit_frame"
+--    android:layout_width="150dp"
+--    android:layout_height="150dp"
+-+    android:layout_width="100dp"
+-+    android:layout_height="100dp"
+-     android:background="@drawable/game_stroke_background">
+- 
+-     <ImageView
+-@@ -12,8 +12,8 @@
+-         android:layout_width="match_parent"
+-         android:layout_height="match_parent"
+-         android:padding="4dp"
+--        android:scaleType="centerInside"
+--        />
+-+        android:src="@drawable/game_enemy_goblin"
+-+        android:scaleType="centerInside" />
+- 
+-     <!-- Gray Overlay -->
+-     <View
+-Index: app/src/main/res/values/colors.xml
+-IDEA additional info:
+-Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+-<+><?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<resources>\r\n    <color name=\"purple_200\">#FFD798</color>\r\n    <color name=\"purple_500\">#FFB034</color>\r\n    <color name=\"purple_700\">#FF9B00</color>\r\n    <color name=\"teal_200\">#FFD798</color>\r\n    <color name=\"teal_700\">#FF9B00</color>\r\n    <color name=\"black\">#FF000000</color>\r\n    <color name=\"white\">#FFFFFFFF</color>\r\n    <color name=\"bold_yellow\">#FFB034</color>\r\n    <color name=\"yellow\">#FFEBCC</color>\r\n    <color name=\"dark_blue\">#1B1F31</color>\r\n    <color name=\"enable_color\">#FFB554</color>\r\n    <color name=\"gold_rare\">#EEFFDB59</color>\r\n    <color name=\"silver_rare\">#C0C0C0</color>\r\n    <color name=\"bronze_rare\">#B08D57</color>\r\n    <color name=\"fire\">#EEFF5959</color>\r\n    <color name=\"water\">#EE66A0FF</color>\r\n    <color name=\"forest\">#EE87FFAB</color>\r\n    <color name=\"disabled_color\">#A0A0A0</color>\r\n    <color name=\"link\">#1f9acf</color>\r\n    <color name=\"red\">#FD2222</color>\r\n    <color name=\"strike_through_color\">@color/bold_yellow</color> <!-- Red for strike-through -->\r\n    <color name=\"normal_text_color\">#FF0000</color>    <!-- Black for normal text -->\r\n    <color name=\"brown\">#4A310A</color>\r\n    <color name=\"dialog_btn_norm\">#BAFABB</color>\r\n    <color name=\"dialog_btn_norm1\">#60AF60</color>\r\n    <color name=\"dialog_btn_chosen\">#FF8181</color>\r\n    <color name=\"dialog_btn_chosen1\">#D44848</color>\r\n</resources>
+-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+-<+>UTF-8
+-===================================================================
+-diff --git a/app/src/main/res/values/colors.xml b/app/src/main/res/values/colors.xml
+---- a/app/src/main/res/values/colors.xml	(revision e8ca78089929fdbc6a4c3f6a6d71d3fc219aef3a)
+-+++ b/app/src/main/res/values/colors.xml	(date 1732493198376)
+-@@ -17,7 +17,8 @@
+-     <color name="fire">#EEFF5959</color>
+-     <color name="water">#EE66A0FF</color>
+-     <color name="forest">#EE87FFAB</color>
+--    <color name="disabled_color">#A0A0A0</color>
+-+    <color name="disabled_color">#D7D7D7</color>
+-+<!--    <color name="disabled_color">#A0A0A0</color>-->
+-     <color name="link">#1f9acf</color>
+-     <color name="red">#FD2222</color>
+-     <color name="strike_through_color">@color/bold_yellow</color> <!-- Red for strike-through -->
+-@@ -27,4 +28,5 @@
+-     <color name="dialog_btn_norm1">#60AF60</color>
+-     <color name="dialog_btn_chosen">#FF8181</color>
+-     <color name="dialog_btn_chosen1">#D44848</color>
+-+    <color name="yellow_subbackground">#EAD7BF</color>
+- </resources>
+-\ No newline at end of file
+Index: .idea/shelf/Uncommitted_changes_before_Update_at_2024-11-24_4_27_p_m___Changes_.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><changelist name=\"Uncommitted_changes_before_Update_at_2024-11-24_4_27_p_m__[Changes]\" date=\"1732494430549\" recycled=\"true\" deleted=\"true\">\r\n  <option name=\"PATH\" value=\"$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_2024-11-24_4_27_p_m__[Changes]/shelved.patch\" />\r\n  <option name=\"DESCRIPTION\" value=\"Uncommitted changes before Update at 2024-11-24 4:27 p.m. [Changes]\" />\r\n  <binary>\r\n    <option name=\"BEFORE_PATH\" value=\".idea/shelf/Uncommitted_changes_before_Update_at_2024-11-17_3_10_p_m__[Changes]/app_icon.png\" />\r\n    <option name=\"AFTER_PATH\" />\r\n    <option name=\"SHELVED_PATH\" />\r\n  </binary>\r\n</changelist>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/shelf/Uncommitted_changes_before_Update_at_2024-11-24_4_27_p_m___Changes_.xml b/.idea/shelf/Uncommitted_changes_before_Update_at_2024-11-24_4_27_p_m___Changes_.xml
+--- a/.idea/shelf/Uncommitted_changes_before_Update_at_2024-11-24_4_27_p_m___Changes_.xml	(revision c78f9c401aa910a9f0730238c52ce0a212b0fe9a)
++++ b/.idea/shelf/Uncommitted_changes_before_Update_at_2024-11-24_4_27_p_m___Changes_.xml	(date 1733177681721)
+@@ -3,7 +3,5 @@
+   <option name="DESCRIPTION" value="Uncommitted changes before Update at 2024-11-24 4:27 p.m. [Changes]" />
+   <binary>
+     <option name="BEFORE_PATH" value=".idea/shelf/Uncommitted_changes_before_Update_at_2024-11-17_3_10_p_m__[Changes]/app_icon.png" />
+-    <option name="AFTER_PATH" />
+-    <option name="SHELVED_PATH" />
+   </binary>
+ </changelist>
+\ No newline at end of file
+Index: .idea/compiler.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<project version=\"4\">\r\n  <component name=\"CompilerConfiguration\">\r\n    <bytecodeTargetLevel target=\"17\" />\r\n  </component>\r\n</project>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/compiler.xml b/.idea/compiler.xml
+--- a/.idea/compiler.xml	(revision c78f9c401aa910a9f0730238c52ce0a212b0fe9a)
++++ b/.idea/compiler.xml	(date 1733177681719)
+@@ -1,6 +1,6 @@
+ <?xml version="1.0" encoding="UTF-8"?>
+ <project version="4">
+   <component name="CompilerConfiguration">
+-    <bytecodeTargetLevel target="17" />
++    <bytecodeTargetLevel target="21" />
+   </component>
+ </project>
+\ No newline at end of file
+Index: .idea/misc.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><project version=\"4\">\r\n  <component name=\"ExternalStorageConfigurationManager\" enabled=\"true\" />\r\n  <component name=\"ProjectRootManager\" version=\"2\" languageLevel=\"JDK_17\" default=\"true\" project-jdk-name=\"jbr-17\" project-jdk-type=\"JavaSDK\">\r\n    <output url=\"file://$PROJECT_DIR$/build/classes\" />\r\n  </component>\r\n</project>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/misc.xml b/.idea/misc.xml
+--- a/.idea/misc.xml	(revision c78f9c401aa910a9f0730238c52ce0a212b0fe9a)
++++ b/.idea/misc.xml	(date 1733177681721)
+@@ -1,6 +1,7 @@
++<?xml version="1.0" encoding="UTF-8"?>
+ <project version="4">
+   <component name="ExternalStorageConfigurationManager" enabled="true" />
+-  <component name="ProjectRootManager" version="2" languageLevel="JDK_17" default="true" project-jdk-name="jbr-17" project-jdk-type="JavaSDK">
++  <component name="ProjectRootManager" version="2" languageLevel="JDK_21" default="true" project-jdk-name="jbr-21" project-jdk-type="JavaSDK">
+     <output url="file://$PROJECT_DIR$/build/classes" />
+   </component>
+ </project>
+\ No newline at end of file
+Index: .idea/deploymentTargetSelector.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<project version=\"4\">\r\n  <component name=\"deploymentTargetSelector\">\r\n    <selectionStates>\r\n      <SelectionState runConfigName=\"app\">\r\n        <option name=\"selectionMode\" value=\"DROPDOWN\" />\r\n        <DropdownSelection timestamp=\"2024-11-25T07:17:45.132499300Z\">\r\n          <Target type=\"DEFAULT_BOOT\">\r\n            <handle>\r\n              <DeviceId pluginId=\"LocalEmulator\" identifier=\"path=C:\\Users\\melod\\.android\\avd\\Pixel_6_API_VanillaIceCream.avd\" />\r\n            </handle>\r\n          </Target>\r\n        </DropdownSelection>\r\n        <DialogSelection />\r\n      </SelectionState>\r\n    </selectionStates>\r\n  </component>\r\n</project>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/deploymentTargetSelector.xml b/.idea/deploymentTargetSelector.xml
+--- a/.idea/deploymentTargetSelector.xml	(revision c78f9c401aa910a9f0730238c52ce0a212b0fe9a)
++++ b/.idea/deploymentTargetSelector.xml	(date 1733177681719)
+@@ -4,10 +4,10 @@
+     <selectionStates>
+       <SelectionState runConfigName="app">
+         <option name="selectionMode" value="DROPDOWN" />
+-        <DropdownSelection timestamp="2024-11-25T07:17:45.132499300Z">
++        <DropdownSelection timestamp="2024-12-02T22:08:08.581843300Z">
+           <Target type="DEFAULT_BOOT">
+             <handle>
+-              <DeviceId pluginId="LocalEmulator" identifier="path=C:\Users\melod\.android\avd\Pixel_6_API_VanillaIceCream.avd" />
++              <DeviceId pluginId="LocalEmulator" identifier="path=C:\Users\User\.android\avd\Medium_Phone_API_31.avd" />
+             </handle>
+           </Target>
+         </DropdownSelection>
