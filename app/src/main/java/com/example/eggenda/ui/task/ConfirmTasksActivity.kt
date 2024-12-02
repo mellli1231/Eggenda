@@ -106,9 +106,9 @@ class ConfirmTasksActivity : AppCompatActivity() {
                 dueDateField.text = receivedDeadline
                 dueDateField.isEnabled = false // Non-editable deadline
             }
-//            loadTasks()
+            loadTasks()
             loadProgress()
-            loadTasks(receivedQuestTitle)
+//            loadTasks(receivedQuestTitle)
             Toast.makeText(this, "Quest: $receivedQuestTitle", Toast.LENGTH_LONG).show()
 
             // Update button labels for existing quests
@@ -169,26 +169,32 @@ class ConfirmTasksActivity : AppCompatActivity() {
                 }
 
                 lifecycleScope.launch {
-                    val questTitle = questTitleField.text.toString().trim()
-
-                    if (questTitle.isEmpty()) {
-                        Toast.makeText(this@ConfirmTasksActivity, "Quest Title cannot be empty!", Toast.LENGTH_SHORT).show()
-                        return@launch
-                    }
-
                     val allTasksChecked = withContext(Dispatchers.IO) {
                         val tasks = EntryDatabase.getInstance(applicationContext).entryDatabaseDao.getTasksByQuest(questTitle)
                         tasks.isNotEmpty() && tasks.all { it.isChecked }
                     }
 
                     if (allTasksChecked) {
-                        // Mark quest as completed
+                        // Mark quest as completed and update experience points
+                        val expPoints = 50 // Example: 50 experience points per quest
                         withContext(Dispatchers.IO) {
+                            // Delete the quest and its tasks
                             EntryDatabase.getInstance(applicationContext).entryDatabaseDao.deleteQuestAndTasks(questTitle)
+
+                            // Update shared preferences
+                            val sharedPreferences = getSharedPreferences("eggenda_prefs", MODE_PRIVATE)
+                            val currentExperience = sharedPreferences.getInt("currentExperience", 0)
+                            val newExperience = currentExperience + expPoints
+                            sharedPreferences.edit().putInt("currentExperience", newExperience).apply()
+
+                            // Broadcast the experience update
+                            val intent = Intent("com.example.eggenda.EXPERIENCE_UPDATE")
+                            intent.putExtra("new_experience", newExperience)
+                            sendBroadcast(intent)
                         }
+
                         withContext(Dispatchers.Main) {
-                            gainExperience(27)
-                            Toast.makeText(this@ConfirmTasksActivity, "Quest Completed!", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(this@ConfirmTasksActivity, "Quest Completed! Experience Updated.", Toast.LENGTH_SHORT).show()
                             finish()
                         }
                     }
@@ -230,7 +236,7 @@ class ConfirmTasksActivity : AppCompatActivity() {
         }
     }
 
-    private fun loadTasks() {
+    private fun loadTasks() {   // Load all tasks
         lifecycleScope.launch {
             EntryDatabase.getInstance(applicationContext).entryDatabaseDao
                 .getAllTasks().collectLatest { tasks ->
@@ -240,7 +246,7 @@ class ConfirmTasksActivity : AppCompatActivity() {
         }
     }
 
-    private fun loadTasks(questTitle: String?) {
+    private fun loadTasks(questTitle: String?) {    // load tasks with matching title
         lifecycleScope.launch(Dispatchers.IO) {
             if (questTitle != null) {
                 EntryDatabase.getInstance(applicationContext).entryDatabaseDao
@@ -249,9 +255,16 @@ class ConfirmTasksActivity : AppCompatActivity() {
                     taskListView.adapter = adapter
                 }
             }
+            // if list view is empty show all tasks
+            if (taskListView.adapter.isEmpty) {
+                EntryDatabase.getInstance(applicationContext).entryDatabaseDao
+                    .getAllTasks().collectLatest { tasks ->
+                    val adapter = TaskAdapter(this@ConfirmTasksActivity, tasks)
+                    taskListView.adapter = adapter
+                }
+            }
         }
     }
-
 
     private fun clearTaskList() {
         val emptyAdapter = ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, emptyList())

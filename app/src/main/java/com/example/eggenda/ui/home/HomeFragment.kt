@@ -2,8 +2,10 @@ package com.example.eggenda.ui.home
 
 import android.annotation.SuppressLint
 import android.app.AlertDialog
+import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.graphics.BitmapFactory
 import android.media.MediaPlayer
 import android.os.Bundle
@@ -18,6 +20,8 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.ListView
+import android.widget.ProgressBar
+import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -88,7 +92,6 @@ class HomeFragment : Fragment() {
     private lateinit var myRef: DatabaseReference
     private var id: String=""
 
-
     @SuppressLint("SetTextI18n")
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -118,6 +121,8 @@ class HomeFragment : Fragment() {
         userViewModelFactory = UserViewModelFactory(repository)
         userViewModel = ViewModelProvider(this, userViewModelFactory)[UserViewModel::class.java]
 
+        val progressBar = binding.circularProgress
+        val experienceTextView = binding.experienceTextView
 
         //load profile picture
         val sharedPreferences = requireContext().getSharedPreferences("user_${id}", Context.MODE_PRIVATE)
@@ -221,6 +226,16 @@ class HomeFragment : Fragment() {
             }
         }
 
+        val experienceUpdateReceiver = object : BroadcastReceiver() {
+            override fun onReceive(context: Context?, intent: Intent?) {
+                if (intent?.action == "com.example.eggenda.EXPERIENCE_UPDATE") {
+                    val newExperience = intent.getIntExtra("new_experience", 0)
+                    updateProgress(newExperience, progressBar, experienceTextView)
+                }
+            }
+        }
+        requireContext().registerReceiver(experienceUpdateReceiver, IntentFilter("com.example.eggenda.EXPERIENCE_UPDATE"))
+
         return root
     }
 
@@ -317,6 +332,12 @@ class HomeFragment : Fragment() {
         binding.progressBar.progress = currentExperience
         binding.circularProgress.progress = currentExperience
         binding.experienceTextView.text = "Experience: $currentExperience/$maxExperience"
+    }
+
+    private fun updateProgress(newExperience: Int, progressBar: ProgressBar, experienceTextView: TextView) {
+        currentExperience = newExperience
+        progressBar.progress = currentExperience
+        experienceTextView.text = "Experience: $currentExperience/$maxExperience"
     }
 
     // Eventually, we won't need this function because user experience increase based on tasks done
