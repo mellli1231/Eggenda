@@ -18,29 +18,35 @@ import androidx.room.PrimaryKey
 )
 data class TaskEntry(
     @PrimaryKey(autoGenerate = true)
-    val id: Long = 0L,
+    var id: Long = 0L, // Primary Key
 
-    @ColumnInfo(name = "task_title") // Explicitly specify the column name
-    val title: String,
+    @ColumnInfo(name = "quest_title")
+    var questTitle: String = "", // New quest title field
 
-    @ColumnInfo(name = "quest_title", index = true) // Foreign key column
-    val questTitle: String = "",
+    @ColumnInfo(name = "due_date")
+    var dueDate: String = "", // New due date field
 
-    @ColumnInfo(name = "time_limit") // Explicitly specify the column name
-    val timeLimit: String = "",
+    @ColumnInfo(name = "timer_started")
+    var timerStarted: Boolean = false,  // Task timer started flag
 
-    @ColumnInfo(name = "details") // Explicitly specify the column name
-    val details: String = "",
+    @ColumnInfo(name = "task_title")
+    var title: String = "", // Task title (max 50 characters)
 
-    @ColumnInfo(name = "attachment_path") // Explicitly specify the column name
-    val attachmentPath: String = "",
+    @ColumnInfo(name = "time_limit")
+    var timeLimit: String = "", // Time limit in format HH:MM:SS
 
-    @ColumnInfo(name = "end_time") // Explicitly specify the column name
+    @ColumnInfo(name = "details")
+    var details: String = "", // Task details (max 300 characters)
+
+    @ColumnInfo(name = "attachment_path")
+    var attachmentPath: String = "", // File path for attachments (e.g., mp4, png, pdf)
+
+    @ColumnInfo(name = "end_time")
     var endTime: Long = 0L,
 
-    @ColumnInfo(name = "remaining_time") // Explicitly specify the column name
-    var remainingTime: Long = 0L,
+    @ColumnInfo(name = "remaining_time")
+    var remainingTime: Long = 0L, // Remaining time when paused
 
-    @ColumnInfo(name = "is_checked") // Explicitly specify the column name
-    var isChecked: Boolean = false
+    @ColumnInfo(name = "is_checked")
+    var isChecked: Boolean = false  // Task checkbox state
 )

@@ -47,10 +47,4 @@ interface EntryDatabaseDao {
 
     @Update
     suspend fun updateTask(task: TaskEntry)
-
-    @Query("SELECT * FROM task_table WHERE quest_title = :questTitle")
-    suspend fun getTasksByQuestList(questTitle: String): List<TaskEntry> // Retrieves all tasks for a given quest
-
-    @Query("DELETE FROM task_table WHERE quest_title = :questTitle")
-    suspend fun deleteAllTasksForQuest(questTitle: String) // Deletes all tasks for a given quest
 }

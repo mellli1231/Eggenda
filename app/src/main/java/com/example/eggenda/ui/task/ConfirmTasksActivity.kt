@@ -74,7 +74,7 @@ class ConfirmTasksActivity : AppCompatActivity() {
         udatabaseDao = udatabase.userDatabaseDao
         repository = UserRepository(udatabaseDao)
 
-        isNewQuest = intent.getBooleanExtra("isNewQuest", true)
+        isNewQuest = intent.getBooleanExtra("isNewQuest", false)
         val receivedQuestTitle = intent.getStringExtra("quest_title")
         val receivedDeadline = intent.getStringExtra("quest_deadline")
         taskListView = findViewById(R.id.task_list)
@@ -95,6 +95,7 @@ class ConfirmTasksActivity : AppCompatActivity() {
             questTitleField.isEnabled = true // Editable for new quests
             dueDateField.isEnabled = true // Editable for new quests
             clearTaskList() // Reset task list for new quests
+//            Toast.makeText(this, "New Quest: $isNewQuest", Toast.LENGTH_LONG).show()
         } else {
             // Populate fields for an existing quest
             if (!receivedQuestTitle.isNullOrEmpty()) {
@@ -105,11 +106,16 @@ class ConfirmTasksActivity : AppCompatActivity() {
                 dueDateField.text = receivedDeadline
                 dueDateField.isEnabled = false // Non-editable deadline
             }
+//            loadTasks()
+            loadProgress()
+            loadTasks(receivedQuestTitle)
+            Toast.makeText(this, "Quest: $receivedQuestTitle", Toast.LENGTH_LONG).show()
 
             // Update button labels for existing quests
             acceptButton.text = "Confirm"
             declineButton.text = "Cancel"
             deleteButton.visibility = View.VISIBLE // Show delete button
+//            Toast.makeText(this, "New Quest(F): $isNewQuest", Toast.LENGTH_LONG).show()
         }
 
         // Date Picker for Due Date
@@ -127,10 +133,6 @@ class ConfirmTasksActivity : AppCompatActivity() {
             }
         }
 
-//        loadTasks(receivedQuestTitle)
-        loadTasks()
-        loadProgress()
-
         val addTaskImage: ImageView = findViewById(R.id.add_task)
         addTaskImage.setOnClickListener {
             startActivity(Intent(this, AddTaskActivity::class.java))
@@ -147,7 +149,9 @@ class ConfirmTasksActivity : AppCompatActivity() {
                 // Save new quest
                 val newQuest = dueDate?.let { it1 -> TaskEntry(questTitle = questTitle, dueDate = it1) }
                 CoroutineScope(Dispatchers.IO).launch {
-                    EntryDatabase.getInstance(applicationContext).entryDatabaseDao.insertTask(newQuest)
+                    if (newQuest != null) {
+                        EntryDatabase.getInstance(applicationContext).entryDatabaseDao.insertTask(newQuest)
+                    }
                 }
 
                 if (dueDate != null) {
@@ -173,7 +177,7 @@ class ConfirmTasksActivity : AppCompatActivity() {
                     }
 
                     val allTasksChecked = withContext(Dispatchers.IO) {
-                        val tasks = EntryDatabase.getInstance(applicationContext).entryDatabaseDao.getTasksByQuestList(questTitle)
+                        val tasks = EntryDatabase.getInstance(applicationContext).entryDatabaseDao.getTasksByQuest(questTitle)
                         tasks.isNotEmpty() && tasks.all { it.isChecked }
                     }
 
@@ -181,7 +185,6 @@ class ConfirmTasksActivity : AppCompatActivity() {
                         // Mark quest as completed
                         withContext(Dispatchers.IO) {
                             EntryDatabase.getInstance(applicationContext).entryDatabaseDao.deleteQuestAndTasks(questTitle)
-                            EntryDatabase.getInstance(applicationContext).entryDatabaseDao.deleteAllTasksForQuest(questTitle)
                         }
                         withContext(Dispatchers.Main) {
                             gainExperience(27)
@@ -229,26 +232,22 @@ class ConfirmTasksActivity : AppCompatActivity() {
 
     private fun loadTasks() {
         lifecycleScope.launch {
-
-            EntryDatabase.getInstance(applicationContext).entryDatabaseDao.getAllTasks().collectLatest { tasks ->
+            EntryDatabase.getInstance(applicationContext).entryDatabaseDao
+                .getAllTasks().collectLatest { tasks ->
                 val adapter = TaskAdapter(this@ConfirmTasksActivity, tasks)
                 taskListView.adapter = adapter
             }
-
         }
     }
 
     private fun loadTasks(questTitle: String?) {
         lifecycleScope.launch(Dispatchers.IO) {
-            val tasks = if (!questTitle.isNullOrEmpty()) {
-                EntryDatabase.getInstance(applicationContext).entryDatabaseDao.getTasksByQuest(questTitle)
-            } else {
-                emptyList()
-            }
-
-            withContext(Dispatchers.Main) {
-                val adapter = TaskAdapter(this@ConfirmTasksActivity, tasks)
-                taskListView.adapter = adapter
+            if (questTitle != null) {
+                EntryDatabase.getInstance(applicationContext).entryDatabaseDao
+                    .getTasksByQuestFlow(questTitle).collectLatest { tasks ->
+                    val adapter = TaskAdapter(this@ConfirmTasksActivity, tasks)
+                    taskListView.adapter = adapter
+                }
             }
         }
     }

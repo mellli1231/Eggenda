@@ -33,7 +33,7 @@ class EntryRepo(private val entryDatabaseDao: EntryDatabaseDao) {
     }
 
     fun getTasksByQuest(questTitle: String): Flow<List<TaskEntry>> {
-        return entryDatabaseDao.getTasksByQuest(questTitle)
+        return entryDatabaseDao.getTasksByQuestFlow(questTitle)
     }
 
     fun updateTask(task: TaskEntry) {
@@ -49,21 +49,21 @@ class EntryRepo(private val entryDatabaseDao: EntryDatabaseDao) {
     }
 
     // Quests
-    val allQuests: Flow<List<QuestEntry>> = entryDatabaseDao.getAllQuests()
+//    val allQuests: Flow<List<QuestEntry>> = entryDatabaseDao.getAllQuests()
 
-    fun insertQuest(quest: QuestEntry) {
-        CoroutineScope(Dispatchers.IO).launch {
-            entryDatabaseDao.insertQuest(quest)
-        }
-    }
+//    fun insertQuest(quest: QuestEntry) {
+//        CoroutineScope(Dispatchers.IO).launch {
+//            entryDatabaseDao.insertQuest(quest)
+//        }
+//    }
 
-    fun deleteQuest(questTitle: String) {
-        CoroutineScope(Dispatchers.IO).launch {
-            entryDatabaseDao.deleteQuest(questTitle)
-        }
-    }
+//    fun deleteQuest(questTitle: String) {
+//        CoroutineScope(Dispatchers.IO).launch {
+//            entryDatabaseDao.deleteQuest(questTitle)
+//        }
+//    }
 
-    suspend fun getQuestByTitle(questTitle: String): QuestEntry = withContext(Dispatchers.IO) {
-        entryDatabaseDao.getQuestByTitle(questTitle)
-    }
+//    suspend fun getQuestByTitle(questTitle: String): QuestEntry = withContext(Dispatchers.IO) {
+//        entryDatabaseDao.getQuestByTitle(questTitle)
+//    }
 }
