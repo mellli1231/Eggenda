@@ -62,7 +62,7 @@ class TaskAdapter(
             // listener for the checkbox, if checked: cross out and pause time
             checkBox.setOnCheckedChangeListener { _, isChecked ->
                 it.isChecked = isChecked
-                if (isChecked && !it.timerStarted) {
+                if (isChecked) {
                     // Mark task as complete and pause timer
                     stopTimer(it.id)
                     it.remainingTime = it.endTime - System.currentTimeMillis() // Save remaining time
