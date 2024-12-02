@@ -1,70 +1,46 @@
 package com.example.eggenda.ui.database.entryDatabase
 
-import androidx.room.*
-import androidx.room.TypeConverters
-import com.google.android.gms.maps.model.LatLng
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
-import java.lang.reflect.Type
+import androidx.room.ColumnInfo
+import androidx.room.Entity
+import androidx.room.ForeignKey
+import androidx.room.PrimaryKey
 
-// Code from XD's Week 7 Lecture 10: SQLite Database
-@TypeConverters(MyConverters::class)
-@Entity(tableName = "task_table")
+@Entity(
+    tableName = "task_table",
+//    foreignKeys = [
+//        ForeignKey(
+//            entity = QuestEntry::class,
+//            parentColumns = ["quest_title"], // Match the column name in QuestEntry
+//            childColumns = ["quest_title"], // Match the column name in this table
+//            onDelete = ForeignKey.CASCADE // Cascade delete tasks when a quest is deleted
+//        )
+//    ]
+)
 data class TaskEntry(
     @PrimaryKey(autoGenerate = true)
-    var id: Long = 0L, // Primary Key
+    val id: Long = 0L,
 
-    @ColumnInfo(name = "quest_title")
-    var questTitle: String = "", // New quest title field
+    @ColumnInfo(name = "task_title") // Explicitly specify the column name
+    val title: String,
 
-    @ColumnInfo(name = "due_date")
-    var dueDate: String = "", // New due date field
+    @ColumnInfo(name = "quest_title", index = true) // Foreign key column
+    val questTitle: String = "",
 
-    @ColumnInfo(name = "timer_started")
-    var timerStarted: Boolean = false,  // Task timer started flag
+    @ColumnInfo(name = "time_limit") // Explicitly specify the column name
+    val timeLimit: String = "",
 
-    @ColumnInfo(name = "task_title")
-    var title: String = "", // Task title (max 50 characters)
+    @ColumnInfo(name = "details") // Explicitly specify the column name
+    val details: String = "",
 
-    @ColumnInfo(name = "time_limit")
-    var timeLimit: String = "", // Time limit in format HH:MM:SS
+    @ColumnInfo(name = "attachment_path") // Explicitly specify the column name
+    val attachmentPath: String = "",
 
-    @ColumnInfo(name = "details")
-    var details: String = "", // Task details (max 300 characters)
-
-    @ColumnInfo(name = "attachment_path")
-    var attachmentPath: String = "", // File path for attachments (e.g., mp4, png, pdf)
-
-    @ColumnInfo(name = "end_time")
+    @ColumnInfo(name = "end_time") // Explicitly specify the column name
     var endTime: Long = 0L,
 
-    @ColumnInfo(name = "remaining_time")
-    var remainingTime: Long = 0L, // Remaining time when paused
+    @ColumnInfo(name = "remaining_time") // Explicitly specify the column name
+    var remainingTime: Long = 0L,
 
-    @ColumnInfo(name = "is_checked")
-    var isChecked: Boolean = false  // Task checkbox state
+    @ColumnInfo(name = "is_checked") // Explicitly specify the column name
+    var isChecked: Boolean = false
 )
-
-/**
- * Setting up Type converter for ArrayList<LatLng>
- *
- * This class is used to convert the ArrayList<LatLng> to a JSON string and vice versa
- * Used in the EntryInfo class to store the locations of the user in MyRuns4
- */
-class MyConverters {
-    @TypeConverter
-    fun toArrayList(json: String): ArrayList<LatLng> {
-        val gson = Gson()
-        val listType: Type = object : TypeToken<ArrayList<LatLng>>() {}.type
-        val array: ArrayList<LatLng> = gson.fromJson(json, listType)
-        return array
-    }
-
-    @TypeConverter
-    fun fromArrayList(array: ArrayList<LatLng>): String {
-        val gson = Gson()
-        val listType: Type = object : TypeToken<ArrayList<LatLng>>() {}.type
-        val json: String = gson.toJson(array, listType)
-        return json
-    }
-}

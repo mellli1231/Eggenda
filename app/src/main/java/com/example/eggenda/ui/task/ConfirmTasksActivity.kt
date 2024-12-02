@@ -141,18 +141,20 @@ class ConfirmTasksActivity : AppCompatActivity() {
 
         acceptButton.setOnClickListener {
             val questTitle = questTitleField.text.toString().trim()
-            val dueDate = selectedDate
+            val dueDate = if (isNewQuest) selectedDate else receivedDeadline
 
             if (isNewQuest) {
                 // Save new quest
-                val newQuest = TaskEntry(questTitle = questTitle, dueDate = dueDate)
+                val newQuest = dueDate?.let { it1 -> TaskEntry(questTitle = questTitle, dueDate = it1) }
                 CoroutineScope(Dispatchers.IO).launch {
                     EntryDatabase.getInstance(applicationContext).entryDatabaseDao.insertTask(newQuest)
                 }
 
-                if (questTitle.isEmpty() || dueDate.isEmpty()) {
-                    Toast.makeText(this, "Quest Title/Deadline cannot be empty!", Toast.LENGTH_SHORT).show()
-                    return@setOnClickListener
+                if (dueDate != null) {
+                    if (questTitle.isEmpty() || dueDate.isEmpty()) {
+                        Toast.makeText(this, "Quest Title/Deadline cannot be empty!", Toast.LENGTH_SHORT).show()
+                        return@setOnClickListener
+                    }
                 }
             } else {
                 // Update existing quest tasks
