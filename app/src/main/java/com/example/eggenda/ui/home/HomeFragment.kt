@@ -139,13 +139,21 @@ class HomeFragment : Fragment() {
         loadProgress()
         updateProgress()
 
+        // Declare a state flag to help us prevent multiple pets from hatching from one egg
+        var isHatching = false
+
         // Initialize egg and progress views
         binding.eggImageView.setOnClickListener {
+            if (isHatching) {
+                // Ignore clicks during hatching
+                return@setOnClickListener
+            }
             if (ownsAll()) {
                 Toast.makeText(requireContext(), "You own all pets already!", Toast.LENGTH_SHORT).show()
                 // Perform subtle haptic feedback if egg is not ready to hatch
                 binding.eggImageView.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
             } else if (currentExperience >= maxExperience) {
+                isHatching = true
                 // Show cracked egg
                 binding.eggImageView.setImageResource(R.drawable.egg_cracked_blue)
                 binding.experienceTextView.text = "Egg has hatched!"
@@ -157,8 +165,10 @@ class HomeFragment : Fragment() {
                 Handler(Looper.getMainLooper()).postDelayed({
                     resetEggAndExperience()
                     hatchEgg(petOwnership)
+                    isHatching = false
                 }, 1500)
                 triggerVibration(1500)
+
 
             } else {
                 // Perform subtle haptic feedback if egg is not ready to hatch
