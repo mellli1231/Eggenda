@@ -96,7 +96,7 @@ class ConfirmTasksActivity : AppCompatActivity() {
                 dueDateField.text = receivedDeadline
                 dueDateField.isEnabled = false // Non-editable deadline
             }
-            loadTasks()
+//            loadTasks()
             loadProgress()
 //            loadTasks(receivedQuestTitle)
 //            Toast.makeText(this, "Quest: $receivedQuestTitle", Toast.LENGTH_LONG).show()

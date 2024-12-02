@@ -51,7 +51,6 @@ class AddTaskActivity : AppCompatActivity() {
         addTaskButton.setOnClickListener {
             val title = taskTitle.text.toString().trim()
             val details = taskDetails.text.toString().trim()
-//            val timeLimit = timeTextView.text.toString().trim()
 
             if (title.isEmpty() || details.isEmpty() || timeLimit.isEmpty()) {
                 Toast.makeText(this, "Please fill all fields!", Toast.LENGTH_SHORT).show()
