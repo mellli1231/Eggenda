@@ -204,6 +204,7 @@ class HomeFragment : Fragment() {
                     val intent = Intent(requireContext(), ConfirmTasksActivity::class.java).apply {
                         putExtra("quest_title", task.questTitle)
                         putExtra("quest_deadline", task.dueDate)
+                        putExtra("isNewQuest", false)
                     }
                     startActivity(intent)
                 }
@@ -345,13 +346,6 @@ class HomeFragment : Fragment() {
                 }
             })
         }
-        //adding to database just to test, temporary as well
-
-
-
-
-
-
     }
 
     // Helper function to start notification for ready-to-hatch egg

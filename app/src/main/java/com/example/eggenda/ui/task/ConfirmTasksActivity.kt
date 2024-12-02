@@ -3,6 +3,7 @@ package com.example.eggenda.ui.task
 import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.app.DatePickerDialog
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
@@ -14,10 +15,24 @@ import android.widget.ListView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.lifecycle.lifecycleScope
 import com.example.eggenda.R
+import com.example.eggenda.UserPref
+import com.example.eggenda.databinding.FragmentHomeBinding
+import com.example.eggenda.gamePetChoose.SharedPreferenceManager
+import com.example.eggenda.services.NotifyService
 import com.example.eggenda.ui.database.entryDatabase.EntryDatabase
 import com.example.eggenda.ui.database.entryDatabase.TaskEntry
+import com.example.eggenda.ui.database.userDatabase.UserDatabase
+import com.example.eggenda.ui.database.userDatabase.UserDatabaseDao
+import com.example.eggenda.ui.database.userDatabase.UserRepository
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.MutableData
+import com.google.firebase.database.Transaction
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
@@ -32,13 +47,34 @@ class ConfirmTasksActivity : AppCompatActivity() {
     private lateinit var questTitleField: EditText
     private lateinit var dueDateField: TextView
     private var selectedDate: String = ""
+    private var id: String=""
+
+    private var currentExperience = 0
+    private val maxExperience = 100
+    private var _binding: FragmentHomeBinding? = null
+//    private val binding get() = _binding!!
+
+    private lateinit var sharedPreferenceManager: SharedPreferenceManager
+    private lateinit var udatabase: UserDatabase
+    private lateinit var udatabaseDao: UserDatabaseDao
+    private lateinit var repository: UserRepository
+    private lateinit var FBdatabase: FirebaseDatabase
+    private lateinit var myRef: DatabaseReference
+    private var isNewQuest: Boolean = true
 
     @SuppressLint("SetTextI18n", "MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_confirm_tasks)
+        sharedPreferenceManager = SharedPreferenceManager(this)
+        id = UserPref.getId(this).toString()
+        FBdatabase = FirebaseDatabase.getInstance()
+        myRef = FBdatabase.reference.child("users")
+        udatabase = UserDatabase.getInstance(this)
+        udatabaseDao = udatabase.userDatabaseDao
+        repository = UserRepository(udatabaseDao)
 
-        val isNewQuest = intent.getBooleanExtra("isNewQuest", false)
+        isNewQuest = intent.getBooleanExtra("isNewQuest", true)
         val receivedQuestTitle = intent.getStringExtra("quest_title")
         val receivedDeadline = intent.getStringExtra("quest_deadline")
         taskListView = findViewById(R.id.task_list)
@@ -91,7 +127,9 @@ class ConfirmTasksActivity : AppCompatActivity() {
             }
         }
 
-        loadTasks(receivedQuestTitle)
+//        loadTasks(receivedQuestTitle)
+        loadTasks()
+        loadProgress()
 
         val addTaskImage: ImageView = findViewById(R.id.add_task)
         addTaskImage.setOnClickListener {
@@ -122,6 +160,33 @@ class ConfirmTasksActivity : AppCompatActivity() {
                     val tasks = EntryDatabase.getInstance(applicationContext).entryDatabaseDao.getTasksByQuest(questTitle)
                     tasks.forEach { it.timerStarted = true }
                     EntryDatabase.getInstance(applicationContext).entryDatabaseDao.updateTasks(tasks)
+                }
+
+                lifecycleScope.launch {
+                    val questTitle = questTitleField.text.toString().trim()
+
+                    if (questTitle.isEmpty()) {
+                        Toast.makeText(this@ConfirmTasksActivity, "Quest Title cannot be empty!", Toast.LENGTH_SHORT).show()
+                        return@launch
+                    }
+
+                    val allTasksChecked = withContext(Dispatchers.IO) {
+                        val tasks = EntryDatabase.getInstance(applicationContext).entryDatabaseDao.getTasksByQuestList(questTitle)
+                        tasks.isNotEmpty() && tasks.all { it.isChecked }
+                    }
+
+                    if (allTasksChecked) {
+                        // Mark quest as completed
+                        withContext(Dispatchers.IO) {
+                            EntryDatabase.getInstance(applicationContext).entryDatabaseDao.deleteQuestAndTasks(questTitle)
+                            EntryDatabase.getInstance(applicationContext).entryDatabaseDao.deleteAllTasksForQuest(questTitle)
+                        }
+                        withContext(Dispatchers.Main) {
+                            gainExperience(27)
+                            Toast.makeText(this@ConfirmTasksActivity, "Quest Completed!", Toast.LENGTH_SHORT).show()
+                            finish()
+                        }
+                    }
                 }
             }
 
@@ -160,16 +225,16 @@ class ConfirmTasksActivity : AppCompatActivity() {
         }
     }
 
-//    private fun loadTasks(questTitle: String?) {
-//        lifecycleScope.launch {
-//            if (!questTitle.isNullOrEmpty()) {
-//                EntryDatabase.getInstance(applicationContext).entryDatabaseDao.getTasksByQuestFlow(questTitle).collectLatest { tasks ->
-//                    val adapter = TaskAdapter(this@ConfirmTasksActivity, tasks)
-//                    taskListView.adapter = adapter
-//                }
-//            }
-//        }
-//    }
+    private fun loadTasks() {
+        lifecycleScope.launch {
+
+            EntryDatabase.getInstance(applicationContext).entryDatabaseDao.getAllTasks().collectLatest { tasks ->
+                val adapter = TaskAdapter(this@ConfirmTasksActivity, tasks)
+                taskListView.adapter = adapter
+            }
+
+        }
+    }
 
     private fun loadTasks(questTitle: String?) {
         lifecycleScope.launch(Dispatchers.IO) {
@@ -191,4 +256,68 @@ class ConfirmTasksActivity : AppCompatActivity() {
         val emptyAdapter = ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, emptyList())
         taskListView.adapter = emptyAdapter
     }
+
+    // Function for incrementing experience progress
+//    @SuppressLint("SetTextI18n")
+//    private fun updateProgress() {
+//        binding.progressBar.progress = currentExperience
+//        binding.circularProgress.progress = currentExperience
+//        binding.experienceTextView.text = "Experience: $currentExperience/$maxExperience"
+//    }
+
+    private fun loadProgress() {
+        val sharedPreferences = this.getSharedPreferences("eggenda_prefs", Context.MODE_PRIVATE)
+        currentExperience = sharedPreferences.getInt("currentExperience", 0) // Default to 0 if not found
+        // TODO: make this shared preference the same as whatever the tasks updates
+    }
+
+    private fun saveExperienceProgress() {
+        val sharedPreferences = this.getSharedPreferences("eggenda_prefs", Context.MODE_PRIVATE)
+        sharedPreferences.edit().putInt("currentExperience", currentExperience).apply()
+    }
+
+    private fun gainExperience(amount: Int) {
+        if (currentExperience < maxExperience) {
+            currentExperience += amount
+            if (currentExperience > maxExperience) {
+                currentExperience = maxExperience
+            }
+            saveExperienceProgress()
+//            updateProgress()
+
+//            if (currentExperience == maxExperience) {
+//                startHatchNotificationService()
+//            }
+        }
+
+        CoroutineScope(Dispatchers.IO).launch {
+            repository.updatePoints(id, amount) //update room database
+
+            //update firebase database
+            myRef.child(id).child("points").runTransaction(object: Transaction.Handler {
+                override fun doTransaction(mutableData: MutableData): Transaction.Result {
+                    val curr = mutableData.getValue(Int::class.java)
+                    if (curr != null) {
+                        mutableData.value = curr + amount
+                    }
+                    return Transaction.success(mutableData)
+                }
+
+                override fun onComplete(databaseError: DatabaseError?, committed: Boolean, dataSnapshot: DataSnapshot?) {
+                    if(databaseError != null) {
+                        println("Error updating points: ${databaseError.message}")
+                    } else {
+                        println("Points updated in firebase")
+                    }
+                }
+            })
+        }
+    }
+
+    // Helper function to start notification for ready-to-hatch egg
+//    private fun startHatchNotificationService() {
+//        val intent = Intent(this, NotifyService::class.java)
+//        intent.putExtra("notification_type", "hatch")
+//        this.startService(intent)
+//    }
 }
