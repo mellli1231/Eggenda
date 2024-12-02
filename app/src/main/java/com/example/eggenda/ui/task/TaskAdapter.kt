@@ -2,6 +2,7 @@ package com.example.eggenda.ui.task
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
 import android.os.CountDownTimer
 import android.util.Log
 import android.view.LayoutInflater
@@ -11,6 +12,8 @@ import android.widget.ArrayAdapter
 import android.widget.CheckBox
 import android.widget.TextView
 import com.example.eggenda.R
+import com.example.eggenda.services.NotifyService
+import com.example.eggenda.services.TaskAlarmManager
 import com.example.eggenda.ui.database.entryDatabase.EntryDatabase
 import com.example.eggenda.ui.database.entryDatabase.TaskEntry
 import kotlinx.coroutines.CoroutineScope
@@ -25,6 +28,7 @@ class TaskAdapter(
 
     private val timers = mutableMapOf<Long, CountDownTimer>() // To manage timers by task ID
 
+    @SuppressLint("SetTextI18n")
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
         val view = convertView ?: LayoutInflater.from(context).inflate(R.layout.custom_list_item, parent, false)
         val checkBox = view.findViewById<CheckBox>(R.id.taskCheckBox)
@@ -41,6 +45,7 @@ class TaskAdapter(
                 // Task marked as complete, show "Paused"
                 remainingTimeText.text = "Completed"
                 stopTimer(it.id) // Stop any active timer for this task
+                TaskAlarmManager.cancelTaskAlarm(context, task.id)
             } else {
                 // Task not complete, start/resume countdown
                 val remainingMillis = it.endTime - System.currentTimeMillis()
@@ -48,6 +53,9 @@ class TaskAdapter(
                     startCountDown(it.id, remainingMillis, remainingTimeText)
                 } else {
                     remainingTimeText.text = "Expired"
+                }
+                if (remainingMillis > 10 * 60 * 1000) {
+                    TaskAlarmManager.scheduleTaskAlarm(context, it.id, it.title, it.endTime)
                 }
             }
 
@@ -59,12 +67,14 @@ class TaskAdapter(
                     stopTimer(it.id)
                     it.remainingTime = it.endTime - System.currentTimeMillis() // Save remaining time
                     remainingTimeText.text = "Paused"
+                    TaskAlarmManager.cancelTaskAlarm(context, it.id)
                 } else {
                     // Mark task as incomplete and resume countdown
                     val remainingMillis = it.remainingTime
                     if (remainingMillis > 0) {
                         it.endTime = System.currentTimeMillis() + remainingMillis // Adjust endTime
                         startCountDown(it.id, remainingMillis, remainingTimeText)
+                        TaskAlarmManager.scheduleTaskAlarm(context, it.id, it.title, it.endTime)
                     }
                 }
 
@@ -96,11 +106,19 @@ class TaskAdapter(
         stopTimer(taskId) // Stop any existing timer for this task
 
         val timer = object : CountDownTimer(remainingMillis, 1000) {
+            var hasNotified = false
+
             override fun onTick(millisUntilFinished: Long) {
                 val hours = (millisUntilFinished / (1000 * 60 * 60))
                 val minutes = (millisUntilFinished / (1000 * 60)) % 60
                 val seconds = (millisUntilFinished / 1000) % 60
                 textView.text = String.format("%02d:%02d:%02d", hours, minutes, seconds)
+
+                // Check if 10 minutes remain and send notification
+                if (millisUntilFinished <= 10 * 60 * 1000 && !hasNotified) {
+                    hasNotified = true // Ensure notification is sent only once
+                    triggerDeadlineNotification(taskId)
+                }
             }
 
             override fun onFinish() {
@@ -115,5 +133,16 @@ class TaskAdapter(
     private fun stopTimer(taskId: Long) {
         timers[taskId]?.cancel() // Cancel the timer if it exists
         timers.remove(taskId) // Remove it from the map
+    }
+
+    private fun triggerDeadlineNotification(taskId: Long) {
+        val task = tasks.find { it.id == taskId } // Find the task by its ID
+        task?.let {
+            val intent = Intent(context, NotifyService::class.java).apply {
+                putExtra("notification_type", "deadline")
+                putExtra("task_name", it.title) // Pass the task name
+            }
+            context.startService(intent) // Start the service to send the notification
+        }
     }
 }

@@ -17,8 +17,8 @@ interface UserDatabaseDao {
     suspend fun deleteAll()
 
 
-    @Query("UPDATE user_table SET points = points + :addedPoints WHERE username = :username")
-    suspend fun updatePoints(username: String, addedPoints: Int)
+    @Query("UPDATE user_table SET points = points + :addedPoints WHERE id = :id")
+    suspend fun updatePoints(id: String, addedPoints: Int)
 
 
     @Query("UPDATE user_table SET username = :newUsername WHERE id = :id")

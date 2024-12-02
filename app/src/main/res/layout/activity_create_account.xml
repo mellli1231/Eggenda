@@ -12,13 +12,13 @@
         android:layout_gravity="center"
         android:layout_marginHorizontal="20dp">
 
-        <TextView
+        <com.example.eggenda.OutlinedText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/create_an_account"
             android:textSize="30sp"
             android:fontFamily="@font/titan_one"
-            android:textColor="@color/brown"
+            android:textColor="@color/white"
             android:paddingBottom="24dp"/>
 
         <!--username-->

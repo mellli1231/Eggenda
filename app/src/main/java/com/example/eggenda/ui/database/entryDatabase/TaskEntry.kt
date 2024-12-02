@@ -1,18 +1,33 @@
 package com.example.eggenda.ui.database.entryDatabase
 
-import androidx.room.*
-import androidx.room.TypeConverters
-import com.google.android.gms.maps.model.LatLng
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
-import java.lang.reflect.Type
+import androidx.room.ColumnInfo
+import androidx.room.Entity
+import androidx.room.ForeignKey
+import androidx.room.PrimaryKey
 
-// Code from XD's Week 7 Lecture 10: SQLite Database
-@TypeConverters(MyConverters::class)
-@Entity(tableName = "task_table")
+@Entity(
+    tableName = "task_table",
+//    foreignKeys = [
+//        ForeignKey(
+//            entity = QuestEntry::class,
+//            parentColumns = ["quest_title"], // Match the column name in QuestEntry
+//            childColumns = ["quest_title"], // Match the column name in this table
+//            onDelete = ForeignKey.CASCADE // Cascade delete tasks when a quest is deleted
+//        )
+//    ]
+)
 data class TaskEntry(
     @PrimaryKey(autoGenerate = true)
     var id: Long = 0L, // Primary Key
+
+    @ColumnInfo(name = "quest_title")
+    var questTitle: String = "", // New quest title field
+
+    @ColumnInfo(name = "due_date")
+    var dueDate: String = "", // New due date field
+
+    @ColumnInfo(name = "timer_started")
+    var timerStarted: Boolean = false,  // Task timer started flag
 
     @ColumnInfo(name = "task_title")
     var title: String = "", // Task title (max 50 characters)
@@ -33,29 +48,5 @@ data class TaskEntry(
     var remainingTime: Long = 0L, // Remaining time when paused
 
     @ColumnInfo(name = "is_checked")
-    var isChecked: Boolean = false
+    var isChecked: Boolean = false  // Task checkbox state
 )
-
-/**
- * Setting up Type converter for ArrayList<LatLng>
- *
- * This class is used to convert the ArrayList<LatLng> to a JSON string and vice versa
- * Used in the EntryInfo class to store the locations of the user in MyRuns4
- */
-class MyConverters {
-    @TypeConverter
-    fun toArrayList(json: String): ArrayList<LatLng> {
-        val gson = Gson()
-        val listType: Type = object : TypeToken<ArrayList<LatLng>>() {}.type
-        val array: ArrayList<LatLng> = gson.fromJson(json, listType)
-        return array
-    }
-
-    @TypeConverter
-    fun fromArrayList(array: ArrayList<LatLng>): String {
-        val gson = Gson()
-        val listType: Type = object : TypeToken<ArrayList<LatLng>>() {}.type
-        val json: String = gson.toJson(array, listType)
-        return json
-    }
-}

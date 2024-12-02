@@ -64,7 +64,7 @@
         app:layout_constraintStart_toStartOf="@+id/card_virtical_line"
         app:layout_constraintTop_toTopOf="@+id/card_image_line"
         app:layout_constraintVertical_bias="0.526"
-        app:srcCompat="@drawable/a_card_bg" />
+        app:srcCompat="@drawable/background_raccoon_housetrash" />
 
     <ImageView
         android:id="@+id/game_card_pet_image"

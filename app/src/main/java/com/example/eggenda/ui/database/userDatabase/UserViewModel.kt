@@ -24,8 +24,8 @@ class UserViewModel(private val repository: UserRepository): ViewModel() {
         return repository.getUser(user)
     }
 
-    fun updatePoints(username: String, points: Int) {
-        repository.updatePoints(username, points)
+    fun updatePoints(id: String, points: Int) {
+        repository.updatePoints(id, points)
     }
 
     suspend fun updateUsername(newUsername: String, id: String) {

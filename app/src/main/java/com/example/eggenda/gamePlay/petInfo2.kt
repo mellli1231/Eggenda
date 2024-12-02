@@ -49,6 +49,7 @@ class petInfo2 {
         val skillName: String
         val description: String
         val rarity: Int
+        val backgroundId: Int
 
         fun dealDamage(petStatus: Array<petStatus?>,petOrder:Int,deckSize:Int):Int
         fun attackCountdown(petStatus: Array<petStatus?>,petOrder:Int,deckSize:Int):Int
@@ -69,6 +70,7 @@ class petInfo2 {
         override val description: String = "It heals the player " + (damage * -1)+ " hp only if it remains on the board for " + count.toString()+ " turn(s).\n\n" + "" +
                 "If it’s knocked out, no healing occurs"
         override val rarity: Int = dict.RARITY_NORMAL
+        override val backgroundId: Int = R.drawable.background_bunny_happyplains
 
         override fun dealDamage(petStatus: Array<petStatus?>, petOrder: Int,deckSize:Int): Int {
             if(petStatus[petOrder]!!.stayNum != 0 && petStatus[petOrder]!!.stayNum % count == 0 && petStatus[petOrder]!!.location == dict.onBoard) {
@@ -131,6 +133,7 @@ class petInfo2 {
 //                "when it is knocked out from the board" +
 //                "on the next turn after it is placed on the board."
         override val rarity: Int = dict.RARITY_NORMAL
+        override val backgroundId: Int = R.drawable.background_evilwater_lab
 
         override fun dealDamage(petStatus: Array<petStatus?>, petOrder: Int,deckSize:Int): Int {
             if(petStatus[petOrder]!!.stayNum == count && petStatus[petOrder]!!.location == dict.onDECK ) {
@@ -201,6 +204,7 @@ class petInfo2 {
         //            "Deal "+damage+" "+dict.ELEMENT_STRING[element]+" damage\n" +
 //                "after every "+count+ " position change when it is on the board."
         override val rarity: Int = dict.RARITY_RARE
+        override val backgroundId: Int = R.drawable.background_flameskull_darkdungeons
 
         override fun dealDamage(petStatus: Array<petStatus?>, petOrder: Int,deckSize:Int): Int {
             val skullStatus = petStatus[petOrder]!!
@@ -251,6 +255,7 @@ class petInfo2 {
         override val description: String ="Let x = number of turns it stays on the board,\n" +
         "it deals (x mod 10) * (10 - (x mod 10) ) "+ dict.ELEMENT_STRING[element]+" damages"
         override val rarity: Int = dict.RARITY_LEGENDARY
+        override val backgroundId: Int = R.drawable.background_mothman_deadlands
 
         override fun dealDamage(petStatus: Array<petStatus?>, petOrder: Int,deckSize:Int): Int {
             if(petStatus[petOrder]!!.location == dict.onBoard){
@@ -309,6 +314,7 @@ class petInfo2 {
 //                "on the "+count+ "th turn\n" +
 //                "after it is placed on the board"
         override val rarity: Int = dict.RARITY_LEGENDARY
+        override val backgroundId: Int = R.drawable.background_raccoon_housetrash
 
         override fun dealDamage(petStatus: Array<petStatus?>, petOrder: Int,deckSize:Int): Int {
             var petOnBoard = 0
@@ -382,6 +388,7 @@ class petInfo2 {
         override val skillName :String ="Light of the hospital"
         override val description: String = "Heals "+(damage * -1)+" hp if there are "+count+" pets on the board"
         override val rarity: Int = dict.RARITY_NORMAL
+        override val backgroundId: Int = R.drawable.background_sprite_spiritrealm
 
         override fun dealDamage(petStatus: Array<petStatus?>, petOrder: Int,deckSize:Int): Int {
             var temp = 0
@@ -447,6 +454,7 @@ class petInfo2 {
         override val description: String = "Deals number of turns it stay on the board * "+damage+dict.ELEMENT_STRING[element]+" damage\n" +
                 "when  knocked out from the board."
         override val rarity: Int = dict.RARITY_NORMAL
+        override val backgroundId: Int = R.drawable.background_owlbear_temperateforest
 
         override fun dealDamage(petStatus: Array<petStatus?>, petOrder: Int,deckSize:Int): Int {
             if(petStatus[petOrder]!!.stayNum > 0 && petStatus[petOrder]!!.location == dict.onDECK ) {
@@ -492,6 +500,7 @@ class petInfo2 {
         override val description: String = "Deal "+damage.toString()+" "+dict.ELEMENT_STRING[element]+" damages\n" +
                 "after every "+count+" turns"
         override val rarity: Int = dict.RARITY_NORMAL
+        override val backgroundId: Int = R.drawable.background_mouseviper_noidea
 
         override fun dealDamage(petStatus: Array<petStatus?>, petOrder: Int,deckSize:Int): Int {
             if(petStatus[petOrder]!!.stayNum != 0 && petStatus[petOrder]!!.stayNum % count == 0 && petStatus[petOrder]!!.location == dict.onBoard) {
@@ -567,6 +576,7 @@ class petInfo2 {
         override val description: String = "Deal "+damage.toString()+" "+dict.ELEMENT_STRING[element]+" damages\n" +
                 "If there is no pets on the deck when this pet is placed on the board"
         override val rarity: Int = dict.RARITY_NORMAL
+        override val backgroundId: Int  = R.drawable.background_nutcracker_homelyhome
 
         override fun dealDamage(petStatus: Array<petStatus?>, petOrder: Int,deckSize:Int): Int {
             var petOnBoard = 0
@@ -641,6 +651,7 @@ class petInfo2 {
                 "after it is placed on the board.\n\n" +
                 "No further damage will be made after attacking, unless it's' knocked out from the board."
         override val rarity: Int = dict.RARITY_NORMAL
+        override val backgroundId: Int = R.drawable.background_merman_deepseacaverns
 
         override fun dealDamage(petStatus: Array<petStatus?>, petOrder: Int,deckSize:Int): Int {
 

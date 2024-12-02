@@ -6,14 +6,13 @@ import androidx.appcompat.app.AppCompatActivity.MODE_PRIVATE
 
 
 object UserPref {
-    private const val PREF_NAME = "id_user"
+    private const val PREF_NAME = "user"
 
     // Function to get the user ID from SharedPreferences
     fun getId(context: Context): String? {
         val sharedPreferences = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
         return sharedPreferences.getString("curr_id", "")
     }
-
 
     // Function to get the username from SharedPreferences
     fun getUsername(context: Context): String? {

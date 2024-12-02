@@ -79,7 +79,6 @@ class CreateProfileActivity: AppCompatActivity() {
         createAccBtn = findViewById(R.id.create_acc_btn)
 
         //get correlating user
-
         val id = UserPref.getId(this)
         sharedPreferences = getSharedPreferences("user_${id}", MODE_PRIVATE) //info for user
         println("editing user id: $id")

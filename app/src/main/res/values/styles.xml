@@ -7,4 +7,10 @@
         <item name="android:textSize">18sp</item>
         <item name="android:paddingLeft">0dp</item>
     </style>
+
+    <style name="Theme.CustomSplashScreenTheme" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenAnimatedIcon">@mipmap/ic_launcher</item>
+        <item name="windowSplashScreenBackground">@color/yellow</item>
+        <item name="windowSplashScreenAnimationDuration">0</item>
+    </style>
 </resources>
