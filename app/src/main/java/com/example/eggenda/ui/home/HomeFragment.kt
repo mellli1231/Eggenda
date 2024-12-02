@@ -28,6 +28,8 @@ import com.example.eggenda.databinding.DialogHatchBinding
 import com.example.eggenda.databinding.FragmentHomeBinding
 import com.example.eggenda.gamePetChoose.SharedPreferenceManager
 import com.example.eggenda.gamePlay.gameActivity
+import com.example.eggenda.services.NotifyService
+import com.example.eggenda.Util
 import com.example.eggenda.ui.database.entryDatabase.EntryDatabase
 import com.example.eggenda.ui.database.entryDatabase.EntryDatabaseDao
 import com.example.eggenda.ui.database.entryDatabase.EntryRepo
@@ -97,6 +99,9 @@ class HomeFragment : Fragment() {
         val root: View = binding.root
         val petOwnership = loadPetOwnership()
 //        sharedPreferenceManager = SharedPreferenceManager(requireContext())klh
+
+        // Get permission for notifications
+        Util.checkPermissions(this)
 
         //get username and id
         val user = UserPref.getUsername(requireContext())
@@ -295,6 +300,10 @@ class HomeFragment : Fragment() {
             }
             saveExperienceProgress()
             updateProgress()
+
+            if (currentExperience == maxExperience) {
+                startHatchNotificationService()
+            }
         }
 
         CoroutineScope(Dispatchers.IO).launch {
@@ -326,6 +335,13 @@ class HomeFragment : Fragment() {
 
 
 
+    }
+
+    // Helper function to start notification for ready-to-hatch egg
+    private fun startHatchNotificationService() {
+        val intent = Intent(requireContext(), NotifyService::class.java)
+        intent.putExtra("notification_type", "hatch")
+        requireContext().startService(intent)
     }
 
     // Eventually, we won't need this either
