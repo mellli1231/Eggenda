@@ -191,7 +191,7 @@ class GalleryFragment : Fragment() {
                 petChosenImage.visibility = View.VISIBLE
 
                 //set a long click so it can show the info of the pet
-                petChoosenText.setOnLongClickListener{
+                petChosenImage.setOnLongClickListener{
                     showMonsterDetailDialog(monsterId)
                     true
                 }
