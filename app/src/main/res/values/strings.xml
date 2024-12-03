@@ -80,7 +80,7 @@
     <string name="atk_type_bounce">Bounce</string>
 
     <string name="atk_count_des">Count</string>
-    <string name="resume">RESUME</string>
+    <string name="resume" translatable="false">RESUME</string>
     <string name="expired">Expired</string>
     <string name="incorrect_password">Incorrect password</string>
     <string name="user_doesn_t_exist">User doesn\'t exist</string>

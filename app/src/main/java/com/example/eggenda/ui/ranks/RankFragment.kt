@@ -24,9 +24,8 @@ class RankFragment: Fragment() {
     private var _binding: FragmentRankBinding? = null
     private val binding get() = _binding!!
 
-    private lateinit var FBdatabase: FirebaseDatabase
+    private lateinit var fbDatabase: FirebaseDatabase
     private lateinit var myRef: DatabaseReference
-    private lateinit var recyclerView: RecyclerView
     private lateinit var adapter: UserAdapter
     private val list = mutableListOf<UserFB>()
 
@@ -44,8 +43,8 @@ class RankFragment: Fragment() {
 
 
         //load database to retrieve gained points
-        FBdatabase = FirebaseDatabase.getInstance()
-        myRef = FBdatabase.reference.child("users")
+        fbDatabase = FirebaseDatabase.getInstance()
+        myRef = fbDatabase.reference.child("users")
 
         viewLifecycleOwner.lifecycleScope.launch {
             getUsers()
@@ -66,9 +65,9 @@ class RankFragment: Fragment() {
                             list.add(user)
                         }
                     }
-                    list.sortByDescending { it.points }  // Sort by points in descending order
+                    list.sortByDescending { it.points }  //sort by points in descending order
                     adapter.notifyDataSetChanged()
-                    continuation.resume(Unit)  // Resume when the data is loaded
+                    continuation.resume(Unit)  //resume when the data is loaded
                 }
 
                 override fun onCancelled(error: DatabaseError) {

@@ -19,25 +19,6 @@
 
     </group>
 
-    <!--customization-->
-    <group android:id="@+id/customization" android:checkableBehavior="single">
-        <item
-            android:id="@+id/nav_eggs"
-            android:title="@string/eggs"
-            />
-
-        <item
-            android:id="@+id/nav_pets"
-            android:title="@string/pets"/>
-    </group>
-
-    <!--points-->
-    <group android:id="@+id/points" android:checkableBehavior="single">
-        <item
-            android:id="@+id/nav_quests"
-            android:title="@string/quests"
-            android:icon="@drawable/quest"/>
-    </group>
 
     <!--showcase-->
     <group android:id="@+id/showcase" android:checkableBehavior="single">
