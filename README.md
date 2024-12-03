@@ -8,8 +8,7 @@
   4. **Clock** - <a href="https://www.flaticon.com/free-icons/clock" title="clock icons">Clock icons created by dmitri13 - Flaticon</a>
   5. **Home** - <a href="https://www.flaticon.com/free-icons/home" title="home icons">Home icons created by Dave Gandy - Flaticon</a>
   6. **Game** - <a href="https://www.flaticon.com/free-icons/fight" title="fight icons">Fight icons created by Freepik - Flaticon</a>
-  7. **Quests** - <a href="https://www.flaticon.com/free-icons/rpg" title="rpg icons">Rpg icons created by fzyn - Flaticon</a>
-  8. **Ranking** - <a href="https://www.flaticon.com/free-icons/leaderboard" title="leaderboard icons">Leaderboard icons created by Anggara - Flaticon</a>
-  9.  **Gallery** - <a href="https://www.flaticon.com/free-icons/exhibition" title="exhibition icons">Exhibition icons created by Peter Lakenbrink - Flaticon</a>
-  10.  **Settings** - <a href="https://www.flaticon.com/free-icons/settings" title="settings icons">Settings icons created by Tomas Knop - Flaticon</a>
+  7. **Ranking** - <a href="https://www.flaticon.com/free-icons/leaderboard" title="leaderboard icons">Leaderboard icons created by Anggara - Flaticon</a>
+  8.  **Gallery** - <a href="https://www.flaticon.com/free-icons/exhibition" title="exhibition icons">Exhibition icons created by Peter Lakenbrink - Flaticon</a>
+  9.  **Settings** - <a href="https://www.flaticon.com/free-icons/settings" title="settings icons">Settings icons created by Tomas Knop - Flaticon</a>
 
