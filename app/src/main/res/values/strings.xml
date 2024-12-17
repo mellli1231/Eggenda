@@ -37,7 +37,7 @@
     <string name="max_20mb">Max 20mb</string>
     <string name="user_profile_header">User Profile</string>
     <string name="language_header">Language</string>
-    <string name="conditions_header">Terms and Conditions</string>
+    <string name="conditions_header" translatable="false">Terms and Conditions</string>
     <string name="edit_button">Edit</string>
     <string name="username_header">Username</string>
     <string name="username_hint" translatable="false">JohnSmith</string>
@@ -99,11 +99,13 @@
     <string-array name="language_options">
         <item>English</item>
         <item>Chinese</item>
+        <item>Japanese</item>
     </string-array>
 
     <string-array name="language_values">
         <item>en</item>
         <item>zh</item>
+        <item>ja</item>
     </string-array>
 
 </resources>
